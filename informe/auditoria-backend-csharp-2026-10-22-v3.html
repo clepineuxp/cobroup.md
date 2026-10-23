@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COBROUP · Reauditoría independiente JWT · 2026-10-22 v3</title>
+  <style>
+    :root{--ink:#172033;--muted:#5f6b7c;--line:#d9e0ea;--paper:#fff;--bg:#eef2f7;--navy:#173b64;--cyan:#0e7490;--red:#b42318;--red-bg:#fff1f0;--amber:#9a6700;--amber-bg:#fff8db;--green:#16794b;--green-bg:#ecfdf3;--blue:#175cd3;--blue-bg:#eff8ff;--slate:#475467}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,Segoe UI,Arial,sans-serif}
+    main{max-width:1180px;margin:0 auto;background:var(--paper);min-height:100vh;box-shadow:0 0 32px #10182818}
+    header{padding:48px 56px 36px;background:linear-gradient(135deg,#102a49,#173b64 62%,#0e7490);color:#fff}
+    header h1{margin:7px 0 8px;font-size:34px;line-height:1.15;letter-spacing:-.5px} header p{margin:0;color:#d8e8f4;max-width:850px}
+    .eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:800;color:#a9e5f3}
+    .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px}.meta div{padding:12px 14px;border:1px solid #ffffff38;border-radius:10px;background:#ffffff12}.meta small{display:block;color:#b9d5e7}.meta strong{display:block;margin-top:2px}
+    nav{position:sticky;top:0;z-index:5;display:flex;gap:18px;overflow:auto;padding:12px 56px;background:#fff;border-bottom:1px solid var(--line)}nav a{white-space:nowrap;color:var(--navy);text-decoration:none;font-weight:700;font-size:13px}
+    section{padding:30px 56px;border-bottom:1px solid var(--line)} h2{margin:0 0 18px;font-size:24px;color:var(--navy)} h3{margin:0 0 10px;font-size:17px} p{margin:8px 0}
+    .verdict{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:center;border:2px solid var(--red);background:var(--red-bg);padding:22px;border-radius:14px}.verdict .stamp{text-align:center;color:var(--red);font-weight:900;font-size:23px;letter-spacing:.08em}.verdict .stamp small{display:block;font-size:12px;letter-spacing:.12em}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.metric{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fafbfd}.metric b{display:block;font-size:25px;color:var(--navy)}.metric span{font-size:12px;color:var(--muted)}
+    .callout{padding:14px 16px;border-left:4px solid var(--blue);background:var(--blue-bg);border-radius:7px;margin:14px 0}.callout.good{border-color:var(--green);background:var(--green-bg)}.callout.warn{border-color:var(--amber);background:var(--amber-bg)}.callout.danger{border-color:var(--red);background:var(--red-bg)}
+    table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{padding:11px 12px;border:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f5f7fa;color:#344054}tr:nth-child(even) td{background:#fbfcfe}
+    .badge{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.blocker{background:#fee4e2;color:#b42318}.important{background:#fef0c7;color:#93370d}.minor{background:#eaf2ff;color:#175cd3}.fixed{background:#dcfae6;color:#067647}.partial{background:#fef0c7;color:#93370d}.open{background:#fee4e2;color:#b42318}
+    .finding{border:1px solid var(--line);border-left:5px solid var(--red);border-radius:10px;padding:17px 18px;margin:13px 0}.finding.imp{border-left-color:var(--amber)}.finding.min{border-left-color:var(--blue)}.finding dl{display:grid;grid-template-columns:115px 1fr;gap:5px 12px;margin:8px 0 0}.finding dt{font-weight:800;color:#344054}.finding dd{margin:0 0 6px;color:#344054}
+    code{font-family:Consolas,ui-monospace,monospace;font-size:.92em;background:#f1f4f8;border-radius:4px;padding:1px 4px;overflow-wrap:anywhere}.path{color:#194f86}
+    .ok-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.ok-card{border:1px solid #a6f4c5;background:#f6fef9;border-radius:10px;padding:15px}.ok-card h3{color:var(--green);font-size:15px}
+    .priority{font-weight:900;color:var(--red)} ul,ol{padding-left:22px}li{margin:5px 0}.small{font-size:12px;color:var(--muted)}
+    footer{padding:24px 56px 40px;color:var(--muted);font-size:12px;background:#f8fafc}
+    @media(max-width:800px){header,section,footer{padding-left:22px;padding-right:22px}nav{padding-left:22px}.meta,.metrics,.ok-list{grid-template-columns:1fr}.verdict{grid-template-columns:1fr}.finding dl{grid-template-columns:1fr}.finding dd{margin-bottom:10px}}
+    @media print{body{background:#fff}main{box-shadow:none;max-width:none}nav{display:none}section{break-inside:auto}.finding,.ok-card,table{break-inside:avoid}header{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Informe de reauditoría independiente · v3</div>
+    <h1>COBROUP — Backend C# y flujo JWT</h1>
+    <p>Validación del árbol actual sin commit frente a <strong>FRAMEWORK_DESARROLLO_CSHARP 2.0</strong> y la decisión aprobada de autenticación exclusiva con JWT. Se audita evidencia; este informe no constituye implementación ni autorización de commit o despliegue.</p>
+    <div class="meta">
+      <div><small>Corte auditado</small><strong>2026-10-22 11:05 COT</strong></div>
+      <div><small>Resultado</small><strong>NO APROBADO</strong></div>
+      <div><small>Pruebas</small><strong>232 / 232 pasan</strong></div>
+      <div><small>Estado Git</small><strong>Cambios sin commit</strong></div>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#resumen">Resumen</a><a href="#alcance">Alcance</a><a href="#positivo">Bien realizado</a><a href="#bloqueantes">Bloqueantes</a><a href="#importantes">Importantes</a><a href="#trazabilidad">Trazabilidad</a><a href="#pruebas">Evidencia</a><a href="#dictamen">Dictamen</a>
+  </nav>
+
+  <section id="resumen">
+    <h2>1. Resumen ejecutivo</h2>
+    <div class="verdict">
+      <div class="stamp"><small>DICTAMEN AUDITOR</small>NO APROBADO</div>
+      <div><strong>La remediación es material y va en la dirección correcta, pero el flujo JWT desplegable aún no cumple el contrato aprobado.</strong> La firma RS256, JWKS, hash del refresh, memoria del frontend, reconciliación EF y pruebas generales mejoraron. Permanecen defectos bloqueantes en cookie/rutas externas, CSRF, validación estricta de claims, concurrencia de refresh, configuración GitOps y almacenamiento durable de evidencias.</div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><b>6</b><span>hallazgos bloqueantes</span></div>
+      <div class="metric"><b>12</b><span>hallazgos importantes</span></div>
+      <div class="metric"><b>3</b><span>observaciones menores</span></div>
+      <div class="metric"><b>9</b><span>hallazgos previos cerrados</span></div>
+      <div class="metric"><b>3</b><span>ambientes Kustomize válidos</span></div>
+    </div>
+    <div class="callout warn"><strong>Lectura correcta del resultado:</strong> suites verdes y compilación exitosa no demuestran conformidad del flujo de seguridad. El contrato JWT exige evidencia reproducible de navegador/ingress, concurrencia PostgreSQL, migración real y fail-fast por ambiente.</div>
+  </section>
+
+  <section id="alcance">
+    <h2>2. Alcance, criterio y corte Git</h2>
+    <p>Se revisaron código, pruebas, migraciones, frontends y GitOps. La única escritura efectuada por el auditor es este archivo de informe.</p>
+    <table>
+      <thead><tr><th>Repositorio</th><th>Rama / HEAD</th><th>Estado relevante</th></tr></thead>
+      <tbody>
+        <tr><td>MS.Cobroup.Backend</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>1b32fb0</code></td><td>18 archivos modificados/no rastreados; validador JWKS y almacenamiento de evidencia incluidos.</td></tr>
+        <tr><td>MS.Cobroup.BackendAdmin</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>c9d9556</code></td><td>31 cambios; emisor RSA/JWT, refresh y migraciones aún sin commit.</td></tr>
+        <tr><td>MF.cobroup-frontend</td><td><code>feature/fase-9-endurecimiento-despliegue</code><br><code>6b8f2d7</code></td><td>Flujo JWT sin Web Storage; cambios sin commit.</td></tr>
+        <tr><td>MF.cobroup-frontend-admin</td><td><code>feature/fase-9-endurecimiento-despliegue</code><br><code>b13b1bd</code></td><td>Flujo JWT sin Web Storage; cambios sin commit.</td></tr>
+        <tr><td>cobroup.environments</td><td><code>dev</code><br><code>b47d0bb</code></td><td>Solo README e ingress modificados; secretos y deployments JWT no fueron adaptados.</td></tr>
+      </tbody>
+    </table>
+    <p class="small">Criterios rectores: <code>FRAMEWORK_DESARROLLO_CSHARP.md</code> v2.0 y <code>DECISION_AUTENTICACION_JWT.md</code>, especialmente contrato de tokens (líneas 19–33), claves/fail-fast (37–41), compatibilidad ingress (55), operación segura (67–71) y pruebas mínimas (73–88).</p>
+  </section>
+
+  <section id="positivo">
+    <h2>3. Qué se realizó bien</h2>
+    <div class="ok-list">
+      <article class="ok-card"><h3>Criptografía y separación de responsabilidades</h3><p>BackendAdmin firma con RS256 y conserva la clave privada; Backend valida por clave pública/JWKS. Se publica <code>kid</code> y existe soporte de clave anterior durante rotación.</p></article>
+      <article class="ok-card"><h3>Emisión de tokens</h3><p>Access de 15 minutos y refresh de 30 días, con issuer, audiences separadas, <code>jti</code>, tipo, organización y rol emitidos desde membresía del servidor.</p></article>
+      <article class="ok-card"><h3>Custodia de refresh</h3><p>El servidor persiste SHA-256 y no el JWT completo. Los frontends retiraron access/refresh de Web Storage; el access vive en memoria y existe single-flight para refresh.</p></article>
+      <article class="ok-card"><h3>Autorización y tenant</h3><p>El login rechaza explícitamente una organización no autorizada. El cambio de organización revoca primero la familia anterior. Descarga/carga de evidencia valida la ruta accesible.</p></article>
+      <article class="ok-card"><h3>Evidencias de pago</h3><p>El endpoint JSON legado fue retirado; la carga usa streaming con límite de 10 MB, inspección de firma, SHA-256 y compensación del archivo si falla la persistencia.</p></article>
+      <article class="ok-card"><h3>Dominio y trazabilidad</h3><p>La excepción de crédito exige el plazo exacto aprobado. El correlation ID se propaga en clientes HTTP de ambos backends.</p></article>
+      <article class="ok-card"><h3>Migraciones</h3><p>Ambos modelos reportan cero cambios pendientes y fue posible generar scripts idempotentes. La migración nueva retira las tablas heredadas del mecanismo anterior.</p></article>
+      <article class="ok-card"><h3>Calidad automatizada</h3><p>232/232 pruebas pasan; ambos frontends construyen; no se detectaron vulnerabilidades conocidas en dependencias productivas NuGet/npm con las fuentes consultadas.</p></article>
+    </div>
+  </section>
+
+  <section id="bloqueantes">
+    <h2>4. Hallazgos bloqueantes</h2>
+
+    <article class="finding"><h3>B-05 · <span class="badge blocker">Bloqueante</span> La rotación concurrente no tiene garantía demostrada de cierre seguro</h3><dl>
+      <dt>Evidencia</dt><dd><code>EfIdentityRepository.cs:158-202</code> usa <code>RepeatableRead</code>, lectura seguida de actualización, sin bloqueo de fila explícito ni token de concurrencia. La prueba <code>JwtTokenServiceTests.cs:127-178</code> usa un repositorio en memoria y ejecuta refresh secuencial, no dos requests simultáneas sobre PostgreSQL.</dd>
+      <dt>Riesgo</dt><dd>Ante la carrera, PostgreSQL puede abortar una transacción por serialización; no hay manejo que la convierta en rechazo controlado y revocación familiar. El perdedor puede terminar en 500 y no queda demostrada la reacción requerida ante replay concurrente.</dd>
+      <dt>Requisito</dt><dd>Decisión JWT 2.2 y prueba mínima 4: un solo descendiente válido y revocación de la familia comprometida.</dd>
+      <dt>Cierre</dt><dd>Prueba de integración PostgreSQL real con barrera concurrente, resultado HTTP determinista, un único descendiente y estado final de toda la familia verificado.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-06 · <span class="badge blocker">Bloqueante</span> Cookie y rutas externas impiden completar el flujo real por ingress</h3><dl>
+      <dt>Evidencia</dt><dd><code>AuthController.cs:165-192</code> y <code>OrganizationSessionsController.cs:80-92</code> emiten <code>__Host-cobroup-refresh</code> y fallback con <code>Path=/api/v1/auth</code>. Los navegadores exigen <code>Path=/</code> para prefijo <code>__Host-</code>. Además, la solicitud externa es <code>/identity/api/v1/auth/*</code>, que tampoco coincide con el path del fallback. El frontend operativo configura contexto <code>/api/v1/session/me</code>, mientras el ingress solo enruta al backend bajo <code>/api/operations</code>.</dd>
+      <dt>Impacto</dt><dd>El navegador puede rechazar la cookie host y no enviará el fallback a refresh/logout/cambio de tenant; el login operativo falla al cargar contexto aunque haya recibido un access token.</dd>
+      <dt>Corrección</dt><dd>Alinear Path público y reescritura, usar correctamente <code>__Host-</code> o un nombre/path coherente, y hacer enrutable el endpoint de contexto operativo.</dd>
+      <dt>Verificación</dt><dd>Prueba con navegador real por cada host de dev/qa/prod: login → me → refresh → cambio de organización → logout, inspeccionando <code>Set-Cookie</code> y envío efectivo.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-11 · <span class="badge blocker">Bloqueante</span> La API acepta JWT firmados sin exigir todo el contrato de claims</h3><dl>
+      <dt>Evidencia</dt><dd><code>JwksValidationService.cs:64-75</code> valida firma, RS256, issuer, audience y tiempos, pero no exige explícitamente <code>typ=access</code>, <code>sub</code>, <code>jti</code>, <code>iat</code>, <code>organization_code</code> y <code>role</code>. Las políticas en <code>Backend/Program.cs:112-126</code> solo exigen autenticación y <code>organization_id</code> para usuario general. BackendAdmin repite el patrón en <code>Program.cs:46-60</code>.</dd>
+      <dt>Impacto</dt><dd>Un token correctamente firmado y destinado a <code>cobroup-api</code>, pero incompleto o de tipo incorrecto, puede superar autenticación/política de usuario. Emitir claims correctamente no equivale a validarlos estrictamente.</dd>
+      <dt>Corrección</dt><dd>Validación central de tipo y claims obligatorios, formato GUID, rol permitido, <code>kid</code> presente y coherencia temporal; rechazo antes de autorización.</dd>
+      <dt>Verificación</dt><dd>401 individual para cada claim ausente/malformado, <code>typ</code> incorrecto, <code>kid</code> ausente/desconocido, algoritmo, expiración y <code>nbf</code> inválidos.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-12 · <span class="badge blocker">Bloqueante</span> La protección CSRF está registrada, pero no se aplica</h3><dl>
+      <dt>Evidencia</dt><dd><code>BackendAdmin/Program.cs:62-69,211-214</code> registra antiforgery y middleware; ningún método de refresh, logout o cambio de organización declara validación antiforgery. Ambos <code>auth.service.ts:72-104,124-130</code> no solicitan <code>/antiforgery</code> ni envían <code>X-XSRF-TOKEN</code>.</dd>
+      <dt>Impacto</dt><dd>Las operaciones mutables basadas en cookie carecen del control explícitamente requerido. La mera presencia de <code>UseAntiforgery</code> no añade validación a endpoints sin metadata/filtro.</dd>
+      <dt>Corrección</dt><dd>Exigir antiforgery en refresh, logout y cambio de organización; obtener/renovar token en ambos frontends y enviar cabecera. Definir comportamiento tras expiración.</dd>
+      <dt>Verificación</dt><dd>403/400 sin token o con token incorrecto; éxito con par cookie/cabecera válido, incluyendo flujo por ingress.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-13 · <span class="badge blocker">Bloqueante</span> GitOps continúa configurando el mecanismo retirado y QA/producción no arrancan</h3><dl>
+      <dt>Evidencia</dt><dd><code>dev|qa|prod/admin-backend/secret.yaml:13</code> define <code>Jwt__Secret</code>; workflows usan <code>*_JWT_SECRET</code>. No se suministran <code>Jwt__PrivateKeyPem/Path</code>, <code>Jwt__KeyId</code> ni audiences. En QA/producción <code>RsaKeyService.cs:35-55</code> falla al construir. Backend exige <code>Storage:EvidencePath</code> fuera de Development (<code>Program.cs:53-56</code>) y ningún manifiesto lo define.</dd>
+      <dt>Impacto</dt><dd>Admin Backend y Backend operativo entran en CrashLoop antes de servir; el pipeline sustituye un secreto que el runtime nuevo ya no consume.</dd>
+      <dt>Corrección</dt><dd>Actualizar Secret/ConfigMap y workflows para material RSA por ambiente, <code>kid</code>, issuer, audiences, JWKS y almacenamiento; validar placeholders vacíos antes de copiar/aplicar.</dd>
+      <dt>Verificación</dt><dd>Despliegue desde namespace limpio en QA y producción, pods Ready, llave privada solo en Admin, JWKS alcanzable y Backend aceptando/rechazando tokens reales.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-09 · <span class="badge blocker">Bloqueante</span> Evidencias todavía se almacenan en disco local no compartido</h3><dl>
+      <dt>Evidencia</dt><dd><code>LocalFileStorageService.cs:15-16,84-98</code> escribe al filesystem local. Los manifests no montan PVC ni configuran object storage; producción declara dos réplicas. La autorización cross-route sí fue corregida.</dd>
+      <dt>Impacto</dt><dd>Una descarga puede caer en otra réplica y responder 404; restart/reprogramación puede perder archivos. Definir una ruta local no la convierte en almacenamiento durable compartido.</dd>
+      <dt>Corrección</dt><dd>Adaptador privado de object storage o volumen compartido compatible con réplicas, cifrado/retención, health operativo y política de compensación.</dd>
+      <dt>Verificación</dt><dd>Cargar en réplica A, descargar en B, reiniciar/reprogramar y verificar integridad SHA-256 y autorización de ruta.</dd>
+    </dl></article>
+  </section>
+
+  <section id="importantes">
+    <h2>5. Hallazgos importantes y menores</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Severidad</th><th>Hallazgo</th><th>Evidencia / acción de cierre</th></tr></thead>
+      <tbody>
+        <tr><td>I-02</td><td><span class="badge important">Importante</span></td><td>Matriz JWT incompleta.</td><td>Solo seis pruebas específicas de token; faltan controladores HTTP, claims negativos uno a uno, CSRF, cookie real, clave anterior, concurrencia PostgreSQL, cambio de tenant e ingress dev/qa/prod.</td></tr>
+        <tr><td>I-04</td><td><span class="badge important">Importante</span></td><td>Rate limit parcial.</td><td><code>Program.cs:70-80</code> limita 5/min por IP para escrituras, sin sujeto/token, bloqueo progresivo ni evento de seguridad. La IP además depende de proxies demasiado amplios.</td></tr>
+        <tr><td>I-06</td><td><span class="badge important">Importante</span></td><td>Zona horaria fija.</td><td><code>PaymentService.cs:338</code> y <code>EfAgendaRepository.cs:254-263</code> fuerzan <code>America/Bogota</code> y fallback UTC; debe provenir del tenant y probar cambios de fecha.</td></tr>
+        <tr><td>I-07</td><td><span class="badge important">Importante</span></td><td>Analítica histórica usa estado actual.</td><td><code>EfAgendaRepository.GetRoutePortfolioDataAsync</code> recibe fecha de corte, pero calcula con balances/estado vigente. Requiere eventos, snapshot o reconstrucción temporal.</td></tr>
+        <tr><td>I-08</td><td><span class="badge important">Importante</span></td><td>Confianza de forwarded headers demasiado amplia.</td><td>Ambos <code>Program.cs</code> confían por defecto en redes privadas completas <code>10/8</code>, <code>172.16/12</code>, <code>192.168/16</code>; el contrato exige exclusivamente CIDR/IP del ingress.</td></tr>
+        <tr><td>I-09</td><td><span class="badge important">Importante</span></td><td>Workflows de despliegue sin gate robusto.</td><td>Los scripts no validan que todos los placeholders se sustituyan, no renderizan/validan antes de copiar y el paso SSH no muestra <code>set -euo pipefail</code>.</td></tr>
+        <tr><td>I-10</td><td><span class="badge important">Importante</span></td><td>Imágenes mutables y credencial de pull frágil.</td><td>Producción usa <code>:latest</code>; dev/qa usan tags de ambiente con <code>Always</code>. Promover digest/SHA inmutable y secret de lectura administrado/rotado.</td></tr>
+        <tr><td>I-11</td><td><span class="badge important">Importante</span></td><td>Sin migración previa ni readiness de esquema.</td><td>Las probes solo comprueban conectividad. No existe Job idempotente previo al rollout ni comprobación de versión esperada de esquema.</td></tr>
+        <tr><td>I-13</td><td><span class="badge important">Importante</span></td><td>Operación remota + auditoría sin outbox/inbox.</td><td>La decisión de excepción remota y auditoría administrativa siguen sin garantía transaccional/reconciliación frente a timeout o reintento.</td></tr>
+        <tr><td>I-15</td><td><span class="badge important">Importante</span></td><td>Retiro del mecanismo anterior incompleto.</td><td>Backend conserva paquetes <code>OpenIddict.Validation.*</code>; <code>scripts/validate-phase4-integration.ps1</code> usa <code>/connect/*</code>; quedan páginas callback sin ruta. Retirar runtime/deuda activa, conservando solo migraciones e historial.</td></tr>
+        <tr><td>I-16</td><td><span class="badge important">Importante</span></td><td>Resolución JWKS bloqueante y frágil.</td><td><code>JwksValidationService.cs:107-139</code> hace HTTP síncrono durante validación. Ignora el booleano de <code>SemaphoreSlim.Wait</code> y siempre ejecuta <code>Release</code>, pudiendo producir <code>SemaphoreFullException</code>. No valida disponibilidad de una clave al iniciar.</td></tr>
+        <tr><td>I-17</td><td><span class="badge important">Importante</span></td><td>Revocación por claim no validado.</td><td><code>JwtTokenService.cs:175-187</code> lee <code>family_id</code> de un JWT no encontrado en DB sin validar firma. Un valor conocido podría usarse para revocar una familia ajena. Revocar solo por registro hash o token criptográficamente validado.</td></tr>
+        <tr><td>M-01</td><td><span class="badge minor">Menor</span></td><td>Se emiten dos cookies con el mismo refresh.</td><td><code>__Host-cobroup-refresh</code> y <code>cobroup-refresh</code> duplican la credencial y complejizan limpieza/alcance. Mantener una sola convención correcta.</td></tr>
+        <tr><td>M-02</td><td><span class="badge minor">Menor</span></td><td>API interna insegura de evidencia permanece.</td><td><code>PaymentService.AttachEvidenceAsync:291-328</code> aún acepta ruta/metadatos sin contenido real. Aunque ya no tiene endpoint HTTP, retirarla para evitar reutilización accidental.</td></tr>
+        <tr><td>M-03</td><td><span class="badge minor">Menor</span></td><td>Gate de build no está limpio.</td><td>BackendAdmin compila con MSB3277 por EF Core Relational 10.0.4 vs 10.0.11 (Npgsql 10.0.3 / EF 10.0.11). Alinear versiones y exigir cero warnings.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="trazabilidad">
+    <h2>6. Trazabilidad de los hallazgos del informe v2</h2>
+    <table>
+      <thead><tr><th>ID previo</th><th>Estado actual</th><th>Conclusión auditora</th></tr></thead>
+      <tbody>
+        <tr><td>B-01</td><td><span class="badge fixed">Cerrado en decisión</span></td><td>JWT exclusivo fue aprobado y prevalece sobre el contrato anterior. Restos técnicos se trasladan a I-15.</td></tr>
+        <tr><td>B-02</td><td><span class="badge fixed">Cerrado en runtime</span></td><td>Se eliminó HMAC compartido/fallback del código activo y se adoptó RS256/JWKS. GitOps incompatible queda en B-13.</td></tr>
+        <tr><td>B-03</td><td><span class="badge partial">Parcial</span></td><td>Issuer y audience ya se validan; faltan tipo/claims obligatorios estrictos (B-11).</td></tr>
+        <tr><td>B-04</td><td><span class="badge fixed">Cerrado</span></td><td>Refresh fuera de Web Storage y persistido como hash; cookie requiere corregir B-06/B-12.</td></tr>
+        <tr><td>B-05</td><td><span class="badge partial">Parcial</span></td><td>Familia y orden de cambio de tenant mejoraron; la concurrencia real sigue sin garantía demostrada.</td></tr>
+        <tr><td>B-06</td><td><span class="badge open">Abierto</span></td><td>Se añadió rewrite, pero cookie Path y contexto operativo mantienen roto el recorrido externo.</td></tr>
+        <tr><td>B-07</td><td><span class="badge fixed">Cerrado estático</span></td><td>Sin cambios pendientes y scripts idempotentes generados; Up/Down con datos y job continúan como evidencia pendiente.</td></tr>
+        <tr><td>B-08</td><td><span class="badge partial">Parcial</span></td><td>Endpoint falso retirado y contenido real verificado; método interno legado permanece (M-02).</td></tr>
+        <tr><td>B-09</td><td><span class="badge partial">Parcial</span></td><td>Autorización por ruta corregida; durabilidad multi-réplica sigue bloqueante.</td></tr>
+        <tr><td>B-10</td><td><span class="badge fixed">Cerrado</span></td><td>El plazo de excepción ahora exige igualdad exacta.</td></tr>
+        <tr><td>I-01 / I-03 / I-05 / I-12</td><td><span class="badge fixed">Cerrados</span></td><td>Tests frontend verdes, organización inválida rechazada, upload streaming/compensado y correlación propagada.</td></tr>
+        <tr><td>I-02 / I-04 / I-08 / I-14</td><td><span class="badge partial">Parciales</span></td><td>Hubo avance, pero faltan matriz JWT, controles por sujeto, proxies exactos y build Docker verificable.</td></tr>
+        <tr><td>I-06 / I-07 / I-09 / I-10 / I-11 / I-13</td><td><span class="badge open">Abiertos</span></td><td>Sin evidencia suficiente de corrección en el árbol actual.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="pruebas">
+    <h2>7. Evidencia reproducible ejecutada</h2>
+    <table>
+      <thead><tr><th>Control</th><th>Resultado</th><th>Lectura auditora</th></tr></thead>
+      <tbody>
+        <tr><td><code>dotnet build ... -c Release --no-incremental</code></td><td>Backend: 0 warnings/0 errores.<br>BackendAdmin: 1 warning/0 errores.</td><td>Compila; el gate “cero warnings” no se cumple en Admin.</td></tr>
+        <tr><td><code>dotnet test ... -c Release --no-build</code></td><td>Backend 106/106; Admin 67/67.</td><td>173 pruebas .NET pasan.</td></tr>
+        <tr><td><code>npm test</code></td><td>Operativo 28/28; Admin 31/31.</td><td>59 pruebas frontend pasan; total general 232/232.</td></tr>
+        <tr><td><code>npm run build</code></td><td>Ambos frontends construyen.</td><td>Sin error de empaquetado.</td></tr>
+        <tr><td><code>dotnet ef migrations has-pending-model-changes</code></td><td>Sin cambios pendientes en ambos backends.</td><td>Modelo y snapshot reconciliados.</td></tr>
+        <tr><td><code>dotnet ef migrations script --idempotent</code></td><td>Script generado para ambos contextos.</td><td>No sustituye Up/Down contra PostgreSQL limpio y con datos.</td></tr>
+        <tr><td><code>dotnet list package --vulnerable --include-transitive</code></td><td>Sin vulnerabilidades reportadas.</td><td>Según feeds NuGet consultados.</td></tr>
+        <tr><td><code>npm audit --omit=dev</code></td><td>0 vulnerabilidades productivas en ambos frontends.</td><td>No cubre dependencias de desarrollo.</td></tr>
+        <tr><td><code>kubectl kustomize dev|qa|prod</code></td><td>Los tres renderizan.</td><td>Validez sintáctica; el contenido sigue siendo incompatible con el runtime nuevo.</td></tr>
+        <tr><td><code>docker info</code></td><td>No disponible: engine de Docker Desktop ausente.</td><td>No se verificaron imágenes ni ejecución de contenedores.</td></tr>
+        <tr><td>Flujo HTTP real por ingress</td><td>No ejecutado.</td><td>Ausencia de cluster/endpoint de prueba; además el análisis estático anticipa fallos B-06/B-13.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="dictamen">
+    <h2>8. Dictamen y orden de remediación</h2>
+    <p><strong>Se mantiene el estado NO APROBADO.</strong> No se recomienda commit de cierre, merge ni despliegue como versión JWT conforme.</p>
+    <ol>
+      <li><span class="priority">P0:</span> corregir ruta/cookie externa y endpoint de contexto; aplicar CSRF completo en API y frontends.</li>
+      <li><span class="priority">P0:</span> adaptar GitOps a claves RSA, <code>kid</code>, audiences, JWKS y almacenamiento durable; eliminar el secreto HMAC retirado.</li>
+      <li><span class="priority">P0:</span> exigir tipo y todos los claims del contrato en ambos backends.</li>
+      <li><span class="priority">P0:</span> demostrar rotación/replay concurrente sobre PostgreSQL real con respuesta controlada.</li>
+      <li><span class="priority">P1:</span> cerrar JWKS, revocación no validada, rate limit, proxies, migración/readiness y cero warnings.</li>
+      <li><span class="priority">P1:</span> ejecutar la matriz end-to-end completa en dev/qa/prod y adjuntar evidencia reproducible.</li>
+    </ol>
+    <div class="callout danger"><strong>Criterio de reapertura:</strong> una nueva auditoría podrá considerar aprobación cuando los seis bloqueantes estén cerrados con pruebas negativas y de integración reales, no solo con compilación o unit tests.</div>
+  </section>
+
+  <footer>
+    Informe elaborado en rol auditor independiente. No se modificó código fuente, configuración, pruebas, migraciones ni manifiestos; únicamente se creó este reporte HTML. Los archivos anteriores permanecen como evidencia histórica y no fueron sobrescritos.
+  </footer>
+</main>
+</body>
+</html>

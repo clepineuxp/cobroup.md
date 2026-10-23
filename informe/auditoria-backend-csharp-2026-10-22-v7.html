@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COBROUP · Reauditoría C# JWT/PVC · 2026-10-22 v7</title>
+  <style>
+    :root{--bg:#07101d;--panel:#101b2e;--panel2:#17253c;--text:#e9eff9;--muted:#9fb0c8;--line:#2a3e5c;--red:#ff7078;--amber:#f6c95e;--green:#55d89f;--blue:#72b7ff;--violet:#c3a7ff}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#06101d,var(--bg) 55%,#14192c);color:var(--text);font:15px/1.55 Inter,Segoe UI,Arial,sans-serif}main{max-width:1200px;margin:auto;padding:34px 24px 72px}h1,h2,h3{line-height:1.22}h1{font-size:2rem;margin:.2rem 0 .45rem}h2{font-size:1.36rem;margin:0 0 1rem}h3{font-size:1.03rem;margin:0 0 .65rem}p{margin:.45rem 0 1rem}a{color:#9dcbff}code{background:#081322;border:1px solid #263d5d;border-radius:5px;padding:.08rem .32rem;color:#d9eaff}.eyebrow{text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:700;font-size:.76rem}.lead{color:var(--muted);max-width:1000px}.meta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.meta span,.badge{border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.78rem;font-weight:700}.badge.blocker{border-color:#913d48;color:#ff9ea5;background:#3a1720}.badge.important{border-color:#8b6a28;color:#ffda79;background:#352a12}.badge.minor{border-color:#3e6a96;color:#acd5ff;background:#142a40}.badge.fixed{border-color:#28745a;color:#7de5b8;background:#113329}.badge.partial{border-color:#6a5994;color:#d0beff;background:#251e3c}section{background:rgba(16,27,46,.95);border:1px solid var(--line);border-radius:14px;padding:23px;margin:18px 0;box-shadow:0 14px 38px rgba(0,0,0,.18)}.verdict{border-left:5px solid var(--red)}.verdict strong{color:#ff9ea5}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:16px 0}.card{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:15px}.card b{display:block;font-size:1.52rem}.card small{color:var(--muted)}table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:10px 9px}th{color:#bfd5ef;background:#0c1829;position:sticky;top:0}.scroll{overflow:auto;border:1px solid var(--line);border-radius:9px}article.finding{background:#0d192a;border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:17px;margin:12px 0}article.finding.block{border-left-color:var(--red)}article.finding.minor{border-left-color:var(--blue)}dl{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;margin:0}dt{color:var(--muted);font-weight:700}dd{margin:0}ul,ol{padding-left:1.35rem}li{margin:.35rem 0}.ok{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}.muted{color:var(--muted)}.callout{border:1px solid #7b4853;background:#2b151d;border-radius:10px;padding:14px;margin:13px 0}.good{border-color:#2e7058;background:#102c23}.decision{border-color:#63518e;background:#211b36}.mono{font-family:Cascadia Code,Consolas,monospace;font-size:.81rem;white-space:pre-wrap;background:#081322;border:1px solid #263d5d;border-radius:8px;padding:12px;overflow:auto}footer{color:var(--muted);font-size:.83rem;margin-top:25px}@media(max-width:700px){main{padding:20px 12px}section{padding:16px}dl{grid-template-columns:1fr}th,td{min-width:145px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">COBROUP · Auditoría técnica de seguimiento · Solo lectura</div>
+  <h1>Reauditoría Backend C#, JWT efímero y almacenamiento PVC — v7</h1>
+  <p class="lead">Corte: 22 de octubre de 2026, 15:35 COT. Revisión de los últimos commits y del trabajo local sin commit, contrastada con <code>FRAMEWORK_DESARROLLO_CSHARP.md 2.0</code>, la decisión JWT vigente, el backlog productivo y la auditoría v6.</p>
+  <div class="meta"><span>JWT propio RS256</span><span>Sin OIDC/OpenIddict/PKCE</span><span>PEM diferido a backlog</span><span>Sin modificar repositorios</span><span>Sin commit</span></div>
+
+  <section class="verdict">
+    <h2>Dictamen ejecutivo: <strong>NO APROBADO</strong></h2>
+    <p>La implementación mejora de forma verificable: el flujo activo ya no depende de PEM, usa RSA 2048/RS256, publica JWKS público, conserva el access token en memoria y bloquea actualmente los despliegues de QA y producción. Sin embargo, no cumple todavía el contrato adoptado. Existen tres bloqueantes: el almacenamiento durable continúa incompleto; el código permite habilitar RSA efímero fuera de <code>Development</code> mediante un flag de excepción; y el rollout de desarrollo puede mantener dos emisores efímeros simultáneos con claves incompatibles.</p>
+    <div class="cards">
+      <div class="card"><b class="bad">3</b><small>hallazgos bloqueantes</small></div>
+      <div class="card"><b class="warn">19</b><small>hallazgos importantes</small></div>
+      <div class="card"><b>6</b><small>menores / limitaciones</small></div>
+      <div class="card"><b class="ok">330/330</b><small>pruebas de aplicación</small></div>
+      <div class="card"><b class="ok">9/9</b><small>pruebas GitOps directas</small></div>
+      <div class="card"><b class="ok">0</b><small>vulnerabilidades reportadas</small></div>
+    </div>
+    <div class="callout"><b>Alcance del dictamen:</b> desarrollo tampoco queda aprobado mientras persistan B-09, B-18 y B-19. QA y producción permanecen correctamente detenidos por el gate actual y, además, no pueden aprobarse hasta implementar el proveedor persistente definido en <code>BACKLOG_SEGURIDAD_PRODUCTIVA.md</code>.</div>
+    <div class="callout"><b>Independencia:</b> se actuó exclusivamente como auditor y no se corrigió código, configuración ni documentación. Conforme al §1.1.14 del framework, este documento se denomina auditoría técnica de seguimiento; no se afirma independencia formal porque no existe evidencia de separación entre agente implementador y agente auditor.</div>
+  </section>
+
+  <section>
+    <h2>1. Decisión arquitectónica aplicada como norma</h2>
+    <div class="callout decision">
+      <ul>
+        <li><b>Autenticación vigente:</b> JWT propio; OIDC, OpenIddict, Authorization Code y PKCE están fuera del diseño actual.</li>
+        <li><b>Firma obligatoria:</b> access y refresh JWT con RS256 y RSA de al menos 2048 bits.</li>
+        <li><b>Fase actual:</b> <code>EphemeralRsaSigningKeyProvider</code> solo en <code>Development</code>, habilitado explícitamente y con una sola instancia emisora.</li>
+        <li><b>PEM:</b> no se usa ni se exige en el flujo activo. Su custodia —o un proveedor equivalente como PFX/KMS— queda diferida a backlog obligatorio.</li>
+        <li><b>QA/producción/HA:</b> bloqueados hasta implementar persistencia, rotación, solapamiento, recuperación y compatibilidad multirréplica.</li>
+        <li><b>Archivos:</b> evidencias e imágenes en PVC mediante un puerto sustituible por S3 a futuro.</li>
+      </ul>
+    </div>
+    <p>Por tanto, B-13 de la auditoría anterior se evalúa como <b>cerrado por redefinición formal de alcance</b>. No se declara que la validación PEM haya sido corregida: simplemente dejó de pertenecer al flujo actual y pasó a un gate futuro de producción.</p>
+  </section>
+
+  <section>
+    <h2>2. Estado Git y superficie revisada</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Repositorio</th><th>Rama / HEAD</th><th>Estado auditado</th></tr></thead>
+      <tbody>
+        <tr><td>MS.Cobroup.Backend</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>f692554</code></td><td>6 modificados + 4 nuevos sin commit: almacenamiento filesystem/PVC, contrato, ADR y pruebas.</td></tr>
+        <tr><td>MS.Cobroup.BackendAdmin</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>87291bc</code></td><td>20 modificados + 6 nuevos sin commit: proveedor JWT efímero, factoría, sesión, pruebas y documentación.</td></tr>
+        <tr><td>MF.cobroup-frontend</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>75d88f5</code></td><td>Limpio.</td></tr>
+        <tr><td>MF.cobroup-frontend-admin</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>dad9191</code></td><td>Limpio.</td></tr>
+        <tr><td>cobroup.environments</td><td><code>feature/diferir-pem-rsa-efimero</code><br><code>54a856e</code></td><td>13 modificados + 2 rutas nuevas sin commit: workflows, manifiestos, renderer, pruebas y bitácora.</td></tr>
+        <tr><td>cobroup.md</td><td>Directorio sin repositorio Git</td><td>Marco 2.0, decisiones, backlog e informes. El informe no puede quedar trazado por commit en este directorio.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted">Últimos commits relevantes examinados en BackendAdmin: <code>87291bc</code>, <code>b20f28d</code>, <code>724066c</code>, <code>536eb94</code> y <code>c9d9556</code>. En environments: <code>54a856e</code>, <code>fe2f6d2</code>, <code>1e7b601</code>, <code>b47d0bb</code> y <code>e7c66d0</code>. La conclusión incluye los cambios locales posteriores a esos commits.</p>
+  </section>
+
+  <section>
+    <h2>3. Controles realizados correctamente</h2>
+    <div class="callout good"><ul>
+      <li><b>Proveedor criptográfico:</b> genera RSA 2048 en memoria, usa exclusivamente RS256, asigna un <code>kid</code> aleatorio por proceso, se registra como singleton y libera el objeto RSA.</li>
+      <li><b>JWKS:</b> se publican únicamente <code>kty</code>, <code>use</code>, <code>alg</code>, <code>kid</code>, <code>n</code> y <code>e</code>; las pruebas comprueban que no existan parámetros privados.</li>
+      <li><b>Sin secretos PEM activos:</b> no se encontraron claves privadas versionadas ni placeholders PEM en los manifiestos o workflows activos. Los secretos de BackendAdmin conservan únicamente la conexión de identidad.</li>
+      <li><b>Fail-fast parcial:</b> falta de proveedor, proveedor desconocido, proveedor persistente aún no implementado y RSA efímero sin autorización explícita impiden el arranque.</li>
+      <li><b>Gate productivo:</b> la ejecución normal del renderer para QA/producción termina con código 2 antes de SSH/SCP. Las pruebas reproducen ambos bloqueos.</li>
+      <li><b>Cookies y sesión:</b> refresh en cookie <code>__Host-*</code> HttpOnly/Secure/SameSite, antiforgery en mutaciones y access token únicamente en memoria del frontend.</li>
+      <li><b>Cambio de organización:</b> la familia anterior se revoca y la nueva sesión se crea dentro de la transacción principal; la prueba de concurrencia mantiene un único ganador.</li>
+      <li><b>Almacenamiento:</b> existe puerto, adaptador filesystem, streaming, SHA-256, magic bytes, límite, claves lógicas relativas, escritura temporal y PVC por ambiente; <code>S3</code> falla explícitamente como proveedor aún no implementado.</li>
+      <li><b>Calidad reproducida:</b> 330 pruebas de aplicación y 9 de GitOps pasan; cuatro builds terminan correctamente; no hay cambios EF pendientes ni vulnerabilidades NuGet/npm reportadas.</li>
+    </ul></div>
+  </section>
+
+  <section>
+    <h2>4. Hallazgos bloqueantes</h2>
+    <article class="finding block">
+      <h3>B-09 · <span class="badge blocker">Parcial / abierto</span> El almacenamiento PVC aún no satisface integridad y evidencia operativa</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>FileSystemObjectStorage.cs:184-218</code> valida texto y prefijo, pero no detecta ni rechaza symlinks/reparse points. <code>File.Move(..., overwrite: true)</code> publica sobre un destino existente y <code>DeleteEvidenceAsync:169-178</code> silencia cualquier error de borrado.</dd>
+        <dt>Cobertura</dt><dd>Las pruebas no demuestran escape por enlace, colisión/publicación concurrente sobre RWX, fallo del move, sustitución DI por adaptador alterno ni integridad posterior a lectura. La validación por magic bytes solo identifica cabecera; no valida que la imagen completa sea decodificable.</dd>
+        <dt>Contrato</dt><dd>El puerto continúa especializado en evidencia y <code>paymentId</code>; no demuestra todavía versatilidad para “todas las imágenes y archivos”. El ADR y el código tampoco coinciden plenamente en el formato de la clave lógica.</dd>
+        <dt>Operación</dt><dd><code>kubectl kustomize</code> valida estructura, pero no existe prueba en cluster real de StorageClass, permisos, persistencia tras reinicio, lectura cruzada o RWX entre réplicas. Docker Engine tampoco estuvo disponible.</dd>
+        <dt>Exigencia</dt><dd>Defensa contra enlaces, semántica explícita ante colisión/borrado, pruebas de concurrencia y sustituibilidad, y evidencia real de PVC. Hasta entonces no aprobar cargas productivas.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-18 · <span class="badge blocker">Nuevo</span> Existe un bypass para habilitar firma efímera fuera de Development</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>JwtSigningKeyProviderFactory.cs:36-49</code> no rechaza incondicionalmente <code>EphemeralRsa</code> fuera de desarrollo. Si <code>Jwt:AcknowledgeNonProductionEphemeralRiskOutsideDevelopment=true</code>, crea el proveedor y continúa.</dd>
+        <dt>Contradicción</dt><dd><code>DECISION_AUTENTICACION_JWT.md</code>, el backlog, el ADR y los mensajes del renderer declaran rechazo estricto en Staging/QA/Production. Un “acknowledgement” configurable convierte el control no negociable en una excepción operativa.</dd>
+        <dt>Agravante</dt><dd><code>Program.cs:114</code> llama la factoría sin <code>ILogger</code>; si se activa el bypass, ni siquiera se emite el <code>LogCritical</code> previsto. Las nueve pruebas no cubren la bandera de excepción.</dd>
+        <dt>Impacto</dt><dd>Una variable de entorno puede levantar un emisor no persistente en un ambiente prohibido, invalidar sesiones al reinicio y fragmentar tokens entre réplicas.</dd>
+        <dt>Exigencia</dt><dd>Eliminar la bandera y lanzar siempre excepción fuera de <code>Development</code>. Agregar pruebas negativas para Production, Staging y QA aun cuando cualquier flag de aceptación esté presente.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-19 · <span class="badge blocker">Nuevo</span> El rollout de desarrollo crea dos emisores efímeros incompatibles</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>dev/admin-backend/admin-backend-manifest.yaml:32-37</code> configura <code>replicas: 1</code>, pero usa <code>RollingUpdate</code> con <code>maxSurge: 1</code> y <code>maxUnavailable: 0</code>.</dd>
+        <dt>Prueba interna</dt><dd><code>EphemeralRsaSigningKeyProviderTests.cs:228-272</code> demuestra que dos instancias generan claves/<code>kid</code> diferentes y que un token emitido por una es rechazado por la otra.</dd>
+        <dt>Impacto</dt><dd>Durante cada despliegue pueden coexistir el pod anterior y el nuevo detrás del mismo Service. Login, refresh y validación se vuelven intermitentes según el pod seleccionado, aunque el estado estable tenga una sola réplica.</dd>
+        <dt>Exigencia</dt><dd>Mientras la clave sea efímera, usar estrategia <code>Recreate</code> o un rollout que impida superposición real; validar la estrategia en el renderer y agregar una prueba negativa. La indisponibilidad breve debe quedar aceptada y documentada.</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section>
+    <h2>5. Hallazgos importantes</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>ID</th><th>Evidencia</th><th>Incumplimiento / acción requerida</th></tr></thead>
+      <tbody>
+        <tr><td>I-02</td><td>TestServer y kustomize local.</td><td>Falta E2E por ingress en cada ambiente para login, me, refresh, cambio de organización, autorización, logout y rewrite <code>/identity</code>.</td></tr>
+        <tr><td>I-04</td><td><code>BackendAdmin Program.cs:95-106</code></td><td>Rate limit fijo solo por IP; faltan sujeto, escalamiento/bloqueo progresivo, almacenamiento distribuido y auditoría de abuso.</td></tr>
+        <tr><td>I-06</td><td>Servicios de pagos/agenda.</td><td>Zona horaria fija <code>America/Bogota</code>; no se obtiene una zona IANA válida por organización.</td></tr>
+        <tr><td>I-07</td><td>Consulta analítica por fecha.</td><td>No se reconstruye el estado histórico real al corte solicitado.</td></tr>
+        <tr><td>I-08</td><td>Ambos <code>Program.cs</code>; sin override GitOps.</td><td>Se confía por defecto en redes privadas completas, no solo en proxies/CIDR concretos del ingress.</td></tr>
+        <tr><td>I-10</td><td>Producción usa imágenes <code>:latest</code>; dev/QA también usan tags mutables.</td><td>Promover por digest/SHA inmutable y conservar trazabilidad commit→imagen→despliegue.</td></tr>
+        <tr><td>I-11</td><td>Sin Job de migración ni gate de versión de esquema.</td><td>Un rollout puede arrancar contra un esquema incompatible.</td></tr>
+        <tr><td>I-13</td><td>Operaciones remotas y auditoría local sin outbox/inbox.</td><td>Faltan consistencia eventual explícita, idempotencia y reconciliación.</td></tr>
+        <tr><td>I-16</td><td><code>JwksValidationService</code> y reinicio del emisor.</td><td>La primera petición con <code>kid</code> nuevo puede fallar antes del refresh asíncrono; faltan prueba cross-service, edad máxima de last-known-good, métricas y procedimiento operativo.</td></tr>
+        <tr><td>I-19</td><td><code>logout()</code> retorna <code>remoteRevoked</code> en ambos frontends.</td><td>El layout continúa sin presentar al usuario la diferencia entre cierre local y revocación remota fallida.</td></tr>
+        <tr><td>I-20</td><td>Cleanup de fixtures y borrado filesystem capturan todas las excepciones.</td><td>La suite y el servicio pueden reportar éxito dejando datos/archivos residuales. Capturar casos concretos o hacer visible la falla.</td></tr>
+        <tr><td>I-21</td><td>Suite HTTP ampliada pero incompleta.</td><td>Faltan cookie expirada/revocada/de otro sujeto, membresía desactivada durante transición, rollback parcial, CORS real y comportamiento cross-service ante reinicio.</td></tr>
+        <tr><td>I-22</td><td><code>SecurityAuditRecord</code> no cubre todo el ciclo.</td><td>Persistir auditoría de login, refresh, logout, replay, cambio de organización y bypass rechazado con actor, tenant, resultado, IP confiable y correlation ID.</td></tr>
+        <tr><td>I-24</td><td><code>AGENTS.md</code> conserva afirmaciones históricas de OpenIddict/PKCE y totales no vigentes.</td><td>La bitácora append-only necesita una rectificación inequívoca que identifique lo histórico como retirado y refleje evidencia real.</td></tr>
+        <tr><td>I-25</td><td>La membresía destino se lee antes de la transacción de cambio.</td><td>Puede desactivarse entre validación y commit. Revalidar/bloquear dentro de la misma transacción.</td></tr>
+        <tr><td>I-26</td><td>Actions por tags y dependencias Python sin hashes.</td><td>Fijar actions por SHA y dependencias por hash, o documentar una excepción de supply chain aprobada.</td></tr>
+        <tr><td>I-27</td><td><code>render_manifests.py:38-55,246-254</code></td><td><code>allowed_signing_providers</code> se declara pero nunca se usa. En QA/prod, cualquier texto distinto de <code>EphemeralRsa</code> se anuncia como verificado en modo render-only. Validar exactamente <code>PersistentRsa</code>.</td></tr>
+        <tr><td>I-28</td><td><code>appsettings.json:14-26</code>, archivos <code>auth-callback.page.ts</code> y <code>RsaKeyService.cs</code>.</td><td>Quedan configuración OIDC no consumida, páginas callback huérfanas y un servicio PEM legado en el assembly/pruebas. Retirar o aislar para que la base represente sin ambigüedad la decisión JWT.</td></tr>
+        <tr><td>I-29</td><td>Los tres <code>deploy-*.yml</code> llaman solo al renderer.</td><td>La suite negativa de 9 casos no se ejecuta como etapa CI antes de SSH/SCP. Agregarla como gate explícito; hoy el resultado 9/9 es evidencia local, no evidencia del pipeline.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>6. Hallazgos menores y limitaciones</h2>
+    <article class="finding minor"><h3>M-05 · <span class="badge minor">Menor</span> CORS mezcla ambientes</h3><p>La allowlist de respaldo de BackendAdmin incluye localhost, dev, QA y producción. Los manifiestos no fijan <code>Cors:AllowedOrigins</code> por ambiente.</p></article>
+    <article class="finding minor"><h3>M-06 · <span class="badge minor">Menor</span> Normalización de fin de línea pendiente</h3><p><code>git diff --check</code> no reportó whitespace fatal, pero Git advierte conversiones LF→CRLF en numerosos archivos modificados. Conviene normalizar mediante <code>.gitattributes</code>.</p></article>
+    <article class="finding minor"><h3>M-07 · <span class="badge minor">Limitación</span> Contenedores no ejecutados</h3><p>Docker Engine no está disponible. No se verificaron imágenes, usuario no-root, permisos del mount, probes ni arranque real.</p></article>
+    <article class="finding minor"><h3>M-08 · <span class="badge minor">Menor</span> Bytecode Python sin ignorar</h3><p><code>scripts/__pycache__</code> aparece como no rastreado dentro de la ruta nueva <code>scripts/</code>. Debe ignorarse para evitar inclusión accidental.</p></article>
+    <article class="finding minor"><h3>M-09 · <span class="badge minor">Menor</span> La suite GitOps depende del directorio de ejecución</h3><p><code>python -m unittest -v scripts.test_render_manifests</code> falla por <code>ModuleNotFoundError: render_manifests</code>; <code>python scripts/test_render_manifests.py -v</code> sí aprueba. Hacer imports robustos o documentar el único comando soportado.</p></article>
+    <article class="finding minor"><h3>M-10 · <span class="badge minor">Menor</span> Referencia ADR errónea</h3><p><code>JwtSigningKeyProviderFactory.cs:68</code> remite a ADR-0005 para proveedor persistente, pero ADR-0005 trata configuración organizacional; la decisión nueva está en ADR-0006.</p></article>
+  </section>
+
+  <section>
+    <h2>7. Verificaciones ejecutadas</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Verificación</th><th>Resultado</th><th>Conclusión auditora</th></tr></thead>
+      <tbody>
+        <tr><td>Backend <code>dotnet test -c Release --no-restore</code></td><td class="ok">81 Core + 76 Infrastructure = 157/157</td><td>Compila y aprueba.</td></tr>
+        <tr><td>BackendAdmin <code>dotnet test -c Release --no-restore</code></td><td class="ok">51 Core + 51 Infrastructure = 102/102</td><td>Compila y aprueba, incluidas 9 pruebas del proveedor efímero.</td></tr>
+        <tr><td>Frontend operativo</td><td class="ok">34/34 + build productivo</td><td>Aprobado.</td></tr>
+        <tr><td>Frontend administrativo</td><td class="ok">37/37 + build productivo</td><td>Aprobado.</td></tr>
+        <tr><td>Suite GitOps directa</td><td class="ok">9/9; kustomize dev y prod render-only</td><td>Aprueba y reproduce gates QA/prod; no cubre B-18, B-19 ni provider desconocido.</td></tr>
+        <tr><td>Suite GitOps como módulo</td><td class="warn">Falla importación</td><td>Problema menor de invocación/portabilidad.</td></tr>
+        <tr><td>NuGet vulnerable, transitivo incluido</td><td class="ok">0 en ambas soluciones</td><td>Sin vulnerabilidades reportadas por fuentes configuradas.</td></tr>
+        <tr><td><code>npm audit --omit=dev --audit-level=moderate</code></td><td class="ok">0 en ambos frontends</td><td>Sin vulnerabilidades runtime reportadas.</td></tr>
+        <tr><td>EF <code>has-pending-model-changes</code></td><td class="ok">Ninguno en ambas soluciones</td><td>Modelos alineados con migraciones.</td></tr>
+        <tr><td>Búsqueda de claves/PEM</td><td class="ok">Sin clave privada activa o versionada</td><td>Solo código legado, pruebas y referencias históricas/documentales.</td></tr>
+        <tr><td><code>git diff --check</code></td><td class="warn">Sin whitespace fatal; avisos LF→CRLF</td><td>No bloquea por sí solo, requiere normalización.</td></tr>
+        <tr><td>Docker/cluster/GitHub Actions reales</td><td class="warn">No disponibles</td><td>No ejecutado; no se infiere aprobación operativa.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>8. Trazabilidad frente a v6</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Hallazgo / decisión</th><th>Estado v7</th><th>Determinación</th></tr></thead>
+      <tbody>
+        <tr><td>B-09 almacenamiento PVC/S3</td><td><span class="badge blocker">Parcial</span></td><td>Hay avance sustancial, pero faltan controles, cobertura y prueba real de cluster.</td></tr>
+        <tr><td>B-13 PEM inválido</td><td><span class="badge fixed">Cerrado por alcance</span></td><td>PEM se retiró del flujo actual y pasó a backlog productivo. No equivale a validar PEM.</td></tr>
+        <tr><td>B-17 cambio de organización</td><td><span class="badge fixed">Núcleo cerrado</span></td><td>Cookie, antiforgery y transición principal atómica demostradas; permanecen I-22 e I-25.</td></tr>
+        <tr><td>B-18 bypass efímero</td><td><span class="badge blocker">Nuevo</span></td><td>Contradice el rechazo estricto fuera de Development.</td></tr>
+        <tr><td>B-19 rollout concurrente</td><td><span class="badge blocker">Nuevo</span></td><td>La propia prueba de dos instancias demuestra la incompatibilidad del manifiesto de dev.</td></tr>
+        <tr><td>Gate QA/prod</td><td><span class="badge fixed">Implementado</span></td><td>Detiene transferencia hoy; no sustituye la implementación futura del proveedor persistente.</td></tr>
+        <tr><td>OIDC/OpenIddict/PKCE</td><td><span class="badge partial">Runtime retirado</span></td><td>No hay endpoints OIDC activos, pero quedan residuos configuracionales, páginas huérfanas e historia ambigua.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>9. Orden de remediación exigido</h2>
+    <ol>
+      <li>Eliminar B-18: prohibición incondicional de <code>EphemeralRsa</code> fuera de Development, sin flags de excepción.</li>
+      <li>Eliminar B-19: impedir cualquier solapamiento de pods de BackendAdmin mientras la firma sea efímera y probar el manifiesto.</li>
+      <li>Completar B-09: seguridad de rutas/enlaces, semántica de errores y colisiones, generalidad del puerto, pruebas de sustitución y evidencia PVC real.</li>
+      <li>Corregir el renderer para aceptar exclusivamente los proveedores declarados y ejecutar sus 9 pruebas en CI antes de toda transferencia.</li>
+      <li>Retirar residuos OIDC y aislar/eliminar <code>RsaKeyService</code> legado para que código, pruebas y configuración representen una única arquitectura.</li>
+      <li>Completar auditoría persistente, revalidación transaccional de membresía y matriz negativa HTTP/cross-service.</li>
+      <li>Mantener QA/producción bloqueados hasta cerrar SEC-01…SEC-10 del backlog productivo.</li>
+      <li>Atender controles heredados: ingress E2E, rate limit, proxies/CORS, migraciones, imágenes inmutables, zona horaria, histórico, outbox y supply chain.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>10. Criterio de salida de la siguiente auditoría</h2>
+    <p>Para reducir el dictamen a cero bloqueantes deben presentarse, como mínimo: prueba negativa del bypass aun con flag configurado; manifiesto de desarrollo sin pods emisores concurrentes; prueba automatizada del renderer para esa estrategia; cierre técnico y operativo de B-09; 330 pruebas de aplicación y suite GitOps en verde desde CI; y evidencia de que no se modificó el alcance normativo JWT sin una nueva decisión formal.</p>
+    <p>La futura habilitación de QA/producción requiere, adicionalmente, un proveedor persistente real, rotación con solapamiento, JWKS multiclave, recuperación, observabilidad, multirréplica y reauditoría independiente. Hasta entonces, el gate que detiene esos ambientes debe conservarse.</p>
+  </section>
+
+  <section class="callout decision">
+    <h2>11. Adenda posterior al corte: aceptación temporal del acknowledge</h2>
+    <p>Después del corte original del informe, el propietario del producto actualizó la decisión de autenticación. Se permite temporalmente <code>Jwt:AcknowledgeNonProductionEphemeralRiskOutsideDevelopment=true</code> en Staging, QA y otros ambientes estrictamente no productivos.</p>
+    <ul>
+      <li>Los JWT continúan firmados con RSA efímero/RS256. No se autorizan tokens sin firma, <code>alg=none</code> ni HMAC compartido.</li>
+      <li>El ambiente reconocido debe mantener una sola réplica de BackendAdmin y una estrategia de despliegue sin solapamiento de pods.</li>
+      <li>Cada reinicio se acepta como posible invalidación global de los JWT vigentes. Este modo no demuestra rotación persistente ni alta disponibilidad.</li>
+      <li>Producción continúa prohibida hasta implementar el proveedor persistente definido en el backlog.</li>
+    </ul>
+    <p><b>Efecto auditor sobre B-18:</b> el uso del acknowledge deja de ser una no conformidad para Staging/QA bajo todas las condiciones anteriores. B-18 permanece bloqueante, con alcance reducido a producción, porque <code>JwtSigningKeyProviderFactory.cs:36-49</code> no distingue Production y actualmente acepta allí la misma bandera. B-19 permanece abierto: cualquier rollout con dos pods efímeros simultáneos contradice la decisión revisada.</p>
+    <p><b>Documentos actualizados:</b> <code>DECISION_AUTENTICACION_JWT.md</code>, <code>BACKLOG_SEGURIDAD_PRODUCTIVA.md</code>, <code>COBROUP.md</code> versión 1.9.1 y ADR-0006. Esta adenda no constituye una reejecución de las pruebas ni aprobación del código.</p>
+  </section>
+
+  <footer>Informe basado en la evidencia local disponible al corte. Durante la auditoría original no se modificaron artefactos funcionales. Por solicitud posterior expresa del propietario se actualizó únicamente la decisión documental de autenticación, su backlog, el documento maestro, ADR-0006 y esta adenda. No se modificó código, pruebas o manifiestos ni se creó commit, push, merge, rebase, tag o PR.</footer>
+</main>
+</body>
+</html>

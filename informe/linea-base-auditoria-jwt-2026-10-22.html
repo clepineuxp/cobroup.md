@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Línea base de auditoría JWT · COBROUP · 2026-10-22</title>
+  <style>
+    :root { --ink:#172033; --muted:#5f6b7a; --navy:#102a43; --blue:#175cd3; --line:#d9e2ec; --surface:#fff; --bg:#f4f7fb; --green:#137333; --green-bg:#e9f7ee; --amber:#9a6700; --amber-bg:#fff4ce; --red:#b42318; --red-bg:#feeceb; }
+    * { box-sizing: border-box; }
+    body { margin:0; color:var(--ink); background:var(--bg); font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    header { padding:3rem 1.25rem 2.4rem; color:#fff; background:linear-gradient(135deg,#102a43,#174d82); }
+    header div, main, footer { width:min(1120px,100%); margin:auto; }
+    h1 { margin:.25rem 0 .7rem; font-size:clamp(2rem,5vw,3.3rem); line-height:1.08; }
+    h2 { margin:0 0 .85rem; color:var(--navy); font-size:1.45rem; }
+    h3 { margin:1.2rem 0 .45rem; color:var(--navy); }
+    p { margin:.5rem 0 .9rem; }
+    a { color:var(--blue); }
+    code { padding:.1rem .32rem; border-radius:5px; background:#eef2f6; color:#17324d; }
+    .eyebrow { margin:0; font-weight:800; letter-spacing:.1em; text-transform:uppercase; opacity:.82; }
+    .meta { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.25rem; }
+    .meta span { padding:.3rem .65rem; border:1px solid #ffffff55; border-radius:999px; background:#ffffff12; font-size:.82rem; }
+    main { padding:1.25rem; }
+    section { margin-bottom:1rem; padding:1.2rem; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:0 10px 26px #102a4310; }
+    .decision { border-left:5px solid var(--amber); background:var(--amber-bg); }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+    .card { padding:1rem; border:1px solid var(--line); border-radius:12px; background:#fbfdff; }
+    .card strong { display:block; margin-bottom:.35rem; color:var(--navy); }
+    .tag { display:inline-block; padding:.2rem .55rem; border-radius:999px; font-size:.73rem; font-weight:800; }
+    .ok { color:var(--green); background:var(--green-bg); }
+    .open { color:var(--red); background:var(--red-bg); }
+    .pending { color:var(--amber); background:var(--amber-bg); }
+    .table { overflow-x:auto; border:1px solid var(--line); border-radius:12px; }
+    table { width:100%; min-width:720px; border-collapse:collapse; }
+    th,td { padding:.7rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:var(--navy); background:#eef4fa; font-size:.78rem; text-transform:uppercase; }
+    tr:last-child td { border-bottom:0; }
+    ul,ol { margin:.55rem 0; padding-left:1.25rem; }
+    li + li { margin-top:.3rem; }
+    footer { padding:0 1.25rem 2.5rem; color:var(--muted); font-size:.85rem; }
+    @media (max-width:760px) { .grid { grid-template-columns:1fr; } header { padding-top:2rem; } }
+    @media print { body { background:#fff; font-size:10pt; } header { background:var(--navy)!important; print-color-adjust:exact; } section { box-shadow:none; break-inside:avoid; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">COBROUP · Adenda de gobierno y control</p>
+      <h1>Línea base de auditoría JWT</h1>
+      <p>Formalización del contrato que regirá las próximas revisiones de identidad. Este documento no aprueba la implementación sin commit.</p>
+      <div class="meta"><span>Fecha: 22 de octubre de 2026</span><span>Maestro: COBROUP.md 1.7.0</span><span>Alcance: planeación y criterios de auditoría</span><span>Resultado: implementación pendiente</span></div>
+    </div>
+  </header>
+  <main>
+    <section class="decision">
+      <h2>Dictamen</h2>
+      <p><strong>La decisión de arquitectura queda formalizada:</strong> COBROUP utilizará exclusivamente access y refresh tokens JWT. BackendAdmin será el único emisor y custodio de la clave privada; el backend operativo será únicamente validador mediante claves públicas. El mecanismo anterior queda retirado de la planeación vigente.</p>
+      <p><strong>La decisión se acepta; el código actual no.</strong> La fase 2 queda reabierta y bloquea la aprobación productiva hasta que exista evidencia reproducible de cumplimiento.</p>
+    </section>
+
+    <section>
+      <h2>1. Resultado de la auditoría documental</h2>
+      <div class="grid">
+        <div class="card"><strong>Decisión arquitectónica</strong><span class="tag ok">FORMALIZADA</span><p>Existe contrato único, fechado, con autoridad, alcance y prevalencia.</p></div>
+        <div class="card"><strong>Coherencia de planeación</strong><span class="tag ok">ACTUALIZADA</span><p>Maestro, avance, guías, ADR, contextos, contratos y roadmaps apuntan al mismo modelo.</p></div>
+        <div class="card"><strong>Conformidad de código</strong><span class="tag open">NO APROBADA</span><p>Los hallazgos técnicos continúan abiertos hasta corrección y nueva ejecución de pruebas.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Controles obligatorios</h2>
+      <div class="table">
+        <table>
+          <thead><tr><th>Área</th><th>Contrato auditable</th><th>Incumplimiento bloqueante</th></tr></thead>
+          <tbody>
+            <tr><td>Firma</td><td><code>RS256</code> o <code>ES256</code>; clave privada solo en BackendAdmin; publicación JWKS con <code>kid</code>.</td><td>HMAC compartido, clave conocida, algoritmo alternativo o fallback.</td></tr>
+            <tr><td>Access JWT</td><td>Máximo 15 minutos; <code>iss</code>, <code>aud</code>, <code>sub</code>, <code>exp</code>, <code>iat</code>, <code>nbf</code>, <code>jti</code>, <code>typ=access</code>, organización y rol.</td><td>Issuer/audience/tipo/firma/vigencia no validados de forma estricta.</td></tr>
+            <tr><td>Refresh JWT</td><td>Máximo 30 días, audiencia separada, uso único, rotación atómica, hash server-side y revocación por familia ante replay.</td><td>Token en claro, doble descendiente válido, ausencia de detección de replay.</td></tr>
+            <tr><td>Navegador</td><td>Access solo en memoria; refresh solo en cookie <code>HttpOnly</code>, <code>Secure</code> y <code>SameSite</code>; protección CSRF.</td><td>Cualquier token en Web Storage, IndexedDB, URL, caché, logs o estado persistente JavaScript.</td></tr>
+            <tr><td>Tenant</td><td>Usuario, organización y membresía se revalidan; el cambio de organización revoca la familia anterior.</td><td>Tenant confiado desde el cliente o refresh del tenant anterior reutilizable.</td></tr>
+            <tr><td>Operación</td><td>Claves separadas por ambiente, rotación controlada, fail-fast, rate limit, auditoría segura y prueba por ingress.</td><td>Valores predeterminados, secretos en Git, logs sensibles o rutas externas incompatibles.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Efecto sobre auditorías previas</h2>
+      <ul>
+        <li>Los informes anteriores se conservan sin edición porque documentan el estado y la norma vigentes en su fecha.</li>
+        <li>El hallazgo de falta de decisión formal queda superado por esta aprobación documental.</li>
+        <li>Los hallazgos técnicos sobre firma, secretos de respaldo, validación, refresh, almacenamiento de navegador, revocación, migraciones, ambientes y pruebas permanecen abiertos y ahora se juzgan contra el contrato JWT.</li>
+        <li>Las bitácoras históricas pueden mencionar el mecanismo retirado; dichas entradas no son requisitos vigentes y están subordinadas a la decisión del 2026-10-22.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Evidencia mínima de cierre</h2>
+      <ol>
+        <li>Pruebas positivas y negativas de firma, algoritmo, <code>kid</code>, issuer, audience, tipo y vigencia.</li>
+        <li>Arranque fallido fuera de Development cuando falte configuración criptográfica.</li>
+        <li>Login y revalidación de usuario, organización y membresía en todos sus estados.</li>
+        <li>Rotación, concurrencia, replay y revocación familiar de refresh tokens.</li>
+        <li>Cambio de organización sin reutilización posible de la familia anterior.</li>
+        <li>Ausencia verificable de tokens largos en navegador, cuerpos JSON, base de datos en claro y logs.</li>
+        <li>Aislamiento cross-tenant y autorización cross-route por identificador directo.</li>
+        <li>Rotación de claves con solapamiento y retiro de la clave anterior.</li>
+        <li>Flujo completo por ingress en dev, QA y producción.</li>
+        <li>Migraciones repetibles, suites verdes, build sin warnings y escaneo de secretos/dependencias.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>5. Fuentes normativas</h2>
+      <ul>
+        <li><a href="../DECISION_AUTENTICACION_JWT.md">Decisión de arquitectura — Autenticación exclusiva con JWT</a></li>
+        <li><a href="../COBROUP.md">Documento maestro COBROUP 1.7.0</a></li>
+        <li><a href="avance.html">Informe de avance 2.1.0</a></li>
+        <li><a href="auditoria-backend-csharp-2026-10-22-v2.html">Auditoría técnica previa — evidencia histórica</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer>Emitido como auditoría documental. No se modificó código fuente ni se creó commit.</footer>
+</body>
+</html>

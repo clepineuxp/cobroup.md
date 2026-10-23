@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guía de Preparación VPS y GitOps CI/CD — COBROUP</title>
+  <meta name="description" content="Guía interactiva paso a paso para preparar la VPS con K3s, Ingress-NGINX, Cert-Manager, repositorio cobroup.enviroments y pipelines de GitHub Actions para COBROUP.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --bg-card-hover: rgba(31, 41, 55, 0.95);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.4);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --secondary: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code-bg: #030712;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      --shadow-glow: 0 0 30px -5px var(--primary-glow);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 5rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    header.hero {
+      padding: 4rem 0 2.5rem;
+      text-align: center;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header.hero p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 780px;
+      margin: 0 auto 2rem;
+    }
+
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin: 1.5rem 0 2.5rem;
+    }
+
+    .nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.55rem 1.05rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--primary-glow);
+      color: #fff;
+    }
+
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .arch-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      transition: all 0.25s;
+    }
+
+    .arch-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+    }
+
+    .arch-card-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #a5b4fc;
+    }
+
+    .arch-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+      transition: border-color 0.3s ease;
+    }
+
+    .panel:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .tag {
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .tag-req { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .tag-auto { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .progress-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.85rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .checklist-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border-focus);
+    }
+
+    .checklist-item.checked {
+      background: rgba(16, 185, 129, 0.06);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .checklist-item input[type="checkbox"] {
+      margin-top: 0.25rem;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .checklist-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .checklist-item.checked .checklist-text {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+
+    .checklist-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .code-container {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.55rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    pre {
+      padding: 1.1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #a5b4fc;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    code.inline-code {
+      background: rgba(99, 102, 241, 0.15);
+      color: #c7d2fe;
+      padding: 0.15rem 0.45rem;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+    }
+
+    code.secret {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+
+    .repo-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .repo-tab {
+      padding: 0.65rem 1.2rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .repo-tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .repo-tab.active {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .callout {
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin: 1.2rem 0;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .callout.info {
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      color: #a5f3fc;
+    }
+
+    .callout.alert {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #fde68a;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #1e293b;
+      color: #fff;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      border-left: 4px solid var(--success);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 3rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="badge-pill">
+        <span class="pulse"></span>
+        GitOps K3s / Ingress-NGINX / cobroup.enviroments
+      </div>
+      <h1>Guía Maestra de Preparación VPS & GitOps</h1>
+      <p>Pasos exactos para preparar tu servidor VPS desde cero con K3s, configurar la estructura <code>/opt/cobroup/deploys/</code>, conectar el repositorio oficial <code>cobroup.enviroments</code> y desplegar los microservicios mediante GitHub Actions.</p>
+      <p style="color:var(--text-muted); font-size:0.88rem;">Versión 2.2.0 · Actualizada el 22 de octubre de 2026 · Identidad JWT pendiente de conformidad y reauditoría.</p>
+
+      <!-- Quick Nav Buttons -->
+      <nav class="quick-nav">
+        <a href="#arquitectura" class="nav-btn">📐 Arquitectura</a>
+        <a href="#repo-enviroments" class="nav-btn">📦 Repositorio Enviroments</a>
+        <a href="#checklist" class="nav-btn">✅ Checklist Pre-Vuelo</a>
+        <a href="#paso1" class="nav-btn">👤 1. Usuario SSH</a>
+        <a href="#paso2" class="nav-btn">🔑 2. Llaves SSH</a>
+        <a href="#paso3" class="nav-btn">☸️ 3. Kubectl</a>
+        <a href="#paso4" class="nav-btn">📂 4. Directorios /opt</a>
+        <a href="#paso5" class="nav-btn">📦 5. Namespaces</a>
+        <a href="#paso6" class="nav-btn">🛡️ 6. GHCR Pull Secret</a>
+        <a href="#paso7" class="nav-btn">🔒 7. Cert-Manager</a>
+        <a href="#paso8" class="nav-btn">🗄️ 8. PostgreSQL</a>
+        <a href="#github-vars" class="nav-btn">⚙️ 9. Variables GitHub</a>
+      </nav>
+    </header>
+
+    <!-- Arquitectura GitOps -->
+    <section class="arch-diagram" id="arquitectura">
+      <div class="panel-title" style="margin-bottom:0.5rem;">
+        <span>📐</span>
+        <span>Flujo GitOps Desacoplado (Modelo SaviaUp)</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.95rem;">
+        Los manifiestos y secretos se gestionan en <code>cobroup.enviroments</code> y se transfieren a la VPS en <code>/opt/cobroup/deploys/&lt;env&gt;</code>. Cada push a un microservicio compila en GHCR y aplica sus manifiestos locales ejecutando <code>rollout restart</code>.
+      </p>
+      <div class="callout alert">
+        <strong>Decisión vigente de identidad.</strong> La plataforma utiliza exclusivamente access y refresh JWT. BackendAdmin firma con una clave privada asimétrica externa; el backend operativo valida mediante JWKS y nunca recibe la clave privada. Cada ambiente usa material distinto y el arranque debe fallar si faltan clave, <code>kid</code>, issuer o audiences. Los manifiestos actuales deben adecuarse y superar una nueva auditoría antes de desplegarse.
+      </div>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-card-title">1. cobroup.enviroments</div>
+          <p>Al hacer push a <code>dev</code>, <code>qa</code> o <code>main</code>, GitHub Actions sustituye los secretos mediante Python y realiza SCP hacia <code>/opt/cobroup/deploys/&lt;env&gt;</code> y <code>/opt/cobroup/deploys/bootstrap</code>.</p>
+        </div>
+        <div class="arch-card">
+          <div class="arch-card-title">2. Repositorios de Microservicios</div>
+          <p>Al hacer push a los microservicios (Backend, BackendAdmin, Frontends), su CI/CD corre pruebas, sube la imagen a GHCR y por SSH ejecuta <code>kubectl apply -f /opt/cobroup/deploys/&lt;env&gt;/&lt;component&gt;/</code>.</p>
+        </div>
+        <div class="arch-card">
+          <div class="arch-card-title">3. Clúster K3s y Rollout Progresivo</div>
+          <p>K3s descarga la nueva imagen desde GHCR mediante <code>ghcr-secret</code>, reinicia los pods gradualmente con zero-downtime y valida la salud mediante probes en <code>/health</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Especial: Configuración del Repositorio cobroup.enviroments -->
+    <section class="panel" id="repo-enviroments" style="border: 1px solid rgba(99, 102, 241, 0.4); background: rgba(17, 24, 39, 0.95);">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>📦</span>
+          <span>Configuración del Repositorio cobroup.enviroments</span>
+        </div>
+        <span class="tag tag-req">Acción Inmediata</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.95rem;">
+        Repositorio remoto oficial: <a href="https://github.com/clepineuxp/cobroup.enviroments.git" target="_blank" style="color: #818cf8; font-family:'JetBrains Mono', monospace; font-weight: 600;">https://github.com/clepineuxp/cobroup.enviroments.git</a>
+      </p>
+
+      <h4 style="margin: 1.25rem 0 0.5rem; color: #c7d2fe;">Paso A: Subir las Ramas Iniciales (main, dev, qa)</h4>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">En tu terminal local, sube el repositorio inicializado hacia GitHub:</p>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <span>powershell (en D:\Proyectos\cobroup\cobroup.enviroments)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code>cd D:\Proyectos\cobroup\cobroup.enviroments
+git push -u origin main
+git push -u origin dev
+git push -u origin qa</code></pre>
+      </div>
+
+      <h4 style="margin: 1.5rem 0 0.5rem; color: #c7d2fe;">Paso B: Crear el Entorno `cobroup` en GitHub</h4>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">
+        Ve a <a href="https://github.com/clepineuxp/cobroup.enviroments/settings/environments" target="_blank" style="color:#38bdf8;">Settings ➔ Environments</a>, haz clic en <strong>New environment</strong>, escribe el nombre <code>cobroup</code> y guarda.
+      </p>
+
+      <h4 style="margin: 1.5rem 0 0.5rem; color: #c7d2fe;">Paso C: Cargar los 14 Secretos en `cobroup.enviroments`</h4>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">
+        En <code>Settings ➔ Secrets and variables ➔ Actions ➔ New repository secret</code> (o dentro del Environment <code>cobroup</code>):
+      </p>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr><th>Secreto</th><th>Tipo</th><th>Descripción y Formato</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code class="inline-code secret">SSH_HOST</code></td><td>Secreto</td><td>IP pública de tu VPS (ej. <code>198.51.100.25</code>)</td></tr>
+            <tr><td><code class="inline-code secret">SSH_USER</code></td><td>Secreto</td><td>Usuario de despliegue: <code>deployer</code></td></tr>
+            <tr><td><code class="inline-code secret">SSH_KEY</code></td><td>Secreto</td><td>Clave privada SSH Ed25519 completa (<code>-----BEGIN OPENSSH PRIVATE KEY-----...</code>)</td></tr>
+            <tr><td><code class="inline-code secret">SSH_PORT</code></td><td>Secreto</td><td>Puerto SSH del servidor: <code>22</code></td></tr>
+            <tr><td><code class="inline-code secret">GHCR_TOKEN</code></td><td>Secreto</td><td>GitHub PAT classic con scope <code>read:packages</code></td></tr>
+            <tr><td><code class="inline-code secret">DEV_OPERATIONSDATABASE_CONNECTIONSTRING</code></td><td>Secreto</td><td><code>Host=10.42.0.1;Database=cobroup_dev;SearchPath=operations;Username=cobroup_dev_user;Password=...</code></td></tr>
+            <tr><td><code class="inline-code secret">DEV_IDENTITYDATABASE_CONNECTIONSTRING</code></td><td>Secreto</td><td><code>Host=10.42.0.1;Database=cobroup_dev;SearchPath=identity;Username=cobroup_dev_user;Password=...</code></td></tr>
+            <tr><td><code class="inline-code secret">DEV_JWT_SIGNING_PRIVATE_KEY_BASE64</code></td><td>Secreto</td><td>Clave privada asimétrica JWT de Dev, solo BackendAdmin: <code>&lt;PKCS8_BASE64_DEV&gt;</code></td></tr>
+            <tr><td><code class="inline-code secret">QA_OPERATIONSDATABASE_CONNECTIONSTRING</code></td><td>Secreto</td><td><code>Host=10.42.0.1;Database=cobroup_qa;SearchPath=operations;Username=cobroup_qa_user;Password=...</code></td></tr>
+            <tr><td><code class="inline-code secret">QA_IDENTITYDATABASE_CONNECTIONSTRING</code></td><td>Secreto</td><td><code>Host=10.42.0.1;Database=cobroup_qa;SearchPath=identity;Username=cobroup_qa_user;Password=...</code></td></tr>
+            <tr><td><code class="inline-code secret">QA_JWT_SIGNING_PRIVATE_KEY_BASE64</code></td><td>Secreto</td><td>Clave privada asimétrica JWT de QA, solo BackendAdmin: <code>&lt;PKCS8_BASE64_QA&gt;</code></td></tr>
+            <tr><td><code class="inline-code secret">PROD_OPERATIONSDATABASE_CONNECTIONSTRING</code></td><td>Secreto</td><td><code>Host=10.42.0.1;Database=cobroup_prod;SearchPath=operations;Username=cobroup_prod_user;Password=...</code></td></tr>
+            <tr><td><code class="inline-code secret">PROD_IDENTITYDATABASE_CONNECTIONSTRING</code></td><td>Secreto</td><td><code>Host=10.42.0.1;Database=cobroup_prod;SearchPath=identity;Username=cobroup_prod_user;Password=...</code></td></tr>
+            <tr><td><code class="inline-code secret">PROD_JWT_SIGNING_PRIVATE_KEY_BASE64</code></td><td>Secreto</td><td>Clave privada asimétrica JWT de Prod, solo BackendAdmin: <code>&lt;PKCS8_BASE64_PROD&gt;</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 style="margin: 1.5rem 0 0.5rem; color: #c7d2fe;">Paso D: Cargar la Variable `GHCR_USERNAME`</h4>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">
+        En <code>Settings ➔ Secrets and variables ➔ Actions ➔ Variables</code>: crear la variable <code>GHCR_USERNAME</code> con valor <code>clepineuxp</code>.
+      </p>
+
+      <h4 style="margin: 1.5rem 0 0.5rem; color: #c7d2fe;">Paso E: Probar el Workflow `Export Dev Manifests via SSH`</h4>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">
+        En la pestaña <strong>Actions</strong> de <code>cobroup.enviroments</code>, ejecuta el workflow manualmente sobre la rama <code>dev</code> para verificar la exportación de archivos hacia <code>/opt/cobroup/deploys/dev</code> en la VPS.
+      </p>
+    </section>
+
+    <!-- Pre-Flight Checklist -->
+    <section class="panel" id="checklist">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>🚀</span>
+          <span>Checklist Interactivo Pre-Vuelo</span>
+        </div>
+        <span class="tag tag-auto" id="progress-text">0 / 10 completados</span>
+      </div>
+
+      <div class="progress-box">
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600;">
+          <span>Progreso de preparación</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <ul class="checklist" id="checklist-container">
+        <li class="checklist-item" onclick="toggleCheck(this, 'c1')">
+          <input type="checkbox" id="c1">
+          <div>
+            <div class="checklist-text">Usuario `deployer` creado en la VPS con acceso SSH por clave pública</div>
+            <div class="checklist-desc">Permite a GitHub Actions conectarse remotamente sin privilegios root.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c2')">
+          <input type="checkbox" id="c2">
+          <div>
+            <div class="checklist-text">Kubeconfig de K3s configurado para `deployer` (`~/.kube/config`)</div>
+            <div class="checklist-desc">`deployer` ejecuta `kubectl get nodes` exitosamente sin sudo.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c3')">
+          <input type="checkbox" id="c3">
+          <div>
+            <div class="checklist-text">Estructura `/opt/cobroup/deploys/{bootstrap,dev,qa,prod}` creada con permisos</div>
+            <div class="checklist-desc">Directorio destino donde se exportan los manifiestos renderizados por SCP.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c4')">
+          <input type="checkbox" id="c4">
+          <div>
+            <div class="checklist-text">Namespaces `cobroup-dev`, `cobroup-qa` y `cobroup-prod` creados</div>
+            <div class="checklist-desc">Aislamiento por entorno en el clúster K3s.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c5')">
+          <input type="checkbox" id="c5">
+          <div>
+            <div class="checklist-text">PAT de GitHub generado con permiso `read:packages`</div>
+            <div class="checklist-desc">Token personal clásico para que K3s descargue imágenes privadas de `ghcr.io`.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c6')">
+          <input type="checkbox" id="c6">
+          <div>
+            <div class="checklist-text">Secreto `ghcr-secret` creado en los 3 namespaces</div>
+            <div class="checklist-desc">Docker-Registry secret aplicado en `cobroup-dev`, `cobroup-qa` y `cobroup-prod`.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c7')">
+          <input type="checkbox" id="c7">
+          <div>
+            <div class="checklist-text">Cert-Manager y ClusterIssuer `letsencrypt-prod` configurados</div>
+            <div class="checklist-desc">Emisión automática de certificados SSL/TLS para Ingress-NGINX.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c8')">
+          <input type="checkbox" id="c8">
+          <div>
+            <div class="checklist-text">Bases de datos PostgreSQL y esquemas `identity` y `operations` listos</div>
+            <div class="checklist-desc">Esquemas aislados en `cobroup_dev`, `cobroup_qa` y `cobroup_prod`.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c9')">
+          <input type="checkbox" id="c9">
+          <div>
+            <div class="checklist-text">Registros DNS tipo A creados apuntando a la IP pública de la VPS</div>
+            <div class="checklist-desc">Subdominios `dev.*`, `qa.*` y dominios principales de producción resolviendo a la VPS.</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this, 'c10')">
+          <input type="checkbox" id="c10">
+          <div>
+            <div class="checklist-text">Ramas subidas y secretos cargados en `cobroup.enviroments`</div>
+            <div class="checklist-desc">Ramas `main`, `dev`, `qa` empujadas y variables configuradas en GitHub.</div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Paso 1: Usuario Deployer -->
+    <section class="panel" id="paso1">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">1</div>
+          <span>Crear Usuario de Despliegue en la VPS (`deployer`)</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+      <p>Por seguridad y para evitar otorgar privilegios de <code>root</code> a GitHub Actions, creamos un usuario dedicado llamado <code>deployer</code>:</p>
+      
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS como root)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code># 1. Crear el usuario deployer sin contraseña interactiva
+sudo adduser --disabled-password --gecos "" deployer
+
+# 2. Agregar al grupo sudo
+sudo usermod -aG sudo deployer
+
+# 3. Crear su directorio SSH con permisos restringidos
+sudo mkdir -p /home/deployer/.ssh
+sudo chmod 700 /home/deployer/.ssh
+sudo chown -R deployer:deployer /home/deployer/.ssh</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 2: Llaves SSH -->
+    <section class="panel" id="paso2">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">2</div>
+          <span>Generar Par de Llaves SSH para GitHub Actions</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+      <p>Genera un par de llaves Ed25519 exclusivo para el pipeline CI/CD en tu máquina local:</p>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en tu máquina local)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code># Generar par de llaves Ed25519 sin passphrase (presiona Enter)
+ssh-keygen -t ed25519 -C "github-actions-cobroup" -f ~/.ssh/cobroup_deployer</code></pre>
+      </div>
+
+      <p style="margin-top:1rem;">En la VPS, autoriza la clave pública generada:</p>
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code>echo "PEGA_AQUÍ_EL_CONTENIDO_DE_cobroup_deployer.pub" | sudo tee -a /home/deployer/.ssh/authorized_keys
+sudo chmod 600 /home/deployer/.ssh/authorized_keys
+sudo chown -R deployer:deployer /home/deployer/.ssh</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 3: Kubectl para deployer -->
+    <section class="panel" id="paso3">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">3</div>
+          <span>Configurar Acceso a `kubectl` para `deployer`</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+      <p>Copia el kubeconfig de K3s al perfil del usuario <code>deployer</code>:</p>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code># 1. Crear directorio .kube
+sudo mkdir -p /home/deployer/.kube
+
+# 2. Copiar kubeconfig
+sudo cp /etc/rancher/k3s/k3s.yaml /home/deployer/.kube/config
+
+# 3. Asignar propiedad a deployer
+sudo chown -R deployer:deployer /home/deployer/.kube
+sudo chmod 600 /home/deployer/.kube/config
+
+# 4. Probar ejecución
+sudo -u deployer kubectl get nodes</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 4: Directorios /opt/cobroup -->
+    <section class="panel" id="paso4">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">4</div>
+          <span>Crear Estructura de Directorios GitOps (`/opt/cobroup/deploys`)</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+      <p>Crea los directorios donde el pipeline de <code>cobroup.enviroments</code> colocará los manifiestos renderizados:</p>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code>sudo mkdir -p /opt/cobroup/deploys/bootstrap
+sudo mkdir -p /opt/cobroup/deploys/dev
+sudo mkdir -p /opt/cobroup/deploys/qa
+sudo mkdir -p /opt/cobroup/deploys/prod
+sudo chown -R deployer:deployer /opt/cobroup
+sudo chmod -R 775 /opt/cobroup</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 5: Namespaces -->
+    <section class="panel" id="paso5">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">5</div>
+          <span>Crear Namespaces de K3s</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code>kubectl create namespace cobroup-dev --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace cobroup-qa --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace cobroup-prod --dry-run=client -o yaml | kubectl apply -f -</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 6: GHCR Secret -->
+    <section class="panel" id="paso6">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">6</div>
+          <span>Crear Secreto de Descarga GHCR (`ghcr-secret`)</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+      <p>Genera un GitHub Personal Access Token (classic) con permiso <code>read:packages</code> y ejecuta en la VPS:</p>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code>export GH_USER="<TU_USUARIO_GITHUB>"
+export GH_PAT="<TU_PAT_COPIADO>"
+
+for NS in cobroup-dev cobroup-qa cobroup-prod; do
+  echo "Creando secreto en $NS..."
+  kubectl create secret docker-registry ghcr-secret \
+    --namespace="$NS" \
+    --docker-server=ghcr.io \
+    --docker-username="$GH_USER" \
+    --docker-password="$GH_PAT" \
+    --dry-run=client -o yaml | kubectl apply -f -
+done</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 7: Cert-Manager -->
+    <section class="panel" id="paso7">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">7</div>
+          <span>Instalar Cert-Manager y ClusterIssuer Let's Encrypt</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>bash (en la VPS)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code># 1. Instalar Cert-Manager v1.16.2
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.2/cert-manager.yaml
+
+# 2. Esperar que los pods estén listos
+kubectl wait --namespace cert-manager --for=condition=ready pod --all --timeout=120s
+
+# 3. Aplicar ClusterIssuer de Let's Encrypt para Ingress-NGINX
+cat << 'EOF' | kubectl apply -f -
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@cobroup.com  # <-- REEMPLAZAR POR EMAIL REAL
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+EOF</code></pre>
+      </div>
+    </section>
+
+    <!-- Paso 8: PostgreSQL -->
+    <section class="panel" id="paso8">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">8</div>
+          <span>Configurar PostgreSQL y Esquemas Desacoplados</span>
+        </div>
+        <span class="tag tag-req">Obligatorio</span>
+      </div>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>SQL (dentro de psql)</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <pre><code>-- 1. Crear usuarios por ambiente
+CREATE USER cobroup_dev_user WITH ENCRYPTED PASSWORD 'Cobroup_Dev_Password_2026!';
+CREATE DATABASE cobroup_dev OWNER cobroup_dev_user;
+
+CREATE USER cobroup_qa_user WITH ENCRYPTED PASSWORD 'Cobroup_Qa_Password_2026!';
+CREATE DATABASE cobroup_qa OWNER cobroup_qa_user;
+
+CREATE USER cobroup_prod_user WITH ENCRYPTED PASSWORD 'Cobroup_Prod_Password_2026!';
+CREATE DATABASE cobroup_prod OWNER cobroup_prod_user;
+
+-- 2. Crear esquemas identity y operations en dev
+\c cobroup_dev
+CREATE SCHEMA IF NOT EXISTS identity AUTHORIZATION cobroup_dev_user;
+CREATE SCHEMA IF NOT EXISTS operations AUTHORIZATION cobroup_dev_user;
+
+-- 3. Crear esquemas en qa
+\c cobroup_qa
+CREATE SCHEMA IF NOT EXISTS identity AUTHORIZATION cobroup_qa_user;
+CREATE SCHEMA IF NOT EXISTS operations AUTHORIZATION cobroup_qa_user;
+
+-- 4. Crear esquemas en prod
+\c cobroup_prod
+CREATE SCHEMA IF NOT EXISTS identity AUTHORIZATION cobroup_prod_user;
+CREATE SCHEMA IF NOT EXISTS operations AUTHORIZATION cobroup_prod_user;
+
+\q</code></pre>
+      </div>
+
+      <div class="callout alert">
+        <strong>Conectividad de Pods K3s a PostgreSQL:</strong><br>
+        Asegúrate de que <code>/etc/postgresql/16/main/postgresql.conf</code> contenga <code>listen_addresses = '*'</code> y que en <code>pg_hba.conf</code> exista la línea: <code>host all all 10.42.0.0/16 md5</code>. Reinicia con <code>sudo systemctl restart postgresql</code>.
+      </div>
+    </section>
+
+    <!-- Paso 9: Variables en GitHub -->
+    <section class="panel" id="github-vars">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="step-number">9</div>
+          <span>Matriz de Variables y Secretos en GitHub</span>
+        </div>
+        <span class="tag tag-req">Crucial</span>
+      </div>
+      <p>Configura las credenciales en GitHub según el repositorio correspondiente:</p>
+
+      <!-- Repository Tabs -->
+      <div class="repo-tabs">
+        <button class="repo-tab active" onclick="switchRepoTab('repo-env', this)">cobroup.enviroments</button>
+        <button class="repo-tab" onclick="switchRepoTab('repo-backend', this)">MS.Cobroup.Backend</button>
+        <button class="repo-tab" onclick="switchRepoTab('repo-admin', this)">MS.Cobroup.BackendAdmin</button>
+        <button class="repo-tab" onclick="switchRepoTab('repo-fe-collector', this)">MF.cobroup-frontend</button>
+        <button class="repo-tab" onclick="switchRepoTab('repo-fe-admin', this)">MF.cobroup-frontend-admin</button>
+      </div>
+
+      <!-- Tab Content: cobroup.enviroments -->
+      <div id="repo-env" class="tab-content active">
+        <h4>Secretos en `cobroup.enviroments` (Repository Secrets):</h4>
+        <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom: 0.8rem;">
+          Se configuran en <code>Settings ➔ Secrets and variables ➔ Actions ➔ New repository secret</code>:
+        </p>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr><th>Secreto</th><th>Descripción</th><th>Ejemplo de Formato</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code class="inline-code secret">SSH_HOST</code></td><td>IP pública de la VPS</td><td><code>198.51.100.25</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_USER</code></td><td>Usuario deployer</td><td><code>deployer</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_KEY</code></td><td>Clave privada SSH completa</td><td><code>-----BEGIN OPENSSH PRIVATE KEY-----...</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_PORT</code></td><td>Puerto SSH</td><td><code>22</code></td></tr>
+              <tr><td><code class="inline-code secret">GHCR_TOKEN</code></td><td>PAT con scope `read:packages`</td><td><code>ghp_xxxxxxxxxxxx</code></td></tr>
+              <tr><td><code class="inline-code secret">DEV_OPERATIONSDATABASE_CONNECTIONSTRING</code></td><td>Cadena PostgreSQL esquema operations (Dev)</td><td><code>Host=10.42.0.1;Database=cobroup_dev;SearchPath=operations;Username=cobroup_dev_user;Password=...</code></td></tr>
+              <tr><td><code class="inline-code secret">DEV_IDENTITYDATABASE_CONNECTIONSTRING</code></td><td>Cadena PostgreSQL esquema identity (Dev)</td><td><code>Host=10.42.0.1;Database=cobroup_dev;SearchPath=identity;Username=cobroup_dev_user;Password=...</code></td></tr>
+              <tr><td><code class="inline-code secret">DEV_JWT_SIGNING_PRIVATE_KEY_BASE64</code></td><td>Clave privada asimétrica JWT de Dev, solo BackendAdmin</td><td><code>&lt;PKCS8_BASE64_DEV&gt;</code></td></tr>
+              <tr><td><code class="inline-code secret">QA_OPERATIONSDATABASE_CONNECTIONSTRING</code></td><td>Cadena PostgreSQL esquema operations (QA)</td><td><code>Host=10.42.0.1;Database=cobroup_qa;SearchPath=operations;Username=cobroup_qa_user;Password=...</code></td></tr>
+              <tr><td><code class="inline-code secret">QA_IDENTITYDATABASE_CONNECTIONSTRING</code></td><td>Cadena PostgreSQL esquema identity (QA)</td><td><code>Host=10.42.0.1;Database=cobroup_qa;SearchPath=identity;Username=cobroup_qa_user;Password=...</code></td></tr>
+              <tr><td><code class="inline-code secret">QA_JWT_SIGNING_PRIVATE_KEY_BASE64</code></td><td>Clave privada asimétrica JWT de QA, solo BackendAdmin</td><td><code>&lt;PKCS8_BASE64_QA&gt;</code></td></tr>
+              <tr><td><code class="inline-code secret">PROD_OPERATIONSDATABASE_CONNECTIONSTRING</code></td><td>Cadena PostgreSQL esquema operations (Prod)</td><td><code>Host=10.42.0.1;Database=cobroup_prod;SearchPath=operations;Username=cobroup_prod_user;Password=...</code></td></tr>
+              <tr><td><code class="inline-code secret">PROD_IDENTITYDATABASE_CONNECTIONSTRING</code></td><td>Cadena PostgreSQL esquema identity (Prod)</td><td><code>Host=10.42.0.1;Database=cobroup_prod;SearchPath=identity;Username=cobroup_prod_user;Password=...</code></td></tr>
+              <tr><td><code class="inline-code secret">PROD_JWT_SIGNING_PRIVATE_KEY_BASE64</code></td><td>Clave privada asimétrica JWT de Prod, solo BackendAdmin</td><td><code>&lt;PKCS8_BASE64_PROD&gt;</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: Backend -->
+      <div id="repo-backend" class="tab-content">
+        <h4>Secretos en `MS.Cobroup.Backend`:</h4>
+        <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom: 0.8rem;">
+          Al estar la configuración desacoplada en <code>cobroup.enviroments</code>, este repositorio solo requiere credenciales SSH para reiniciar su pod:
+        </p>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Secreto</th><th>Descripción</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline-code secret">SSH_HOST</code></td><td>IP pública de la VPS</td><td><code>&lt;IP_DE_TU_VPS&gt;</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_USER</code></td><td>Usuario deployer</td><td><code>deployer</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_KEY</code></td><td>Clave privada SSH completa</td><td><code>-----BEGIN OPENSSH PRIVATE KEY-----...</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_PORT</code></td><td>Puerto SSH</td><td><code>22</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: BackendAdmin -->
+      <div id="repo-admin" class="tab-content">
+        <h4>Secretos en `MS.Cobroup.BackendAdmin`:</h4>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Secreto</th><th>Descripción</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline-code secret">SSH_HOST</code></td><td>IP pública de la VPS</td><td><code>&lt;IP_DE_TU_VPS&gt;</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_USER</code></td><td>Usuario deployer</td><td><code>deployer</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_KEY</code></td><td>Clave privada SSH completa</td><td><code>-----BEGIN OPENSSH PRIVATE KEY-----...</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_PORT</code></td><td>Puerto SSH</td><td><code>22</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: Frontend Collector -->
+      <div id="repo-fe-collector" class="tab-content">
+        <h4>Secretos en `MF.cobroup-frontend`:</h4>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Secreto</th><th>Descripción</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline-code secret">SSH_HOST</code></td><td>IP pública de la VPS</td><td><code>&lt;IP_DE_TU_VPS&gt;</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_USER</code></td><td>Usuario deployer</td><td><code>deployer</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_KEY</code></td><td>Clave privada SSH completa</td><td><code>-----BEGIN OPENSSH PRIVATE KEY-----...</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_PORT</code></td><td>Puerto SSH</td><td><code>22</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: Frontend Admin -->
+      <div id="repo-fe-admin" class="tab-content">
+        <h4>Secretos en `MF.cobroup-frontend-admin`:</h4>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Secreto</th><th>Descripción</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td><code class="inline-code secret">SSH_HOST</code></td><td>IP pública de la VPS</td><td><code>&lt;IP_DE_TU_VPS&gt;</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_USER</code></td><td>Usuario deployer</td><td><code>deployer</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_KEY</code></td><td>Clave privada SSH completa</td><td><code>-----BEGIN OPENSSH PRIVATE KEY-----...</code></td></tr>
+              <tr><td><code class="inline-code secret">SSH_PORT</code></td><td>Puerto SSH</td><td><code>22</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>COBROUP — Sistema Multi-Tenant de Préstamos y Cobranza · Documentación Técnica GitOps v2.1.0</p>
+    </footer>
+  </div>
+
+  <!-- Toast Element -->
+  <div class="toast" id="toast">
+    <span>✓</span>
+    <span id="toast-msg">Comando copiado al portapapeles</span>
+  </div>
+
+  <script>
+    // Copy to clipboard
+    function copyCode(btn) {
+      const container = btn.closest('.code-container');
+      const code = container.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = '¡Copiado!';
+        btn.classList.add('copied');
+        showToast('Comando copiado al portapapeles');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Show toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Tab Switcher
+    function switchRepoTab(tabId, btn) {
+      document.querySelectorAll('.repo-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Checklist logic with localStorage
+    function initChecklist() {
+      const saved = JSON.parse(localStorage.getItem('cobroup_vps_checklist_v21') || '{}');
+      const items = document.querySelectorAll('.checklist-item');
+      items.forEach((item, idx) => {
+        const id = 'c' + (idx + 1);
+        const cb = item.querySelector('input[type="checkbox"]');
+        if (saved[id]) {
+          cb.checked = true;
+          item.classList.add('checked');
+        }
+      });
+      updateProgress();
+    }
+
+    function toggleCheck(item, id) {
+      const cb = item.querySelector('input[type="checkbox"]');
+      if (event.target !== cb) {
+        cb.checked = !cb.checked;
+      }
+      if (cb.checked) {
+        item.classList.add('checked');
+      } else {
+        item.classList.remove('checked');
+      }
+      saveChecklist();
+      updateProgress();
+    }
+
+    function saveChecklist() {
+      const state = {};
+      document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(cb => {
+        state[cb.id] = cb.checked;
+      });
+      localStorage.setItem('cobroup_vps_checklist_v21', JSON.stringify(state));
+    }
+
+    function updateProgress() {
+      const total = document.querySelectorAll('.checklist-item').length;
+      const checked = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked').length;
+      const pct = Math.round((checked / total) * 100);
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-percent').innerText = pct + '%';
+      document.getElementById('progress-text').innerText = `${checked} / ${total} completados`;
+      if (pct === 100) {
+        document.getElementById('progress-text').style.background = 'rgba(16, 185, 129, 0.2)';
+        document.getElementById('progress-text').style.color = '#34d399';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initChecklist);
+  </script>
+</body>
+</html>

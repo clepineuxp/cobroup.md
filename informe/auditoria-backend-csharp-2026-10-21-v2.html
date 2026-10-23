@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditoría técnica C# COBROUP · Revisión 2 · 2026-10-21</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d687b;
+      --line: #d9dfeb;
+      --paper: #ffffff;
+      --bg: #eef2f8;
+      --navy: #16243f;
+      --blue: #2463eb;
+      --blue-soft: #eaf1ff;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --amber: #9a6700;
+      --amber-soft: #fff8df;
+      --green: #087a52;
+      --green-soft: #eaf9f3;
+      --slate-soft: #f5f7fa;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { width: min(1180px, calc(100% - 32px)); margin: 28px auto 56px; }
+    header {
+      color: #fff;
+      background: linear-gradient(125deg, #101a31 0%, #183b73 64%, #2463eb 100%);
+      border-radius: 18px;
+      padding: 38px 42px;
+      box-shadow: 0 18px 45px rgba(22, 36, 63, .18);
+    }
+    header h1 { margin: 8px 0 10px; font-size: clamp(28px, 4vw, 44px); line-height: 1.1; }
+    header p { margin: 0; max-width: 930px; color: #dbe7ff; }
+    .eyebrow { font-size: 12px; letter-spacing: .13em; text-transform: uppercase; font-weight: 800; }
+    .verdict {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; padding: 9px 13px;
+      border: 1px solid rgba(255,255,255,.38); background: rgba(111, 10, 10, .38); border-radius: 999px;
+      font-weight: 800; letter-spacing: .02em;
+    }
+    nav, section, article.finding {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(38, 50, 75, .06);
+    }
+    nav { margin-top: 18px; padding: 14px 18px; display: flex; gap: 18px; flex-wrap: wrap; }
+    nav a { color: var(--blue); font-weight: 700; text-decoration: none; }
+    section { margin-top: 18px; padding: 26px 30px; }
+    h2 { margin: 0 0 16px; font-size: 24px; color: var(--navy); }
+    h3 { margin: 0 0 11px; font-size: 18px; line-height: 1.35; }
+    h4 { margin: 20px 0 8px; color: var(--navy); }
+    p { margin: 9px 0; }
+    code { font-family: "Cascadia Code", Consolas, monospace; font-size: .92em; background: #f1f4f8; padding: 1px 5px; border-radius: 4px; }
+    a { color: #154fc0; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .metric { padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: var(--slate-soft); }
+    .metric strong { display: block; font-size: 29px; line-height: 1; margin-bottom: 7px; }
+    .metric span { color: var(--muted); font-weight: 650; }
+    .metric.bad strong { color: var(--red); }
+    .metric.warn strong { color: var(--amber); }
+    .metric.good strong { color: var(--green); }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; vertical-align: middle; }
+    .blocker { color: var(--red); background: var(--red-soft); }
+    .important { color: var(--amber); background: var(--amber-soft); }
+    .minor { color: #4d5870; background: #edf0f5; }
+    .pass { color: var(--green); background: var(--green-soft); }
+    .finding { margin-top: 12px; padding: 21px 23px; border-left-width: 6px !important; }
+    .finding.block { border-left-color: var(--red); }
+    .finding.imp { border-left-color: #d99b00; }
+    .finding.min { border-left-color: #7b879d; }
+    dl { display: grid; grid-template-columns: 145px 1fr; gap: 7px 15px; margin: 0; }
+    dt { font-weight: 800; color: var(--navy); }
+    dd { margin: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 10px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #edf2fb; color: var(--navy); font-size: 13px; }
+    tbody tr:nth-child(even) td { background: #fafbfd; }
+    ul, ol { margin: 8px 0 0 21px; padding: 0; }
+    li + li { margin-top: 6px; }
+    .callout { padding: 14px 16px; border-radius: 10px; background: var(--blue-soft); border-left: 4px solid var(--blue); }
+    .danger { background: var(--red-soft); border-left-color: var(--red); }
+    .goodbox { background: var(--green-soft); border-left-color: var(--green); }
+    .muted { color: var(--muted); }
+    .small { font-size: 13px; }
+    details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+    summary { cursor: pointer; color: var(--navy); font-weight: 800; }
+    footer { color: var(--muted); text-align: center; margin-top: 24px; font-size: 13px; }
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      dl { grid-template-columns: 1fr; gap: 2px; }
+      dd { margin-bottom: 8px; }
+      header, section { padding: 24px; }
+    }
+    @media print {
+      body { background: #fff; font-size: 11px; }
+      main { width: 100%; margin: 0; }
+      nav { display: none; }
+      header, section, article.finding { box-shadow: none; break-inside: avoid; }
+      header { border-radius: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">COBROUP · Auditoría técnica C# · Revisión 2</div>
+    <h1>Backend operativo y administrativo</h1>
+    <p>Revisión desde cero de los ocho commits más recientes de cada repositorio, los cambios locales actuales de fase 9 y los artefactos K3s compartidos, contrastados con <code>FRAMEWORK_DESARROLLO_CSHARP.md</code>.</p>
+    <div class="verdict">DICTAMEN: NO APROBADO PARA CIERRE NI DESPLIEGUE PRODUCTIVO</div>
+  </header>
+
+  <nav aria-label="Contenido">
+    <a href="#resumen">Resumen</a>
+    <a href="#alcance">Alcance</a>
+    <a href="#nuevos">Fase 9</a>
+    <a href="#persistentes">Pendientes funcionales</a>
+    <a href="#bien">Qué está bien</a>
+    <a href="#plan">Plan de corrección</a>
+    <a href="#evidencia">Evidencia y límites</a>
+  </nav>
+
+  <section id="resumen">
+    <h2>1. Resumen ejecutivo</h2>
+    <div class="grid">
+      <div class="metric bad"><strong>5</strong><span>bloqueantes</span></div>
+      <div class="metric warn"><strong>13</strong><span>importantes</span></div>
+      <div class="metric"><strong>2</strong><span>menores</span></div>
+      <div class="metric good"><strong>166/166</strong><span>pruebas .NET pasan</span></div>
+    </div>
+    <div class="callout danger" style="margin-top:16px">
+      <strong>Conclusión auditora.</strong> Los dos repositorios compilan en Release con cero advertencias y sus suites pasan, pero esa evidencia no cubre los riesgos críticos encontrados. La fase 9 está únicamente en el árbol de trabajo, los pipelines no pueden aprovisionar un ambiente desde cero, el servicio OIDC no dispone de un mecanismo de montaje de certificados en Kubernetes y siguen abiertos tres defectos funcionales bloqueantes de fases anteriores. La declaración documental de “9/9 fases, 100% y preparada para despliegue continuo” no es sostenible con la evidencia observada.
+    </div>
+    <p><strong>Decisión recomendada:</strong> bloquear el cierre de fase 9 y cualquier promoción a <code>prod</code> hasta resolver B-01 a B-05, ejecutar imágenes reales y validar un despliegue reproducible en un namespace limpio.</p>
+  </section>
+
+  <section id="alcance">
+    <h2>2. Alcance, corte y criterio</h2>
+    <table>
+      <thead><tr><th>Elemento</th><th>Corte auditado</th><th>Estado local</th></tr></thead>
+      <tbody>
+        <tr><td><code>MS.Cobroup.Backend</code></td><td><code>cf65b00</code> y 7 commits anteriores</td><td>Rama <code>feature/fase-9-endurecimiento-despliegue</code>; 2 modificados y artefactos de fase 9 sin seguimiento.</td></tr>
+        <tr><td><code>MS.Cobroup.BackendAdmin</code></td><td><code>ed609a5</code> y 7 commits anteriores</td><td>Rama <code>feature/fase-9-endurecimiento-despliegue</code>; 2 modificados y artefactos de fase 9 sin seguimiento.</td></tr>
+        <tr><td><code>cobroup/k8s</code></td><td>Manifiestos y <code>deploy-k3s.sh</code> del árbol actual</td><td>Directorio central fuera de cualquier repositorio Git; no forma parte de los checkout de los workflows.</td></tr>
+        <tr><td>Marco</td><td><code>FRAMEWORK_DESARROLLO_CSHARP.md</code></td><td>Especialmente arquitectura, concurrencia, seguridad, observabilidad, despliegue, evidencia y auditoría.</td></tr>
+      </tbody>
+    </table>
+    <p class="small muted">Tipo de revisión: autoverificación técnica en rol auditor. Conforme al §10 del framework, no se denomina “auditoría independiente” porque no intervino un agente distinto. No se modificaron los repositorios de aplicación.</p>
+
+    <details>
+      <summary>Commits recientes inspeccionados</summary>
+      <table>
+        <thead><tr><th>Repositorio</th><th>Commits, del más reciente al más antiguo</th></tr></thead>
+        <tbody>
+          <tr><td>Backend</td><td><code>cf65b00</code>, <code>03b2748</code>, <code>2537925</code>, <code>8cc1e42</code>, <code>d46701a</code>, <code>9d949cd</code>, <code>67277c2</code>, <code>b9c7d4d</code>.</td></tr>
+          <tr><td>BackendAdmin</td><td><code>ed609a5</code>, <code>6d563c9</code>, <code>57d45d7</code>, <code>b3b8e34</code>, <code>1296196</code>, <code>db18d94</code>, <code>5f50a25</code>, <code>6eaf176</code>.</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <section id="nuevos">
+    <h2>3. Hallazgos nuevos de fase 9</h2>
+
+    <article class="finding block">
+      <h3>B-01 · <span class="badge blocker">Bloqueante</span> BackendAdmin no tiene cómo recibir los certificados OIDC requeridos en producción</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>BackendAdmin.Api/Program.cs:142-150,258-268</code> exige certificados PKCS#12 de firma y cifrado fuera de Development. <code>k8s/base/secrets-template.yaml:12-15</code> solo entrega rutas y contraseñas; <code>backend-admin.yaml:42-98</code> no declara Secret/volume/volumeMount para los archivos. El Dockerfile publica únicamente la aplicación y los certificados están ignorados por Git.</dd>
+        <dt>Comprobación</dt><dd>El arranque directo en <code>Production</code>, con conexión e issuer de prueba, termina con <code>InvalidOperationException: Identity:Certificates:Signing:Path and Password are required outside Development</code>. Incluso configurando una ruta, el Pod no contiene el archivo.</dd>
+        <dt>Impacto</dt><dd>El proveedor OIDC no inicia en producción; sin él no hay autenticación ni emisión de tokens para la plataforma.</dd>
+        <dt>Corrección</dt><dd>Crear un Secret binario o integrar un gestor de secretos/certificados, montarlo como volumen de solo lectura, apuntar las variables a esas rutas y validar permisos del UID 1000. Probar arranque y rotación.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-02 · <span class="badge blocker">Bloqueante</span> El CI/CD no aplica manifiestos y no puede desplegar un ambiente limpio</h3>
+      <dl>
+        <dt>Evidencia</dt><dd>Ambos workflows, líneas <code>110-147</code>, hacen checkout del repositorio individual y luego solo crean namespace/pull-secret, ejecutan <code>kubectl set image</code> y esperan rollout. Nunca ejecutan <code>kubectl apply</code> ni <code>deploy-k3s.sh</code>. Los manifiestos viven en <code>D:\Proyectos\cobroup\k8s</code>, fuera de ambos repositorios y fuera de Git.</dd>
+        <dt>Impacto</dt><dd>En <code>cobroup-dev</code>, <code>cobroup-qa</code> o <code>cobroup-prod</code> nuevos, <code>kubectl set image</code> falla porque el Deployment no existe. Cambios de probes, recursos, ConfigMap, Secret o Ingress nunca son promovidos por el pipeline.</dd>
+        <dt>Corrección</dt><dd>Versionar la infraestructura en un repositorio o chart accesible, renderizarla de manera determinista, validarla y aplicarla antes de actualizar la imagen. Probar idempotencia en namespace vacío y actualización.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>I-01 · <span class="badge important">Importante</span> El pull secret persistente contiene un <code>GITHUB_TOKEN</code> efímero</h3>
+      <dl>
+        <dt>Evidencia</dt><dd>Los workflows, líneas <code>135-141</code>, guardan <code>secrets.GITHUB_TOKEN</code> como contraseña de <code>ghcr-pull-secret</code>. GitHub documenta que ese token expira al finalizar el job o al alcanzar su vida máxima.</dd>
+        <dt>Impacto</dt><dd>Un Pod reprogramado después del workflow puede quedar en <code>ImagePullBackOff</code> al intentar descargar una imagen privada con credenciales expiradas.</dd>
+        <dt>Corrección</dt><dd>Usar una identidad de lectura estable y mínima para GHCR, GitHub App/credencial rotada o imágenes públicas según el modelo de amenaza; verificar un pull después de expirar la ejecución.</dd>
+        <dt>Fuente</dt><dd><a href="https://docs.github.com/en/actions/concepts/security/github_token">GitHub Docs · GITHUB_TOKEN</a>.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>I-02 · <span class="badge important">Importante</span> Se documenta Traefik, pero el Ingress solicita NGINX</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>COBROUP.md:11,500</code> y ambos <code>AGENTS.md</code> declaran Traefik. <code>k8s/base/ingress.yaml:8-13</code> usa anotaciones <code>nginx.ingress.kubernetes.io/*</code> e <code>ingressClassName: nginx</code>. No hay aprovisionamiento del controlador NGINX ni de cert-manager en los artefactos revisados.</dd>
+        <dt>Impacto</dt><dd>En K3s estándar con Traefik, el Ingress puede quedar sin controlador. La exposición TLS y todas las rutas públicas quedan no verificadas.</dd>
+        <dt>Corrección</dt><dd>Elegir y documentar un controlador, alinear clase/anotaciones, declarar sus prerrequisitos y añadir una prueba HTTP/TLS posterior al despliegue.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>I-03 · <span class="badge important">Importante</span> <code>UseForwardedHeaders</code> no confía explícitamente en la red del Ingress</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>Backend.Api/Program.cs:117-120</code> y <code>BackendAdmin.Api/Program.cs:227-230</code> habilitan <code>X-Forwarded-For</code>/<code>Proto</code>, pero no configuran <code>KnownProxies</code> ni <code>KnownIPNetworks</code>. Microsoft indica que los encabezados de proxies no confiables se ignoran.</dd>
+        <dt>Impacto</dt><dd>El esquema HTTPS y la IP cliente pueden no reconstruirse detrás del Ingress; esto afecta OIDC, cookies seguras, URLs y rate limiting por IP.</dd>
+        <dt>Corrección</dt><dd>Configurar la red/proxy real de confianza, límites y simetría según topología; probar desde fuera del cluster.</dd>
+        <dt>Fuente</dt><dd><a href="https://learn.microsoft.com/en-us/aspnet/core/breaking-changes/8/forwarded-headers-unknown-proxies?view=aspnetcore-10.0">Microsoft Learn · Forwarded headers y proxies desconocidos</a>.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>I-04 · <span class="badge important">Importante</span> El Correlation ID no produce trazabilidad transversal</h3>
+      <dl>
+        <dt>Evidencia</dt><dd>Los middlewares (<code>Backend Program.cs:122-132</code>; Admin <code>:232-243</code>) únicamente copian/generan <code>X-Correlation-ID</code> en la respuesta. No lo asignan a <code>TraceIdentifier</code>, <code>Activity</code> ni a un scope de logging; tampoco se hallaron enriquecedores o logs estructurados asociados.</dd>
+        <dt>Impacto</dt><dd>El identificador no permite correlacionar logs ni llamadas BackendAdmin → Backend, contradiciendo la trazabilidad declarada en fase 9 y el §5.3 del framework.</dd>
+        <dt>Corrección</dt><dd>Validar longitud/formato, incorporar el ID al contexto de trazas/logs y propagarlo con los clientes HTTP; agregar prueba que verifique la correlación completa.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>I-05 · <span class="badge important">Importante</span> La readiness valida conectividad, no compatibilidad del esquema</h3>
+      <dl>
+        <dt>Evidencia</dt><dd>Ambos health checks solo llaman <code>Database.CanConnectAsync</code>. Los workflows no ejecutan ni verifican migraciones y el despliegue no define un job/init container de migración.</dd>
+        <dt>Impacto</dt><dd>Un Pod puede anunciarse <code>Ready</code> frente a una base accesible pero con esquema incompatible; el tráfico se enruta antes de detectar el defecto.</dd>
+        <dt>Corrección</dt><dd>Definir estrategia explícita de migración y rollback, comprobar compatibilidad de versión/esquema y mantener la readiness rápida y segura.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>I-06 · <span class="badge important">Importante</span> El cierre “100% verificado” excede la evidencia disponible</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>COBROUP.md:4-11,490-501</code> e <code>informe/avance.md:7-24,466-476,505-532</code> afirman cierre, auditoría exhaustiva y despliegue continuo. Sin embargo, la fase 9 de ambos backends está sin commit; no existe ejecución de GitHub Actions; Docker no pudo construir por ausencia del daemon; no se ejecutó K3s; y los 166 tests actuales no contienen casos nuevos para health, producción, contenedor o pipeline.</dd>
+        <dt>Impacto</dt><dd>La bitácora puede inducir una aprobación o promoción basada en evidencia inexistente. Viola la exigencia del framework de no convertir comprobaciones pendientes en resultados validados.</dd>
+        <dt>Corrección</dt><dd>Cambiar el estado a “en curso/no verificado”, enlazar ejecuciones reales y registrar limitaciones. Solo cerrar después de la matriz de aceptación productiva.</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section id="persistentes">
+    <h2>4. Hallazgos funcionales y arquitectónicos aún abiertos</h2>
+    <p>La nueva revisión confirmó que los hallazgos siguientes siguen presentes después de <code>cf65b00</code> y <code>ed609a5</code>; no fueron corregidos por la fase 9.</p>
+
+    <article class="finding block">
+      <h3>B-03 · <span class="badge blocker">Bloqueante</span> Una excepción aprobada no gobierna las condiciones del préstamo ni se consume</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>LoanService.cs:86-106</code> valida cliente y estado Approved, pero no compara monto, plazo/frecuencia o tasa con la propuesta aprobada. No existe unicidad ni estado de consumo para <code>ExceptionRequestId</code>.</dd>
+        <dt>Impacto</dt><dd>La misma aprobación puede reutilizarse y originar condiciones diferentes de las autorizadas.</dd>
+        <dt>Corrección</dt><dd>Validación exacta y consumo atómico con restricción única y prueba concurrente.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-04 · <span class="badge blocker">Bloqueante</span> Pagos concurrentes con claves diferentes pueden corromper saldos</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>PaymentService.cs:36-46,94-147</code> lee y modifica préstamo/cuotas sin token de concurrencia, lock ni serialización. La unicidad de <code>(TenantId, IdempotencyKey)</code> solo protege reintentos con la misma clave; <code>Loan</code> e <code>Installment</code> no tienen <code>xmin</code>.</dd>
+        <dt>Impacto</dt><dd>Dos cobros válidos simultáneos pueden registrar ambos pagos y perder parte de la actualización de saldo/asignaciones.</dd>
+        <dt>Corrección</dt><dd>Serializar por préstamo en una transacción y probar con PostgreSQL real y dos contextos.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-05 · <span class="badge blocker">Bloqueante</span> La evidencia fotográfica es metadato controlado por el cliente</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>PaymentsController.cs:110-129</code> recibe nombre, MIME, tamaño y ruta como JSON; <code>PaymentService.cs:236-251</code> valida solo el texto MIME y persiste la ruta declarada. No hay carga, hash ni referencia firmada por almacenamiento confiable.</dd>
+        <dt>Impacto</dt><dd>Se pueden registrar objetos inexistentes y metadatos falsos; no hay evidencia recuperable ni integridad auditable.</dd>
+        <dt>Corrección</dt><dd>Implementar almacenamiento real o identificadores firmados, validación de bytes/tipo/tamaño/hash y retiro tenant-safe.</dd>
+      </dl>
+    </article>
+
+    <table>
+      <thead><tr><th>ID</th><th>Severidad</th><th>Hallazgo persistente</th><th>Evidencia principal</th></tr></thead>
+      <tbody>
+        <tr><td>I-07</td><td><span class="badge important">Importante</span></td><td>Carrera check-then-insert en cupo de préstamos activos por ruta.</td><td><code>LoanService.cs:68-80,192-193</code>.</td></tr>
+        <tr><td>I-08</td><td><span class="badge important">Importante</span></td><td><code>MaxLoanDays</code> se compara con número de cuotas y no con duración del cronograma.</td><td><code>LoanService.cs:127-152</code>.</td></tr>
+        <tr><td>I-09</td><td><span class="badge important">Importante</span></td><td>Agenda y conciliación interpretan el día como UTC e ignoran la zona IANA del tenant.</td><td><code>PaymentService.cs:188-191</code>; <code>EfAgendaRepository.cs:59-66</code>.</td></tr>
+        <tr><td>I-10</td><td><span class="badge important">Importante</span></td><td>La analítica “histórica” consulta solo préstamos actualmente Active y no reconstruye el corte.</td><td><code>EfAgendaRepository.cs:144-220</code>.</td></tr>
+        <tr><td>I-11</td><td><span class="badge important">Importante</span></td><td>Autorización/refresh OIDC no revalida usuario, membresía y organización activos.</td><td><code>OidcController.cs:23-64</code>; refresh de 30 días en <code>Program.cs:130-134</code>.</td></tr>
+        <tr><td>I-12</td><td><span class="badge important">Importante</span></td><td>Puertos y repositorios continúan declarados dentro de Core, contra el estándar Domain/Interfaces.</td><td><code>Core/**/I*Repository.cs</code> y <code>Core/**/I*Directory.cs</code> en ambos repositorios.</td></tr>
+        <tr><td>I-13</td><td><span class="badge important">Importante</span></td><td>La decisión remota de excepción y la auditoría local carecen de entrega confiable/idempotencia.</td><td><code>LoanExceptionAdministrationService.cs:46-74</code>.</td></tr>
+        <tr><td>M-01</td><td><span class="badge minor">Menor</span></td><td>Medios de pago no eliminan diacríticos ni validan rango 1–999; persiste método ficticio sin uso.</td><td><code>PaymentMethod.cs:32-49</code>; <code>PaymentMethodService.cs:19-31</code>.</td></tr>
+        <tr><td>M-02</td><td><span class="badge minor">Menor</span></td><td>Rutas, enum y colores de agenda publicados no coinciden por completo con el código.</td><td><code>AGENTS.md</code>/<code>COBROUP.md</code> frente a <code>AgendaController.cs</code>, <code>AgendaStatus.cs</code> y <code>AgendaService.cs</code>.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="bien">
+    <h2>5. Qué se realizó bien</h2>
+    <div class="callout goodbox"><strong>El dictamen negativo no invalida los aciertos.</strong> Estos puntos tienen evidencia directa y deben conservarse durante la corrección.</div>
+    <ul>
+      <li><strong>Build y pruebas:</strong> ambas soluciones compilan en Release con 0 advertencias/0 errores. Backend pasa 81 Core + 25 Infrastructure; BackendAdmin pasa 51 Core + 9 Infrastructure.</li>
+      <li><strong>Dependencias:</strong> <code>dotnet list package --vulnerable --include-transitive</code> no reportó paquetes vulnerables en ninguno de los proyectos con las fuentes configuradas.</li>
+      <li><strong>Contenedores:</strong> Dockerfiles multi-stage, publicación Release, runtime separado, puerto 8080 y ejecución como usuario no root <code>1000:1000</code>.</li>
+      <li><strong>Kubernetes:</strong> probes distintas de liveness/readiness, límites y requests de recursos, estrategia RollingUpdate con <code>maxUnavailable: 0</code>, servicios ClusterIP e imágenes identificables por SHA en el pipeline.</li>
+      <li><strong>Health checks:</strong> usan la abstracción nativa, separan proceso y base de datos y propagan <code>CancellationToken</code>.</li>
+      <li><strong>CI:</strong> orden test → build/push → deploy, <code>--no-restore</code>/<code>--no-build</code> coherentes, caché Buildx y comprobación de rollout.</li>
+      <li><strong>Fase 8:</strong> Haversine, agenda, mapa y fachadas analíticas están modularizados y tienen una base de pruebas unitarias e infraestructura razonable.</li>
+      <li><strong>Fundación:</strong> .NET 10/C# 14, <code>.slnx</code>, warnings como errores, proyectos separados y rama <code>feature/*</code> cumplen el marco.</li>
+      <li><strong>Higiene:</strong> <code>git diff --check</code> no detectó errores funcionales de whitespace; solo avisos esperables LF/CRLF. No se observaron credenciales incrustadas en el alcance revisado.</li>
+    </ul>
+  </section>
+
+  <section id="plan">
+    <h2>6. Plan de corrección y puerta de salida</h2>
+    <ol>
+      <li><strong>P0 — restaurar viabilidad productiva:</strong> montar certificados OIDC, versionar/aplicar los manifiestos, escoger el Ingress real y reemplazar el pull secret efímero.</li>
+      <li><strong>P0 — integridad de negocio:</strong> cerrar excepción/consumo, concurrencia monetaria y almacenamiento de evidencia.</li>
+      <li><strong>P1 — seguridad y operación:</strong> confiar explícitamente en el proxy, propagar correlación real, diseñar migraciones/readiness y revalidar identidad activa.</li>
+      <li><strong>P1 — exactitud:</strong> arreglar cupos concurrentes, plazo real, zona horaria y métricas históricas.</li>
+      <li><strong>P2 — arquitectura/documentación:</strong> mover puertos a Domain, asegurar la auditoría distribuida y sincronizar contratos/documentos.</li>
+    </ol>
+    <h4>Criterios mínimos para reauditar</h4>
+    <ul>
+      <li>Imágenes construidas y ejecutadas en <code>Production</code>, con usuario no root y certificados montados.</li>
+      <li>Despliegue desde cero en namespace temporal mediante el mismo pipeline que se usará en producción.</li>
+      <li>Pruebas externas de TLS, OIDC, forwarded headers, health, migración, reinicio/reprogramación y pull de imagen posterior al job.</li>
+      <li>Pruebas PostgreSQL reales de concurrencia para pagos, cupos y consumo de excepción.</li>
+      <li>Documentación rebajada a estado real hasta que existan enlaces a ejecuciones y resultados reproducibles.</li>
+      <li>Ningún bloqueante abierto y aceptación explícita de los importantes restantes.</li>
+    </ul>
+  </section>
+
+  <section id="evidencia">
+    <h2>7. Evidencia ejecutada y limitaciones</h2>
+    <table>
+      <thead><tr><th>Verificación</th><th>Resultado</th><th>Valor auditor</th></tr></thead>
+      <tbody>
+        <tr><td><code>dotnet build ... -c Release --no-restore</code></td><td><span class="badge pass">Cumple</span> 0 warnings / 0 errores en ambas soluciones.</td><td>Compilación del código actual, incluido Program.cs de fase 9.</td></tr>
+        <tr><td><code>dotnet test ... -c Release --no-build</code></td><td><span class="badge pass">Cumple</span> 106 + 60 = 166 aprobadas, 0 fallos, 0 omitidas.</td><td>No cubre contenedor, health HTTP, Production, CI/CD ni K3s.</td></tr>
+        <tr><td><code>dotnet list ... package --vulnerable --include-transitive</code></td><td><span class="badge pass">Sin alertas</span></td><td>Consulta NuGet con fuentes configuradas al momento del corte.</td></tr>
+        <tr><td><code>git status/log/show/diff --check</code></td><td><span class="badge important">Con observaciones</span></td><td>Fase 9 sin seguimiento/commit; últimos commits de fase 8 sí inspeccionados.</td></tr>
+        <tr><td>Arranque BackendAdmin en Production</td><td><span class="badge blocker">Falla</span> certificado Signing requerido.</td><td>Confirma el requisito de arranque; el manifiesto no aporta el archivo.</td></tr>
+        <tr><td><code>docker version</code></td><td><span class="badge important">No verificado</span> cliente 28.0.4, daemon inaccesible.</td><td>No se construyó ni ejecutó ninguna imagen.</td></tr>
+        <tr><td><code>kubectl version --client</code></td><td>Cliente 1.32.2 disponible.</td><td>No había cluster/credenciales; no se aplicaron manifiestos.</td></tr>
+        <tr><td>GitHub Actions</td><td><span class="badge important">No verificado</span></td><td>Los workflows no están versionados ni existe ejecución local equivalente.</td></tr>
+      </tbody>
+    </table>
+    <h4>Limitaciones declaradas</h4>
+    <ul>
+      <li>No hubo auditor independiente distinto; esta es autoverificación técnica en modo auditor.</li>
+      <li>No se auditó el código frontend; se observaron sus manifiestos únicamente porque afectan el paquete K3s compartido.</li>
+      <li>No se efectuó despliegue, push, commit, merge, tag ni modificación de código de aplicación.</li>
+      <li>La única escritura realizada fue este informe HTML dentro de <code>cobroup.md/informe</code>.</li>
+    </ul>
+    <p class="small muted"><strong>Corte:</strong> 2026-10-21 21:08:23 -05:00 · America/Bogota.</p>
+  </section>
+
+  <footer>Auditoría técnica COBROUP · Revisión 2 · Informe estático y reproducible</footer>
+</main>
+</body>
+</html>

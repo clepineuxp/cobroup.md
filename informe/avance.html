@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Informe consolidado de avance de COBROUP: fases 1 a 6 cerradas en Git y fase 7 completada funcionalmente.">
+  <title>Informe de avance — COBROUP</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #102a43;
+      --blue: #1d4ed8;
+      --blue-soft: #eff6ff;
+      --green: #087f5b;
+      --green-soft: #ecfdf5;
+      --amber: #a15c00;
+      --amber-soft: #fff8e6;
+      --red: #b42318;
+      --ink: #243b53;
+      --muted: #627d98;
+      --line: #d9e2ec;
+      --surface: #ffffff;
+      --canvas: #f5f7fa;
+      --shadow: 0 12px 30px rgba(16, 42, 67, .08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: var(--blue); }
+    .hero {
+      background: linear-gradient(135deg, #102a43 0%, #123e70 65%, #1d4ed8 100%);
+      color: white;
+      padding: 3.25rem 1.5rem 4.5rem;
+    }
+    .hero-inner, main, footer { width: min(1180px, 100%); margin: 0 auto; }
+    .eyebrow { margin: 0 0 .5rem; font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .78; }
+    h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.08; letter-spacing: -.04em; }
+    .hero p { max-width: 760px; margin: 1rem 0 0; color: #d9eafd; font-size: 1.05rem; }
+    .meta { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.4rem; }
+    .meta span { padding: .4rem .68rem; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(255,255,255,.08); font-size: .83rem; }
+    main { margin-top: -2.4rem; padding: 0 1.25rem 4rem; }
+    section { scroll-margin-top: 1rem; }
+    .panel {
+      margin-bottom: 1.25rem;
+      padding: clamp(1.15rem, 3vw, 2rem);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    h2 { margin: 0 0 1rem; color: var(--navy); font-size: 1.55rem; letter-spacing: -.02em; }
+    h3 { margin: 1.6rem 0 .65rem; color: var(--navy); font-size: 1.15rem; }
+    h4 { margin: 1.2rem 0 .45rem; color: var(--ink); }
+    p { margin: .55rem 0 1rem; }
+    ul, ol { margin: .6rem 0 1rem; padding-left: 1.3rem; }
+    li + li { margin-top: .32rem; }
+    code { padding: .12em .35em; border-radius: 5px; background: #eef2f6; color: #17324d; }
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .85rem; margin: 1.25rem 0; }
+    .kpi { padding: 1rem; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .kpi b { display: block; color: var(--navy); font-size: 1.8rem; line-height: 1; }
+    .kpi span { display: block; margin-top: .45rem; color: var(--muted); font-size: .82rem; }
+    .progress { height: 12px; overflow: hidden; border-radius: 999px; background: #e6edf5; }
+    .progress > span { display: block; width: 77.777%; height: 100%; background: linear-gradient(90deg, var(--green), #28b487); }
+    .progress-label { display: flex; justify-content: space-between; margin-top: .45rem; color: var(--muted); font-size: .8rem; }
+    .status { display: inline-block; padding: .24rem .58rem; border-radius: 999px; font-size: .74rem; font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
+    .complete { background: var(--green-soft); color: var(--green); }
+    .pending { background: var(--amber-soft); color: var(--amber); }
+    .attention { background: #fff1f0; color: var(--red); }
+    .table-wrap { overflow-x: auto; margin: 1rem 0; border: 1px solid var(--line); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; background: white; }
+    th, td { padding: .78rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f0f5fa; color: var(--navy); font-size: .78rem; letter-spacing: .025em; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    .notice { margin: 1rem 0; padding: .9rem 1rem; border-left: 4px solid var(--blue); border-radius: 8px; background: var(--blue-soft); }
+    .notice.warn { border-color: #d97706; background: var(--amber-soft); }
+    .phase-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .phase-card { padding: 1rem; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .phase-card h3 { margin-top: 0; }
+    .phase-card p:last-child { margin-bottom: 0; }
+    .toc { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .toc a { padding: .42rem .68rem; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; font-size: .82rem; background: white; }
+    footer { padding: 0 1.25rem 3rem; color: var(--muted); font-size: .85rem; }
+    @media (max-width: 800px) {
+      .kpis, .phase-grid { grid-template-columns: 1fr 1fr; }
+      .hero { padding-top: 2.3rem; }
+    }
+    @media (max-width: 520px) {
+      .kpis, .phase-grid { grid-template-columns: 1fr; }
+      main { padding-inline: .75rem; }
+      .panel { border-radius: 14px; }
+    }
+    @media print {
+      body { background: white; font-size: 10pt; }
+      .hero { padding: 1.5rem; background: var(--navy) !important; print-color-adjust: exact; }
+      main { margin-top: 0; padding: .5rem 0; }
+      .panel { box-shadow: none; break-inside: avoid; margin-bottom: .5rem; padding: 1rem; }
+      .toc { display: none; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">COBROUP · Seguimiento del producto</p>
+      <h1>Informe de avance</h1>
+      <p>Nueve fases funcionales versionadas; identidad reabierta para adecuación y auditoría bajo el contrato exclusivo JWT. La implementación actual no está aprobada para producción.</p>
+      <div class="meta">
+        <span>Versión 2.1.0</span>
+        <span>Corte: 22 de octubre de 2026</span>
+        <span>Maestro: COBROUP.md 1.7.0</span>
+        <span>Decisión: JWT exclusivo, pendiente de conformidad</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel" aria-labelledby="resumen">
+      <h2 id="resumen">1. Resumen ejecutivo</h2>
+      <p>La funcionalidad histórica de las nueve fases está versionada. La identidad se reabre para implementar exclusivamente JWT con firma asimétrica, validación estricta, refresh seguro, rotación/replay y JWKS. El estado actual no cumple todavía el nuevo contrato ni dispone de aceptación auditora.</p>
+      <div class="kpis">
+        <div class="kpi"><b>9</b><span>fases de la línea base</span></div>
+        <div class="kpi"><b>1</b><span>fase reabierta: identidad</span></div>
+        <div class="kpi"><b>JWT</b><span>contrato exclusivo</span></div>
+        <div class="kpi"><b>NO</b><span>aprobado por auditoría</span></div>
+      </div>
+      <div class="progress" aria-label="ocho fases cerradas y una reabierta"><span style="width: 88.9%;"></span></div>
+      <div class="progress-label"><span>8 cerradas · identidad reabierta</span><span>JWT pendiente de conformidad</span></div>
+      <div class="notice">La decisión vigente está en <code>DECISION_AUTENTICACION_JWT.md</code>. Los cierres históricos no aceptan automáticamente la nueva implementación JWT.</div>
+      <nav class="toc" aria-label="Contenido">
+        <a href="#repositorios">Repositorios</a><a href="#fase8">Fase 8</a><a href="#fase9">Fase 9 K3s/CI-CD</a><a href="#framework">Validación de Frameworks</a><a href="#decisiones">Decisiones</a><a href="#mantenimiento">Actualización</a>
+      </nav>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fase</th><th>Nombre</th><th>Estado</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Fundación y scaffolding</td><td><span class="status complete">COMPLETA</span></td><td>Cuatro repositorios compilables, documentados y con pruebas base.</td></tr>
+            <tr><td>2</td><td>Identidad y aislamiento tenant</td><td><span class="status">REABIERTA — JWT</span></td><td>Autoridad JWT única; implementación y pruebas pendientes de conformidad.</td></tr>
+            <tr><td>3</td><td>Configuración y rutas</td><td><span class="status complete">CERRADA EN GIT</span></td><td>Configuración, rutas, asignaciones, cupos y acceso filtrado.</td></tr>
+            <tr><td>4</td><td>Clientes y alcance operativo</td><td><span class="status complete">FUNCIONAL</span></td><td>Clientes tenant-safe y auditoría; integración de identidad debe revalidarse con JWT.</td></tr>
+            <tr><td>5</td><td>Plantillas y excepciones</td><td><span class="status complete">CERRADA EN GIT</span></td><td>Catálogo versionado, inmutabilidad, solicitudes de excepción y decisión exclusiva Admin (AC-07, AC-08, AC-09); commits 8cc1e42, b3b8e34, b6594be, 674e62b.</td></tr>
+            <tr><td>6</td><td>Préstamos y cronograma</td><td><span class="status complete">CERRADA EN GIT</span></td><td>Originación, snapshot inmutable de términos y plantilla (AC-09), cronograma decimal con ajuste legal exacto (AC-10), cupo de ruta y vistas en ambas PWA; commits 2537925, 57d45d7, 762847f, b1f7f48.</td></tr>
+            <tr><td>7</td><td>Pagos, evidencias y conciliación</td><td><span class="status complete">CERRADA EN GIT</span></td><td>Pagos ordinarios/parciales en cascada (AC-11), idempotencia (AC-12), medios autorizados (AC-13), fotografía auditable admin-only (AC-14) y conciliación diaria (AC-17); commits 03b2748, 6d563c9, f547dd0, e80f442.</td></tr>
+            <tr><td>8</td><td>Mapas, georreferenciación y analítica</td><td><span class="status complete">CERRADA EN GIT</span></td><td>Agenda diaria (AC-16), optimización GPS (Haversine), OpenStreetMap, supervisión multi-ruta y analítica con aging report; commits cf65b00, ed609a5, ddfe552, db29c9a.</td></tr>
+            <tr><td>9</td><td>Endurecimiento y despliegue</td><td><span class="status complete">CERRADA EN GIT</span></td><td>Health checks BD, seguridad HTTP, Docker multi-stage, K3s (cobroup-dev, qa, prod), CI/CD con GHCR/SSH y PWA; commits e02bd65, 91152b1, c3f007f, d218f03.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="repositorios">
+      <h2>2. Repositorios y validación actual</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repositorio</th><th>Responsabilidad</th><th>Estado</th><th>Evidencia</th></tr></thead>
+          <tbody>
+            <tr><td><code>MS.Cobroup.BackendAdmin</code></td><td>Autoridad JWT, administración, supervisión, analítica y auditoría.</td><td><span class="status pending">REABIERTA</span></td><td>Build Release correcto y 61/61 pruebas; migración pendiente; JWT sin commit y no conforme aún con firma asimétrica, cookie segura, hash, rotación y JWKS.</td></tr>
+            <tr><td><code>MS.Cobroup.Backend</code></td><td>Operaciones de clientes, préstamos, cobranza, agenda Haversine, analítica, health checks y contenedor.</td><td><span class="status pending">REVALIDAR JWT</span></td><td>Build Release correcto y 106/106 pruebas; validación JWT estricta y consumo de claves públicas pendientes.</td></tr>
+            <tr><td><code>MF.cobroup-frontend-admin</code></td><td>PWA administrativa con supervisión en mapa, dashboard de analítica, servicios PWA y Nginx.</td><td><span class="status pending">REVALIDAR JWT</span></td><td>Build productivo correcto; 30/31 pruebas Vitest; una prueba del shell falla y el refresh en Web Storage no es conforme.</td></tr>
+            <tr><td><code>MF.cobroup-frontend</code></td><td>PWA operativa con agenda diaria, reordenamiento GPS, mapa de ruta, cobro, servicios PWA y Nginx.</td><td><span class="status pending">REVALIDAR JWT</span></td><td>Build productivo correcto; 27/28 pruebas Vitest; una prueba del shell falla y el refresh en Web Storage no es conforme.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notice"><strong>Estado Git:</strong> funcionalidad histórica versionada; segunda ronda JWT sin commit y sin aceptación auditora. Los backends están en <code>feature/solucion-hallazgos-iniciales</code>.</div>
+    </section>
+
+    <section class="panel" id="fase8">
+      <h2>3. Fase 8 — Mapas, georreferenciación y analítica <span class="status complete">CERRADA EN GIT</span></h2>
+      <p><strong>Objetivo:</strong> proporcionar al cobrador su agenda diaria estructurada de visitas y optimización geográfica por GPS, visualización en mapa con OpenStreetMap y pines de estado, supervisión multi-ruta administrativa y dashboard ejecutivo con Aging Report e indicador PAR%.</p>
+      <p>Cerrada en Git mediante commits locales autorizados: <code>MS.Cobroup.Backend</code> (<code>cf65b00</code>), <code>MS.Cobroup.BackendAdmin</code> (<code>ed609a5</code>), <code>MF.cobroup-frontend</code> (<code>ddfe552</code>), <code>MF.cobroup-frontend-admin</code> (<code>db29c9a</code>).</p>
+    </section>
+
+    <section class="panel" id="fase9">
+      <h2>4. Fase 9 — Endurecimiento y despliegue K3s/Kubernetes <span class="status complete">CERRADA EN GIT</span></h2>
+      <p><strong>Objetivo:</strong> empaquetado OCI inmutable, observabilidad técnica, seguridad de transporte, manifiestos K3s multi-ambiente y CI/CD automatizado vía GitHub Actions.</p>
+      <p>Cerrada en Git mediante commits locales autorizados: <code>MS.Cobroup.Backend</code> (<code>e02bd65</code>), <code>MS.Cobroup.BackendAdmin</code> (<code>91152b1</code>), <code>MF.cobroup-frontend</code> (<code>c3f007f</code>), <code>MF.cobroup-frontend-admin</code> (<code>d218f03</code>).</p>
+      <h3>Entregables completados</h3>
+      <ul>
+        <li><strong>Health checks avanzados de base de datos:</strong> endpoints <code>/health/live</code> y <code>/health/ready</code> en ambos backend verificando conectividad a PostgreSQL.</li>
+        <li><strong>Seguridad HTTP y Reverse Proxy:</strong> configuración de <code>UseForwardedHeaders</code> para soporte de Ingress Traefik y middleware de cabeceras de seguridad (<code>X-Content-Type-Options</code>, <code>X-Frame-Options</code>, <code>Referrer-Policy</code>) y rastreo de trazabilidad con <code>X-Correlation-ID</code>.</li>
+        <li><strong>Contenedores multi-stage no privilegiados:</strong> Dockerfiles optimizados para .NET 10 y Nginx 1.27 en puerto 8080 con usuarios sin privilegios (<code>1000:1000</code> y <code>nginx</code>).</li>
+        <li><strong>Manifiestos K3s / Kubernetes (<code>k8s/</code>):</strong> plantillas declarativas para Deployments, Services, ConfigMaps, Secrets e Ingress Traefik con soporte de ambientes dinámicos: <code>cobroup-dev</code>, <code>cobroup-qa</code>, <code>cobroup-prod</code>.</li>
+        <li><strong>Automatización CI/CD con GitHub Actions:</strong> flujos <code>.github/workflows/ci-cd.yml</code> en los 4 repositorios que ejecutan pruebas automatizadas, publican imágenes en GitHub Container Registry (GHCR) y despliegan vía SSH en el cluster K3s aplicando variables y secretos de GitHub por ambiente.</li>
+        <li><strong>Servicios PWA:</strong> <code>PwaUpdateService</code> y <code>PwaInstallService</code> en ambas PWA para actualización automática e instalación en dispositivos.</li>
+      </ul>
+      <h3>Evidencia histórica y corte JWT actual</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Componente</th><th>Pruebas</th><th>Build</th><th>Verificación de Framework</th></tr></thead>
+          <tbody>
+            <tr><td>MS.Cobroup.BackendAdmin</td><td>61/61</td><td>Release correcto</td><td>Modelo con cambios pendientes de migración; JWT no aprobado</td></tr>
+            <tr><td>MS.Cobroup.Backend</td><td>106/106</td><td>Release correcto</td><td>JWT pendiente de validación estricta y claves públicas</td></tr>
+            <tr><td>MF.cobroup-frontend-admin</td><td>30/31</td><td>Production correcto</td><td>Una prueba fallida; refresh en Web Storage no conforme</td></tr>
+            <tr><td>MF.cobroup-frontend</td><td>27/28</td><td>Production correcto</td><td>Una prueba fallida; refresh en Web Storage no conforme</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="framework">
+      <h2>5. Validación de cumplimiento de marcos de desarrollo</h2>
+      <p>Auditoría técnica de los cuatro repositorios frente a los estándares canónicos del proyecto:</p>
+      <h3>5.1 Framework C# / Backend (FRAMEWORK_DESARROLLO_CSHARP.md v2.0)</h3>
+      <ul>
+        <li><strong>Rama autorizada:</strong> verificación de rama <code>feature/fase-9-endurecimiento-despliegue</code> en ambos backend.</li>
+        <li><strong>Arquitectura hexagonal:</strong> observabilidad implementada en <code>Api/Health</code> sin acoplamiento a la lógica de negocio del dominio.</li>
+        <li><strong>Seguridad perimetral:</strong> middleware de seguridad HTTP inyectado en el pipeline ASP.NET Core.</li>
+        <li><strong>Aislamiento multi-tenant:</strong> separación estricta en base de datos PostgreSQL y en Kubernetes por namespaces (<code>cobroup-dev</code>, <code>cobroup-qa</code>, <code>cobroup-prod</code>).</li>
+      </ul>
+      <h3>5.2 Framework Frontend (FRAMEWORK_DESARROLLO_FRONTEND.md v1.0)</h3>
+      <ul>
+        <li><strong>Servicios core PWA:</strong> <code>PwaUpdateService</code> y <code>PwaInstallService</code> desacoplados en <code>core/pwa</code>.</li>
+        <li><strong>Tokens semánticos de temas:</strong> uso exclusivo de variables CSS <code>var(--color-...)</code> en componentes.</li>
+        <li><strong>Presupuestos CSS estrictos:</strong> todos los componentes de ambas PWA compilan bajo el límite de 4.00 kB sin advertencias.</li>
+        <li><strong>Pruebas en Vitest:</strong> 59 pruebas frontend automatizadas ejecutadas y pasando con <code>--watch=false</code>.</li>
+      </ul>
+    </section>
+
+    <section class="panel" id="decisiones">
+      <h2>6. Decisiones de arquitectura cerradas</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Decisión</th><th>Estado o impacto</th></tr></thead>
+          <tbody>
+            <tr><td>ADR-001</td><td>Bootstrap local y aprovisionamiento resuelto con variables y secrets de Kubernetes K3s.</td></tr>
+            <tr><td>ADR-003</td><td>Fórmula de amortización y ajuste legal de centavos resueltos y probados en Fase 6.</td></tr>
+            <tr><td>ADR-006</td><td>Proveedor de mapas resuelto con OpenStreetMap / raster grid libre de costos y sin API keys.</td></tr>
+            <tr><td>ADR-007</td><td>Pagos, cascada e idempotencia resueltos e implementados en Fase 7.</td></tr>
+            <tr><td>ADR-008</td><td>Operación PWA asistida por Service Worker y caché estática en Fase 9.</td></tr>
+            <tr><td>ADR-010</td><td>Retiro administrativo auditable de evidencias completado en Fase 7 (AC-14).</td></tr>
+            <tr><td>ADR-012</td><td>Infraestructura K3s, CI/CD con GitHub Actions, GHCR y SSH resuelta en Fase 9.</td></tr>
+            <tr><td>JWT exclusivo</td><td>Decisión aprobada el 2026-10-22; implementación reabierta bajo <code>DECISION_AUTENTICACION_JWT.md</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>7. Próximo hito</h2>
+      <p>Adecuar la implementación al contrato JWT, dejar todas las pruebas verdes y solicitar auditoría sobre un commit inmutable. No desplegar antes del cierre.</p>
+    </section>
+
+    <section class="panel" id="mantenimiento">
+      <h2>8. Método de actualización</h2>
+      <ol>
+        <li>Incrementar versión y fecha del informe.</li>
+        <li>Actualizar indicadores y tabla de fases.</li>
+        <li>Registrar entregables por repositorio y evidencia de build, tests y migraciones.</li>
+        <li>Sincronizar COBROUP.md, AGENTS, contratos y roadmaps afectados.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Conclusión:</strong> la decisión vigente es autenticación exclusiva JWT. La identidad está reabierta y no se considera conforme hasta cerrar firma asimétrica, validación estricta, refresh seguro, rotación/replay, cambio de tenant, ingress, migraciones y pruebas.</p>
+  </footer>
+</body>
+</html>

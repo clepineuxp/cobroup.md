@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>COBROUP · Auditoría Git JWT · 2026-10-22 v4</title>
+  <style>
+    :root{--ink:#172033;--muted:#667085;--line:#d8dee8;--bg:#eef2f6;--navy:#163b66;--teal:#0e7490;--red:#b42318;--redbg:#fff1f0;--amber:#9a6700;--amberbg:#fff8db;--green:#067647;--greenbg:#ecfdf3;--blue:#175cd3;--bluebg:#eff8ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,Segoe UI,Arial,sans-serif}main{max-width:1180px;margin:auto;background:white;min-height:100vh;box-shadow:0 0 30px #10182816}
+    header{padding:46px 56px 35px;color:white;background:linear-gradient(135deg,#102b4c,#173f6d 62%,#0e7490)}header h1{margin:7px 0 9px;font-size:34px;line-height:1.15}header p{margin:0;color:#d6e7f3;max-width:900px}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-weight:800;font-size:12px;color:#a6e3f1}
+    .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:25px}.meta div{border:1px solid #ffffff3d;background:#ffffff12;border-radius:10px;padding:12px 14px}.meta small{display:block;color:#bad6e8}.meta strong{display:block;margin-top:2px}
+    nav{position:sticky;top:0;z-index:4;display:flex;gap:18px;overflow:auto;padding:12px 56px;border-bottom:1px solid var(--line);background:white}nav a{color:var(--navy);font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap}
+    section{padding:30px 56px;border-bottom:1px solid var(--line)}h2{margin:0 0 17px;color:var(--navy);font-size:24px}h3{margin:0 0 9px;font-size:17px}p{margin:8px 0}code{font-family:Consolas,monospace;font-size:.91em;background:#f1f4f8;border-radius:4px;padding:1px 4px;overflow-wrap:anywhere}
+    .verdict{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:center;border:2px solid var(--red);background:var(--redbg);border-radius:14px;padding:21px}.stamp{text-align:center;color:var(--red);font-size:23px;font-weight:900;letter-spacing:.08em}.stamp small{display:block;font-size:11px;letter-spacing:.12em}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:17px}.metric{border:1px solid var(--line);background:#fafbfd;border-radius:11px;padding:14px}.metric b{display:block;color:var(--navy);font-size:25px}.metric span{font-size:12px;color:var(--muted)}
+    .callout{margin:14px 0;padding:14px 16px;border-left:4px solid var(--blue);border-radius:7px;background:var(--bluebg)}.callout.good{border-color:var(--green);background:var(--greenbg)}.callout.warn{border-color:var(--amber);background:var(--amberbg)}.callout.danger{border-color:var(--red);background:var(--redbg)}
+    table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{padding:10px 12px;border:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f5f7fa;color:#344054}tr:nth-child(even) td{background:#fbfcfe}
+    .badge{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.blocker{background:#fee4e2;color:#b42318}.important{background:#fef0c7;color:#93370d}.minor{background:#eaf2ff;color:#175cd3}.fixed{background:#dcfae6;color:#067647}.partial{background:#fef0c7;color:#93370d}.open{background:#fee4e2;color:#b42318}
+    .finding{border:1px solid var(--line);border-left:5px solid var(--red);border-radius:10px;padding:17px 18px;margin:13px 0}.finding dl{display:grid;grid-template-columns:115px 1fr;gap:5px 12px;margin:8px 0 0}.finding dt{font-weight:800;color:#344054}.finding dd{margin:0 0 6px;color:#344054}
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{border:1px solid #a6f4c5;background:#f6fef9;border-radius:10px;padding:15px}.card h3{color:var(--green);font-size:15px}.small{font-size:12px;color:var(--muted)}ul,ol{padding-left:22px}li{margin:5px 0}footer{padding:24px 56px 40px;background:#f8fafc;color:var(--muted);font-size:12px}
+    @media(max-width:800px){header,section,footer{padding-left:22px;padding-right:22px}nav{padding-left:22px}.meta,.metrics,.cards,.verdict{grid-template-columns:1fr}.finding dl{grid-template-columns:1fr}.finding dd{margin-bottom:9px}}
+    @media print{body{background:#fff}main{max-width:none;box-shadow:none}nav{display:none}.finding,.card,table{break-inside:avoid}header{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+  </style>
+</head>
+<body><main>
+  <header>
+    <div class="eyebrow">Auditoría independiente del estado Git · v4</div>
+    <h1>COBROUP — Revisión posterior a remediación JWT</h1>
+    <p>Auditoría de los commits recientes y del working tree actual frente a FRAMEWORK_DESARROLLO_CSHARP 2.0 y DECISION_AUTENTICACION_JWT. El análisis incluye Backend, BackendAdmin, dos frontends y GitOps.</p>
+    <div class="meta">
+      <div><small>Corte</small><strong>2026-10-22 12:17 COT</strong></div>
+      <div><small>Dictamen</small><strong>NO APROBADO</strong></div>
+      <div><small>Pruebas reportadas</small><strong>269 / 269</strong></div>
+      <div><small>Git</small><strong>Commits nuevos + WIP</strong></div>
+    </div>
+  </header>
+
+  <nav><a href="#resumen">Resumen</a><a href="#git">Corte Git</a><a href="#bien">Avances</a><a href="#bloqueantes">Bloqueantes</a><a href="#importantes">Importantes</a><a href="#traza">Trazabilidad</a><a href="#evidencia">Evidencia</a><a href="#dictamen">Dictamen</a></nav>
+
+  <section id="resumen">
+    <h2>1. Resumen ejecutivo</h2>
+    <div class="verdict"><div class="stamp"><small>DICTAMEN AUDITOR</small>NO APROBADO</div><div><strong>La iteración reduce hallazgos, pero introduce dos regresiones que bloquean la autenticación real.</strong> La cookie, CSRF, rutas, bloqueo de fila, paquetes heredados y configuración GitOps avanzaron. Sin embargo, el callback de JwtBearer exige <code>JwtSecurityToken</code> cuando el manejador moderno entrega <code>JsonWebToken</code>, por lo que los bearer válidos serán rechazados. Además, precarga, validación y readiness usan instancias JWKS transitorias distintas, de modo que la clave cargada no llega a los consumidores correctos.</div></div>
+    <div class="metrics">
+      <div class="metric"><b>5</b><span>bloqueantes actuales</span></div>
+      <div class="metric"><b>13</b><span>importantes actuales</span></div>
+      <div class="metric"><b>3</b><span>menores</span></div>
+      <div class="metric"><b>269</b><span>pruebas en verde</span></div>
+      <div class="metric"><b>0</b><span>warnings de build</span></div>
+    </div>
+    <div class="callout warn"><strong>Advertencia sobre el verde:</strong> la prueba PostgreSQL de concurrencia retorna silenciosamente cuando no existe conexión o la base no responde, y xUnit la contabiliza como aprobada. Por tanto, 269/269 no demuestra que el escenario concurrente se haya ejecutado.</div>
+  </section>
+
+  <section id="git">
+    <h2>2. Corte Git auditado</h2>
+    <table><thead><tr><th>Repositorio</th><th>HEAD actual</th><th>Working tree</th></tr></thead><tbody>
+      <tr><td>MS.Cobroup.Backend</td><td><code>9377ab0</code><br><span class="small">feat(security): JWKS, evidencias, autorización y términos</span></td><td>9 archivos modificados/nuevos: validator, precarga, health y pruebas.</td></tr>
+      <tr><td>MS.Cobroup.BackendAdmin</td><td><code>724066c</code><br><span class="small">migración de refresh; anterior <code>536eb94</code> implementa JWT</span></td><td>10 archivos modificados/nuevos: JWT estricto, cookie/CSRF y concurrencia.</td></tr>
+      <tr><td>MF.cobroup-frontend</td><td><code>7909db9</code></td><td>3 cambios: antiforgery, ruta de contexto y pruebas.</td></tr>
+      <tr><td>MF.cobroup-frontend-admin</td><td><code>a1f1e1b</code></td><td>2 cambios: antiforgery y pruebas.</td></tr>
+      <tr><td>cobroup.environments</td><td><code>1e7b601</code></td><td>12 cambios: variables RSA/JWKS y workflows aún sin commit.</td></tr>
+    </tbody></table>
+    <div class="callout"><strong>Cambio respecto del v3:</strong> ya existen commits posteriores al informe anterior. Esta auditoría no asume que “todo está sin commit”; evalúa los nuevos HEAD y el bloque adicional sin commit.</div>
+  </section>
+
+  <section id="bien">
+    <h2>3. Avances correctamente orientados</h2>
+    <div class="cards">
+      <article class="card"><h3>Cookie única y estándar</h3><p>Se eliminó el fallback duplicado. <code>__Host-cobroup-refresh</code> usa HttpOnly, Secure, SameSite Strict, sin Domain y <code>Path=/</code>; borrado y lectura usan el mismo nombre/path.</p></article>
+      <article class="card"><h3>CSRF aplicado</h3><p>Refresh, logout y cambio de organización declaran <code>ValidateAntiForgeryToken</code>. Los frontends obtienen el request token, incluyen credenciales y envían <code>X-XSRF-TOKEN</code>.</p></article>
+      <article class="card"><h3>Rutas alineadas estáticamente</h3><p>El contexto operativo está disponible bajo <code>/api/operations/v1/session/me</code> y el frontend usa esa ruta. El ingress de identidad continúa aislado con rewrite específico.</p></article>
+      <article class="card"><h3>Rotación con bloqueo de fila</h3><p>PostgreSQL usa <code>SELECT ... FOR UPDATE</code> dentro de transacción, evitando dos actualizaciones simultáneas del padre. La revocación ya no confía directamente en claims sin firma.</p></article>
+      <article class="card"><h3>Retiro de paquetes</h3><p>Backend eliminó referencias runtime <code>OpenIddict.Validation.*</code>. Firma RS256, <code>kid</code>, issuer y audience permanecen activos.</p></article>
+      <article class="card"><h3>GitOps JWT</h3><p>Los manifiestos declaran audience/JWKS y sustituyen el secreto HMAC por <code>Jwt__KeyId</code> y clave privada solo en Admin Backend.</p></article>
+      <article class="card"><h3>Gate técnico</h3><p>Ambas soluciones .NET compilan con 0 warnings/0 errores; los frontends construyen y todas las suites reportan verde.</p></article>
+      <article class="card"><h3>Dependencias y migraciones</h3><p>No hay cambios pendientes en los modelos EF ni vulnerabilidades conocidas reportadas por NuGet/npm en dependencias productivas.</p></article>
+    </div>
+  </section>
+
+  <section id="bloqueantes">
+    <h2>4. Hallazgos bloqueantes</h2>
+
+    <article class="finding"><h3>B-14 · <span class="badge blocker">Bloqueante nuevo</span> Todos los bearer válidos pueden fallar por tipo de SecurityToken incompatible</h3><dl>
+      <dt>Evidencia</dt><dd>Ambos <code>AccessJwtValidator.cs:29-32</code> rechazan todo objeto que no sea <code>JwtSecurityToken</code>. Ambos <code>Program.cs</code> usan JwtBearer sin <code>UseSecurityTokenValidators=true</code>. Desde ASP.NET Core 8, el manejador predeterminado entrega <code>JsonWebToken</code> en <code>OnTokenValidated</code>. Las pruebas invocan manualmente <code>JwtSecurityTokenHandler</code>, por lo que no reproducen el middleware.</dd>
+      <dt>Impacto</dt><dd>Un access JWT correcto supera firma/issuer/audience y luego es rechazado por el callback; APIs protegidas responden 401 de forma general.</dd>
+      <dt>Corrección</dt><dd>Soportar <code>JsonWebToken</code> sin downcast frágil o configurar conscientemente el validador legado; preferir claims del principal y probar el pipeline HTTP real.</dd>
+      <dt>Referencia</dt><dd><a href="https://learn.microsoft.com/en-us/aspnet/core/breaking-changes/8/securitytoken-events?view=aspnetcore-10.0">Microsoft Learn: Security token events return a JsonWebToken</a>.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-15 · <span class="badge blocker nuevo">Bloqueante nuevo</span> La precarga y readiness JWKS no comparten la caché usada para autenticar</h3><dl>
+      <dt>Evidencia</dt><dd><code>Program.cs:96-97</code> registra <code>IJwksValidationService</code> mediante <code>AddHttpClient&lt;T&gt;</code>, que crea un typed client transitorio. Hosted service, configuración JwtBearer y <code>JwksHealthCheck</code> reciben instancias distintas con cachés de instancia separadas.</dd>
+      <dt>Impacto</dt><dd>La precarga exitosa no alimenta al resolver de firma. Readiness puede permanecer unhealthy porque su instancia nace sin claves; el primer bearer con un <code>kid</code> válido se rechaza mientras otra instancia refresca en background.</dd>
+      <dt>Corrección</dt><dd>Separar HttpClient del almacén de claves y registrar una caché/servicio compartido singleton seguro; precarga, resolver y health deben observar el mismo estado.</dd>
+      <dt>Verificación</dt><dd>Test de DI con identidad de instancia/estado, arranque no-Development, readiness verde tras precarga y primer request autenticado exitoso.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-13 · <span class="badge blocker">Bloqueante</span> El Secret RSA renderizado por workflow produce YAML inválido</h3><dl>
+      <dt>Evidencia</dt><dd><code>secret.yaml</code> inserta <code>Jwt__PrivateKeyPem</code> dentro de comillas en una sola línea. La sustitución Python pega el PEM multilínea literalmente. Reproducción auditora con un PEM de prueba: <code>kubectl create --dry-run=client -f -</code> falla con “invalid Yaml document separator”.</dd>
+      <dt>Impacto</dt><dd>El pipeline no puede aplicar un Secret real con formato PEM estándar. Kustomize verde antes de sustituir placeholders es un falso positivo de despliegue.</dd>
+      <dt>Corrección</dt><dd>Usar bloque YAML correctamente indentado, base64 controlado o Secret montado/gestor externo; validar el manifiesto después de sustituir y sin imprimir la clave.</dd>
+      <dt>Verificación</dt><dd>Render post-sustitución con PEM multilínea de prueba, server-side dry-run/namespace limpio y arranque real de Admin Backend.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-05 · <span class="badge blocker">Bloqueante de evidencia</span> La concurrencia PostgreSQL puede aprobar sin ejecutarse</h3><dl>
+      <dt>Evidencia</dt><dd><code>PostgresRefreshTokenConcurrencyTests.cs:30-50</code> hace <code>return</code> si falta connection string, no conecta o lanza excepción. xUnit lo reporta Passed, no Skipped. Además <code>líneas 134-140</code> no verifican cuántos descendientes quedan activos ni la revocación final de la familia.</dd>
+      <dt>Impacto</dt><dd>No existe evidencia reproducible de que la carrera se ejecutó. El contador 269/269 puede ocultar ausencia total de PostgreSQL.</dd>
+      <dt>Corrección</dt><dd>Fallar el gate o marcar Skip explícito cuando la dependencia falta; afirmar estado final: un éxito, cero 500, padre revocado y familia/descendiente según contrato.</dd>
+      <dt>Verificación</dt><dd>Salida CI que identifique PostgreSQL usado y assertions completas repetidas varias veces.</dd>
+    </dl></article>
+
+    <article class="finding"><h3>B-09 · <span class="badge blocker">Bloqueante heredado</span> Evidencias siguen en disco local y QA/producción carecen de configuración</h3><dl>
+      <dt>Evidencia</dt><dd>El adaptador sigue siendo <code>LocalFileStorageService</code>; no hay PVC/object storage. Backend exige <code>Storage:EvidencePath</code> fuera de Development, pero los manifests QA/prod no lo definen. Producción mantiene múltiples réplicas.</dd>
+      <dt>Impacto</dt><dd>Backend QA/prod falla al iniciar; si se añade una ruta local, persisten pérdida/404 entre réplicas y reinicios.</dd>
+      <dt>Corrección</dt><dd>Almacenamiento durable compartido y configuración real por ambiente, con prueba entre réplicas/restart.</dd>
+      <dt>Estado</dt><dd>Fuera del alcance del último prompt; permanece abierto correctamente, pero impide aprobación global.</dd>
+    </dl></article>
+  </section>
+
+  <section id="importantes">
+    <h2>5. Hallazgos importantes y menores</h2>
+    <table><thead><tr><th>ID</th><th>Nivel</th><th>Hallazgo actual</th><th>Acción requerida</th></tr></thead><tbody>
+      <tr><td>I-18</td><td><span class="badge important">Importante</span></td><td>Validación de claims aún incompleta: <code>AccessJwtValidator</code> no exige presencia de <code>iat</code> ni <code>nbf</code>. <code>JwtTokenService.cs:210-227</code> inventa <code>organization_code="DEFAULT"</code> si falta la organización.</td><td>Rechazar emisión sin organización cargada y exigir todos los claims del contrato; agregar casos negativos individuales.</td></tr>
+      <tr><td>I-19</td><td><span class="badge important">Importante</span></td><td>Logout no reintenta antiforgery vencido y descarta cualquier respuesta: limpia memoria aun si el servidor no revocó familia/cookie.</td><td>Renovar antiforgery una vez ante fallo atribuible a CSRF; informar cierre remoto fallido sin conservar estado sensible local.</td></tr>
+      <tr><td>I-02</td><td><span class="badge important">Importante</span></td><td>No hay prueba HTTP real de JwtBearer, atributos CSRF, <code>Set-Cookie</code>, borrado ni flujo por ingress. Las nuevas pruebas validan clases aisladas.</td><td>WebApplicationFactory/TestServer y navegador/ingress real; evitar tests que retornan como Passed.</td></tr>
+      <tr><td>I-04</td><td><span class="badge important">Importante</span></td><td>Rate limit sigue fijo por IP, sin sujeto/token, bloqueo progresivo ni auditoría de abuso.</td><td>Completar el contrato de seguridad operacional.</td></tr>
+      <tr><td>I-06</td><td><span class="badge important">Importante</span></td><td>Zona horaria continúa fija en <code>America/Bogota</code>.</td><td>Zona IANA por tenant e intervalos diarios semiabiertos.</td></tr>
+      <tr><td>I-07</td><td><span class="badge important">Importante</span></td><td>Analítica a fecha de corte continúa usando saldos/estado actual.</td><td>Eventos, snapshots o proyección temporal verificable.</td></tr>
+      <tr><td>I-08</td><td><span class="badge important">Importante</span></td><td>Forwarded headers confían por defecto en redes privadas completas.</td><td>Configurar exclusivamente IP/CIDR del ingress.</td></tr>
+      <tr><td>I-09</td><td><span class="badge important">Importante</span></td><td>La validación de placeholders solo cubre JWT; los workflows aún pueden copiar otros placeholders vacíos y no validan todo el render final.</td><td>Gate integral post-sustitución y fail-fast antes de SCP.</td></tr>
+      <tr><td>I-10</td><td><span class="badge important">Importante</span></td><td>Producción usa imágenes <code>:latest</code>; dev/qa usan tags mutables.</td><td>Promover digest/SHA inmutable.</td></tr>
+      <tr><td>I-11</td><td><span class="badge important">Importante</span></td><td>No hay Job de migración ni readiness consciente de versión de esquema.</td><td>Migración idempotente previa al rollout y gate de versión.</td></tr>
+      <tr><td>I-13</td><td><span class="badge important">Importante</span></td><td>Decisión remota de excepción y auditoría local continúan sin outbox/inbox.</td><td>Idempotencia, reintento y reconciliación transaccional.</td></tr>
+      <tr><td>I-15</td><td><span class="badge important">Importante</span></td><td>Los paquetes runtime se retiraron, pero <code>scripts/validate-phase4-integration.ps1</code> continúa invocando <code>/connect/authorize</code> y <code>/connect/token</code>.</td><td>Retirar o archivar fuera del flujo ejecutable, conservando evidencia histórica.</td></tr>
+      <tr><td>I-16</td><td><span class="badge important">Importante</span></td><td>El bloqueo síncrono y el Release incorrecto se corrigieron; ante falla JWKS, cada unknown <code>kid</code> puede volver a lanzar refresh en background sin backoff de fallo.</td><td>Backoff compartido, cancelación y métricas; resolver primero B-15.</td></tr>
+      <tr><td>M-02</td><td><span class="badge minor">Menor</span></td><td><code>PaymentService.AttachEvidenceAsync</code> interno aún acepta metadatos/ruta sin contenido.</td><td>Retirar API interna para impedir reutilización.</td></tr>
+      <tr><td>M-03</td><td><span class="badge minor">Menor</span></td><td><code>SessionController</code> conserva la ruta antigua y la nueva.</td><td>Definir periodo de compatibilidad o retirar alias tras comprobar consumidores.</td></tr>
+      <tr><td>M-04</td><td><span class="badge minor">Menor</span></td><td>Los frontends reintentan cualquier HTTP 400 como si fuera antiforgery vencido.</td><td>Distinguir fallo CSRF de errores de validación para no duplicar requests ajenos al token.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="traza">
+    <h2>6. Trazabilidad frente al informe v3</h2>
+    <table><thead><tr><th>Hallazgo v3</th><th>Estado v4</th><th>Conclusión</th></tr></thead><tbody>
+      <tr><td>B-05</td><td><span class="badge partial">Implementado, no demostrado</span></td><td>El bloqueo de fila es un avance; la prueba puede no ejecutarse y no valida el estado final.</td></tr>
+      <tr><td>B-06</td><td><span class="badge partial">Corregido estático</span></td><td>Cookie y rutas quedaron coherentes en código; falta flujo real por ingress.</td></tr>
+      <tr><td>B-11</td><td><span class="badge open">Regresión bloqueante</span></td><td>Se añadieron reglas, pero el downcast incompatible puede rechazar todos los tokens; además faltan <code>iat</code>/<code>nbf</code>.</td></tr>
+      <tr><td>B-12</td><td><span class="badge partial">Avance material</span></td><td>CSRF ya se exige y el frontend envía token; faltan pruebas HTTP y cierre robusto de logout.</td></tr>
+      <tr><td>B-13</td><td><span class="badge open">Parcial con defecto</span></td><td>Se eliminaron variables HMAC, pero PEM multilínea rompe YAML y Backend sigue sin storage en QA/prod.</td></tr>
+      <tr><td>B-09</td><td><span class="badge open">Abierto</span></td><td>Sin cambio, fuera del bloque de remediación.</td></tr>
+      <tr><td>I-15</td><td><span class="badge partial">Parcial</span></td><td>Paquetes OpenIddict retirados; script legado continúa activo.</td></tr>
+      <tr><td>I-16</td><td><span class="badge partial">Parcial / regresión DI</span></td><td>Se eliminó sync-over-async, pero la caché no es compartida.</td></tr>
+      <tr><td>I-17</td><td><span class="badge fixed">Cerrado en código</span></td><td>Los claims de un token no encontrado solo se usan tras validación criptográfica.</td></tr>
+      <tr><td>M-01</td><td><span class="badge fixed">Cerrado</span></td><td>Existe una sola cookie refresh con atributos coherentes.</td></tr>
+      <tr><td>M-03 v3</td><td><span class="badge fixed">Cerrado</span></td><td>Conflicto EF Core 10.0.4/10.0.11 resuelto; build Admin sin warnings.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="evidencia">
+    <h2>7. Evidencia ejecutada</h2>
+    <table><thead><tr><th>Control</th><th>Resultado</th><th>Interpretación</th></tr></thead><tbody>
+      <tr><td>Build Release no incremental</td><td>Backend y BackendAdmin: 0 warnings, 0 errores.</td><td>Gate de compilación limpio.</td></tr>
+      <tr><td>Pruebas .NET</td><td>Backend 120/120; BackendAdmin 82/82.</td><td>202 pruebas reportadas Passed; concurrencia puede no haberse ejecutado.</td></tr>
+      <tr><td>Pruebas frontend</td><td>Operativo 32/32; Admin 35/35.</td><td>67 pruebas; ambos builds Angular exitosos.</td></tr>
+      <tr><td>Total</td><td>269/269 reportadas Passed.</td><td>No equivale a flujo JWT HTTP/ingress verificado.</td></tr>
+      <tr><td>EF pending model changes</td><td>Sin cambios pendientes en ambos backends.</td><td>Modelo/snapshot reconciliados.</td></tr>
+      <tr><td>NuGet/npm audit</td><td>Sin vulnerabilidades conocidas reportadas.</td><td>Según feeds consultados.</td></tr>
+      <tr><td>Kustomize dev/qa/prod</td><td>Los tres renderizan antes de sustituir secretos.</td><td>Validez sintáctica de plantillas, no del resultado del workflow.</td></tr>
+      <tr><td>PEM post-sustitución</td><td>Falla: YAML inválido.</td><td>Reproducción directa del bloqueante B-13.</td></tr>
+      <tr><td>Docker</td><td>Engine no disponible.</td><td>Imágenes y ejecución no verificadas.</td></tr>
+      <tr><td>Browser/ingress real</td><td>No ejecutado.</td><td>No hay evidencia de login→me→refresh→switch→logout.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="dictamen">
+    <h2>8. Dictamen y siguiente orden</h2>
+    <p><strong>No se recomienda aprobar, mergear ni desplegar este corte.</strong> El bloque sí redujo deuda, pero debe pasar otra corrección focal antes de una nueva auditoría.</p>
+    <ol>
+      <li>Resolver B-14 soportando <code>JsonWebToken</code> y agregar prueba HTTP real que acepte un access token válido.</li>
+      <li>Resolver B-15 con estado JWKS singleton compartido entre precarga, auth y readiness.</li>
+      <li>Corregir serialización del PEM y validar el YAML posterior a sustitución.</li>
+      <li>Convertir la prueba PostgreSQL en gate real: Skip visible o fallo, nunca retorno silencioso; completar assertions.</li>
+      <li>Exigir <code>iat</code>/<code>nbf</code>, eliminar <code>organization_code=DEFAULT</code> y completar pruebas de CSRF/cookie HTTP.</li>
+      <li>Mantener B-09 y demás hallazgos fuera de alcance como abiertos, sin declarar aprobación global.</li>
+    </ol>
+    <div class="callout danger"><strong>Conclusión:</strong> avance significativo, pero la autenticación real y el despliegue de claves todavía tienen fallos bloqueantes verificables.</div>
+  </section>
+
+  <footer>Informe producido en rol auditor independiente. No se modificó código, configuración, pruebas, migraciones ni manifiestos; únicamente se creó este HTML. No se ejecutó commit, push, merge, tag, PR ni despliegue.</footer>
+</main></body></html>

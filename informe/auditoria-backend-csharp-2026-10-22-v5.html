@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COBROUP · Auditoría Git JWT · 2026-10-22 v5</title>
+  <style>
+    :root{--bg:#0b1220;--panel:#111b2e;--panel2:#17243a;--text:#e7edf7;--muted:#9fb0c8;--line:#2a3b56;--red:#ff6b6b;--amber:#f6c85f;--green:#55d69e;--blue:#6fb1ff;--violet:#b69cff}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(140deg,#07101e 0%,var(--bg) 58%,#10172a 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55}
+    main{max-width:1180px;margin:auto;padding:34px 24px 70px} h1,h2,h3{line-height:1.2} h1{font-size:2rem;margin:.2rem 0 .5rem} h2{font-size:1.35rem;margin:0 0 1rem} h3{font-size:1.02rem;margin:0 0 .65rem} p{margin:.45rem 0 1rem} a{color:#9bc7ff} code{background:#091323;border:1px solid #263b59;border-radius:5px;padding:.08rem .32rem;color:#d8e8ff}
+    .eyebrow{text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:700;font-size:.77rem}.lead{color:var(--muted);max-width:900px}.meta{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}.meta span,.badge{border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.78rem;font-weight:700}.badge.blocker{border-color:#913d48;color:#ff9ca3;background:#3a1720}.badge.important{border-color:#8b6a28;color:#ffd878;background:#352a12}.badge.minor{border-color:#3d668f;color:#a9d1ff;background:#14283d}.badge.fixed{border-color:#287257;color:#7ce3b5;background:#123228}.badge.partial{border-color:#68578f;color:#ccbaff;background:#241d3b}
+    section{background:rgba(17,27,46,.93);border:1px solid var(--line);border-radius:14px;padding:23px;margin:18px 0;box-shadow:0 14px 38px rgba(0,0,0,.18)}
+    .verdict{border-left:5px solid var(--red)}.verdict strong{color:#ff9ca3}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}.card{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:15px}.card b{display:block;font-size:1.55rem}.card small{color:var(--muted)}
+    table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:10px 9px}th{color:#bfd3ee;background:#0d1829;position:sticky;top:0}.scroll{overflow:auto;border:1px solid var(--line);border-radius:9px}
+    article.finding{background:#0e192a;border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:17px;margin:12px 0}article.finding.block{border-left-color:var(--red)} article.finding.minor{border-left-color:var(--blue)}
+    dl{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;margin:0}dt{color:var(--muted);font-weight:700}dd{margin:0}ul,ol{padding-left:1.35rem}li{margin:.35rem 0}.ok{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}.muted{color:var(--muted)}
+    .callout{border:1px solid #784852;background:#2a151d;border-radius:10px;padding:14px;margin:13px 0}.good{border-color:#2e6e57;background:#102b23}.mono{font-family:Cascadia Code,Consolas,monospace;font-size:.82rem;white-space:pre-wrap;background:#091323;border:1px solid #263b59;border-radius:8px;padding:12px;overflow:auto}
+    footer{color:var(--muted);font-size:.83rem;margin-top:25px}@media(max-width:700px){main{padding:20px 12px}section{padding:16px}dl{grid-template-columns:1fr}th,td{min-width:145px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">COBROUP · Auditoría técnica en modo solo lectura</div>
+  <h1>Auditoría Git Backend C# y sesión JWT — v5</h1>
+  <p class="lead">Corte: 22 de octubre de 2026, 13:23 COT. Reauditoría del estado confirmado en Git y de todos los cambios locales sin commit, contrastada con <code>FRAMEWORK_DESARROLLO_CSHARP.md 2.0</code>, la decisión JWT aprobada y la auditoría v4.</p>
+  <div class="meta"><span>Rama backend: feature/solucion-hallazgos-iniciales</span><span>Sin commit del auditor</span><span>JWT exclusivo</span><span>OIDC/OpenIddict/PKCE retirados</span></div>
+
+  <section class="verdict">
+    <h2>Dictamen ejecutivo: <strong>NO APROBADO</strong></h2>
+    <p>El corte mejora de forma material y corrige varios bloqueantes de la v4, pero todavía incumple requisitos explícitos del contrato JWT y de operación. No debe integrarse ni desplegarse mientras permanezcan los tres bloqueantes.</p>
+    <div class="cards">
+      <div class="card"><b class="bad">3</b><small>bloqueantes abiertos</small></div>
+      <div class="card"><b class="warn">16</b><small>hallazgos importantes</small></div>
+      <div class="card"><b>3</b><small>hallazgos menores / limitaciones</small></div>
+      <div class="card"><b class="ok">300/300</b><small>pruebas aprobadas</small></div>
+      <div class="card"><b class="ok">4/4</b><small>builds aprobados</small></div>
+    </div>
+    <div class="callout"><b>Advertencia de auditoría:</b> la suite <code>AuthLifecycleHttpTests</code> usa la base de identidad configurada y crea usuarios, organizaciones, membresías y tokens sin limpieza. La ejecución auditora pudo dejar fixtures persistentes. No se eliminaron porque hacerlo sería una operación destructiva no autorizada.</div>
+  </section>
+
+  <section>
+    <h2>1. Alcance, base normativa y estado Git</h2>
+    <ul>
+      <li><b>Norma:</b> <code>FRAMEWORK_DESARROLLO_CSHARP.md</code> 2.0, especialmente §§1.1, 5, 8, 9, 10, 11 y 14.</li>
+      <li><b>Contrato:</b> <code>DECISION_AUTENTICACION_JWT.md</code>. Access y refresh JWT asimétricos; BackendAdmin emite y revoca; Backend solo valida por JWKS.</li>
+      <li><b>Comparación:</b> <a href="auditoria-backend-csharp-2026-10-22-v4.html">auditoría v4</a>.</li>
+      <li><b>Repositorios:</b> Backend, BackendAdmin, ambos frontends y <code>cobroup.environments</code>.</li>
+      <li><b>Rol:</b> el auditor no modificó código, pruebas, configuración ni Git. Solo creó este informe. La identidad del implementador no puede demostrarse desde Git; por ello no se afirma independencia organizacional, solo separación funcional del rol ejecutado.</li>
+    </ul>
+    <div class="scroll"><table>
+      <thead><tr><th>Repositorio</th><th>HEAD auditado</th><th>Trabajo sin commit</th></tr></thead>
+      <tbody>
+        <tr><td>MS.Cobroup.Backend</td><td><code>c7210e3</code> — validación RS256 y sesión operativa</td><td>8 modificados, 2 nuevos</td></tr>
+        <tr><td>MS.Cobroup.BackendAdmin</td><td><code>b20f28d</code> — concurrencia refresh, CSRF y validación</td><td>8 modificados/eliminados, 3 rutas nuevas</td></tr>
+        <tr><td>MF.cobroup-frontend</td><td><code>245cf91</code> — CSRF y sesión operativa</td><td>2 modificados</td></tr>
+        <tr><td>MF.cobroup-frontend-admin</td><td><code>3837b37</code> — CSRF y cookie única</td><td>2 modificados</td></tr>
+        <tr><td>cobroup.environments</td><td><code>fe2f6d2</code> — parámetros JWT asimétricos</td><td>6 modificados</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>2. Avances comprobados desde v4</h2>
+    <div class="callout good">
+      <ul>
+        <li><b>B-14 cerrado:</b> <code>AccessJwtValidator</code> acepta correctamente <code>JsonWebToken</code> y <code>JwtSecurityToken</code>; una prueba HTTP completa atraviesa <code>JwtBearer</code>.</li>
+        <li><b>B-15 cerrado en su causa principal:</b> <code>IJwksValidationService</code> es singleton y su instancia se comparte entre autenticación, precarga y health check.</li>
+        <li><b>B-05 cerrado:</b> la prueba PostgreSQL ya falla si no hay conexión, ejecuta dos rotaciones concurrentes y valida que toda la familia quede revocada.</li>
+        <li><b>I-18 cerrado:</b> se exigen <code>iat</code> y <code>nbf</code>, y se eliminó <code>organization_code="DEFAULT"</code>.</li>
+        <li><b>Cookies/CSRF:</b> una sola cookie <code>__Host-cobroup-refresh</code>, <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code>, <code>Path=/</code>, sin <code>Domain</code>; el servidor devuelve error CSRF distinguible y los frontends solo reintentan ese error.</li>
+        <li><b>I-15 y M-03:</b> el script OIDC quedó fuera del flujo activo y el alias antiguo de sesión fue retirado.</li>
+        <li><b>M-02:</b> se eliminó la API interna insegura de adjuntar evidencia por metadatos.</li>
+        <li><b>PEM:</b> los Secrets usan bloque literal YAML, corrigiendo la corrupción multilínea observada en v4; persiste un defecto diferente en el validador del workflow.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Hallazgos bloqueantes</h2>
+
+    <article class="finding block">
+      <h3>B-09 · <span class="badge blocker">Bloqueante</span> Backend operativo no puede arrancar en QA/producción y el almacenamiento sigue sin ser durable</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>MS.Cobroup.Backend.Api/Program.cs:54-58</code> exige <code>Storage:EvidencePath</code> fuera de Development. Ningún manifiesto dev/qa/prod define esa clave, volumen o mount. Producción usa dos réplicas y sigue registrando <code>LocalFileStorageService</code>.</dd>
+        <dt>Impacto</dt><dd>El pod operativo falla al iniciar; si solo se agregara una ruta local, las evidencias quedarían separadas y efímeras por réplica.</dd>
+        <dt>Exigencia</dt><dd>Configurar almacenamiento compartido durable o adaptador externo, montaje/credenciales por ambiente, pruebas de reinicio y acceso cruzado entre réplicas.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-17 · <span class="badge blocker">Bloqueante nuevo</span> Cambio de organización emite refresh nuevo sin demostrar revocación de la familia anterior</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>OrganizationSessionsController.cs:49-63</code> trata la cookie anterior como opcional. <code>RevokeFamilyByTokenAsync</code> devuelve <code>Task</code>, oculta token inválido y no confirma que una familia fue encontrada/revocada; inmediatamente después se crea otra familia.</dd>
+        <dt>Riesgo</dt><dd>Un access JWT aún válido, acompañado de un par antiforgery obtenido por el cliente, puede convertirse en una sesión refresh de 30 días aunque no presente una cookie refresh válida. También puede quedar activa la familia anterior.</dd>
+        <dt>Regla</dt><dd>La decisión JWT §4–§5 exige revocar antes la familia anterior y demostrar que ningún refresh previo reemite tokens.</dd>
+        <dt>Exigencia</dt><dd>Requerir cookie refresh válida, comprobar que corresponde a usuario/tenant/familia de la sesión y hacer revocación + emisión de nueva familia como operación consistente. Agregar pruebas negativas y de estado final.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-13 · <span class="badge blocker">Bloqueante de despliegue</span> Los workflows invocan PyYAML sin instalarlo</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>deploy-dev.yml:23-26,101-108</code> —equivalente en QA/prod— usa <code>actions/setup-python</code> y luego <code>import yaml</code>, pero no instala <code>PyYAML</code> ni declara dependencias. La reproducción en el entorno limpio devolvió <code>ModuleNotFoundError: No module named 'yaml'</code>.</dd>
+        <dt>Impacto</dt><dd>El gate añadido para proteger el PEM impide que el workflow llegue al envío/despliegue en un Python sin esa dependencia.</dd>
+        <dt>Exigencia</dt><dd>Instalar y fijar la dependencia o usar una herramienta ya declarada; validar sintaxis y manifiesto Kubernetes completo post-sustitución antes de SCP. No imprimir secretos.</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section>
+    <h2>4. Hallazgos importantes</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>ID</th><th>Evidencia</th><th>Incumplimiento / acción requerida</th></tr></thead>
+      <tbody>
+        <tr><td>I-20</td><td><code>AuthLifecycleHttpTests.cs:39-42,235-265</code></td><td>Las cuatro pruebas crean datos en el PostgreSQL configurado y no los limpian ni aíslan. Deben usar base efímera/transacción reversible o cleanup garantizado; nunca contaminar una base compartida.</td></tr>
+        <tr><td>I-02</td><td>Solo existen TestServer y pruebas unitarias; no hay evidencia por ingress.</td><td>Falta el E2E obligatorio dev/qa/prod: login, me, refresh, cambio de organización, autorización real, logout y reescritura <code>/identity</code>.</td></tr>
+        <tr><td>I-21</td><td><code>AuthLifecycleHttpTests.cs</code> tiene 4 casos.</td><td>La evidencia de cookies sigue incompleta: no prueba usuario/org/membresía inactivos, cambio de organización, ausencia/ambigüedad de cookie, atributos completos al borrar, CORS real ni que replay invalide el descendiente mediante HTTP.</td></tr>
+        <tr><td>I-19</td><td><code>auth.service.ts:150-190</code>; <code>main-layout.component.ts:17-18</code></td><td>Logout reintenta CSRF y devuelve <code>remoteRevoked</code>, pero el caller ignora el resultado; solo se escribe <code>console.warn</code>. Debe comunicar estado seguro y auditable sin confundir cierre local con revocación remota.</td></tr>
+        <tr><td>I-04</td><td><code>BackendAdmin Program.cs:95-105</code></td><td>Rate limit sigue siendo ventana fija por IP, sin sujeto, bloqueo progresivo ni auditoría de abuso. Incumple decisión JWT §6.</td></tr>
+        <tr><td>I-22</td><td>Login/refresh/logout/replay/cambio no crean <code>SecurityAuditRecord</code>; solo se actualizan filas refresh y logs parciales.</td><td>El contrato exige auditoría de estas operaciones y evento de seguridad ante replay con actor/tenant/resultado/IP confiable/correlation ID, sin tokens.</td></tr>
+        <tr><td>I-23</td><td><code>RsaKeyService.cs:75-113</code> soporta clave anterior, pero environments no suministra <code>PreviousPublicKeyPem/PreviousKeyId</code> y no hay prueba de solapamiento.</td><td>La rotación existe solo como capacidad local, no como procedimiento desplegable y demostrado. Completar Secrets, promoción, retiro y prueba de tokens emitidos con ambas claves.</td></tr>
+        <tr><td>I-16</td><td><code>JwksValidationService.cs:22-23,126-133,169-188</code></td><td>El singleton corrige la fragmentación, pero readiness considera saludable cualquier clave obtenida indefinidamente; no hay edad máxima del last-known-good, métricas ni cancelación del <code>Task.Run</code>.</td></tr>
+        <tr><td>I-08</td><td>Ambos <code>Program.cs</code> usan por defecto <code>10/8</code>, <code>172.16/12</code> y <code>192.168/16</code>.</td><td>Se confía en redes privadas completas y environments no configura proxies exactos. Limitar a IP/CIDR real del ingress.</td></tr>
+        <tr><td>I-09</td><td><code>deploy-*.yml:63-108</code></td><td>Solo se detectan placeholders JWT y solo se validan archivos modificados. Persisten otros valores vacíos/placeholders y no hay gate integral del render final.</td></tr>
+        <tr><td>I-10</td><td><code>prod/*/*manifest.yaml</code> usa <code>:latest</code>; dev/qa usan tags mutables.</td><td>Promover por digest o SHA inmutable y mantener trazabilidad exacta artefacto→despliegue.</td></tr>
+        <tr><td>I-11</td><td>No existe Job de migración ni readiness de versión de esquema.</td><td>La decisión JWT exige migración idempotente previa al rollout y gate de esquema esperado.</td></tr>
+        <tr><td>I-06</td><td><code>PaymentService.cs:291-301</code> y <code>EfAgendaRepository.cs:254-264</code></td><td>La zona horaria continúa fija en <code>America/Bogota</code> en vez de la zona IANA del tenant.</td></tr>
+        <tr><td>I-07</td><td><code>EfAgendaRepository.cs:147-188</code></td><td>La analítica por fecha usa préstamos activos y saldos/pagos actuales; no reconstruye estado histórico a la fecha de corte.</td></tr>
+        <tr><td>I-13</td><td>Decisión remota de excepción y auditoría local siguen siendo dos efectos sin outbox/inbox.</td><td>Agregar idempotencia, persistencia transaccional y reconciliación verificable.</td></tr>
+        <tr><td>I-24</td><td>Los cinco <code>AGENTS.md</code> no registran los commits HEAD ni el WIP actual; los frontends declaran una rama antigua.</td><td>Incumple FRAMEWORK §11. Actualizar bitácoras de forma append-only con comandos/resultados reales, sin reescribir historia.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>5. Hallazgos menores y limitaciones</h2>
+    <article class="finding minor"><h3>M-05 · <span class="badge minor">Menor</span> Política CORS de respaldo mezcla todos los ambientes</h3><p><code>BackendAdmin Program.cs:63-83</code> permite por defecto localhost, dev, QA y producción; ningún manifiesto fija <code>Cors:AllowedOrigins</code>. Debe existir allowlist exacta por ambiente y fail-fast si falta fuera de Development.</p></article>
+    <article class="finding minor"><h3>M-06 · <span class="badge minor">Menor</span> Diff con whitespace inválido</h3><p><code>PostgresRefreshTokenConcurrencyTests.cs:120</code> contiene trailing whitespace; <code>git diff --check</code> falla.</p></article>
+    <article class="finding minor"><h3>M-07 · <span class="badge minor">Limitación</span> Contenedores no verificados</h3><p>Docker Desktop no estaba disponible; no se construyeron ni ejecutaron imágenes, health probes, usuario no-root o filesystem de runtime.</p></article>
+  </section>
+
+  <section>
+    <h2>6. Verificaciones ejecutadas</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Verificación</th><th>Resultado</th><th>Conclusión auditora</th></tr></thead>
+      <tbody>
+        <tr><td>Backend <code>dotnet build -c Release --no-incremental</code></td><td class="ok">0 warnings, 0 errores</td><td>Aprobada.</td></tr>
+        <tr><td>Backend tests</td><td class="ok">81 Core + 62 Infrastructure = 143/143</td><td>Aprobada; incluye pipeline HTTP JWT.</td></tr>
+        <tr><td>BackendAdmin build</td><td class="ok">0 warnings, 0 errores</td><td>Aprobada.</td></tr>
+        <tr><td>BackendAdmin tests</td><td class="ok">51 Core + 35 Infrastructure = 86/86</td><td>Aprobada, pero AuthLifecycle contamina DB.</td></tr>
+        <tr><td>Frontend operativo</td><td class="ok">34/34; build productivo aprobado</td><td>Aprobada.</td></tr>
+        <tr><td>Frontend administrativo</td><td class="ok">37/37; build productivo aprobado</td><td>Aprobada.</td></tr>
+        <tr><td>Dependencias .NET vulnerables</td><td class="ok">0 reportadas</td><td>Aprobada con fuentes configuradas.</td></tr>
+        <tr><td><code>npm audit --omit=dev</code></td><td class="ok">0 vulnerabilidades en ambos</td><td>Aprobada para dependencias productivas.</td></tr>
+        <tr><td>EF pending model changes</td><td class="ok">Ninguno en ambas soluciones</td><td>Aprobada.</td></tr>
+        <tr><td><code>kubectl kustomize</code> dev/qa/prod</td><td class="ok">3/3</td><td>Sintaxis base aprobada; no demuestra render post-secret ni cluster.</td></tr>
+        <tr><td><code>python -c "import yaml"</code></td><td class="bad">ModuleNotFoundError</td><td>Reproduce dependencia ausente del workflow.</td></tr>
+        <tr><td><code>git diff --check</code></td><td class="warn">1 error</td><td>Whitespace en prueba PostgreSQL.</td></tr>
+        <tr><td>Docker runtime</td><td class="warn">No disponible</td><td>No verificado.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted">Nota: la primera ejecución intentó build y test concurrentes sobre los mismos <code>obj/</code> y produjo errores de copia transitorios causados por la propia concurrencia auditora. Se repitieron secuencialmente después del build; los resultados válidos son los consignados arriba.</p>
+  </section>
+
+  <section>
+    <h2>7. Trazabilidad frente a v4</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Hallazgo v4</th><th>Estado v5</th><th>Observación</th></tr></thead>
+      <tbody>
+        <tr><td>B-14</td><td><span class="badge fixed">Cerrado</span></td><td><code>JsonWebToken</code> aceptado y prueba HTTP real.</td></tr>
+        <tr><td>B-15</td><td><span class="badge fixed">Cerrado principal</span></td><td>Singleton compartido; queda I-16 por vigencia/observabilidad.</td></tr>
+        <tr><td>B-13</td><td><span class="badge partial">Parcial</span></td><td>PEM YAML corregido; el gate de workflow no es reproducible por PyYAML ausente.</td></tr>
+        <tr><td>B-05</td><td><span class="badge fixed">Cerrado</span></td><td>PostgreSQL real, sin retornos silenciosos y estado final validado.</td></tr>
+        <tr><td>B-09</td><td><span class="badge blocker">Abierto</span></td><td>Ahora además provoca fail-fast por configuración ausente.</td></tr>
+        <tr><td>I-18</td><td><span class="badge fixed">Cerrado</span></td><td><code>iat</code>/<code>nbf</code> obligatorios; fallback de organización eliminado.</td></tr>
+        <tr><td>I-19</td><td><span class="badge partial">Parcial</span></td><td>Reintento selectivo implementado; resultado de revocación se ignora en UI.</td></tr>
+        <tr><td>I-02</td><td><span class="badge partial">Avance</span></td><td>Hay TestServer; falta ingress y ciclo completo.</td></tr>
+        <tr><td>I-15</td><td><span class="badge fixed">Cerrado</span></td><td>Script legado retirado del flujo activo y archivado.</td></tr>
+        <tr><td>M-02 / M-03</td><td><span class="badge fixed">Cerrados</span></td><td>API insegura retirada y ruta antigua eliminada.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>8. Orden de remediación exigido</h2>
+    <ol>
+      <li>Corregir B-17: cambio de organización transaccional y condicionado a refresh válido/familia revocada.</li>
+      <li>Corregir B-09: almacenamiento durable y configuración real en todos los ambientes.</li>
+      <li>Corregir B-13: workflow autosuficiente y validación completa post-render.</li>
+      <li>Aislar y limpiar pruebas HTTP; auditar los fixtures ya creados antes de eliminarlos con autorización.</li>
+      <li>Completar pruebas cookie/CSRF/rotación/tenant por ingress y rotación real de claves.</li>
+      <li>Implementar auditoría de identidad, rate limit por IP+sujeto y proxies exactos.</li>
+      <li>Cerrar los hallazgos operativos heredados: migración, tags inmutables, zona horaria, histórico, outbox y documentación AGENTS.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Dictamen basado en evidencia local disponible al corte indicado. El auditor no realizó commit, push, merge, rebase, tag ni PR; no modificó archivos de aplicación. Único artefacto creado: este informe HTML.
+  </footer>
+</main>
+</body>
+</html>

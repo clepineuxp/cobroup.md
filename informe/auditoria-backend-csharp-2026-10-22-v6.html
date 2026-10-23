@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COBROUP · Auditoría Git JWT/PVC · 2026-10-22 v6</title>
+  <style>
+    :root{--bg:#09111f;--panel:#101b2e;--panel2:#17253c;--text:#e8eef8;--muted:#9eafc7;--line:#2a3d5b;--red:#ff7078;--amber:#f6c95e;--green:#55d89f;--blue:#72b7ff;--violet:#c3a7ff}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#06101d,var(--bg) 55%,#12182b);color:var(--text);font:15px/1.55 Inter,Segoe UI,Arial,sans-serif}main{max-width:1200px;margin:auto;padding:34px 24px 72px}h1,h2,h3{line-height:1.22}h1{font-size:2rem;margin:.2rem 0 .45rem}h2{font-size:1.36rem;margin:0 0 1rem}h3{font-size:1.03rem;margin:0 0 .65rem}p{margin:.45rem 0 1rem}a{color:#9dcbff}code{background:#081322;border:1px solid #263d5d;border-radius:5px;padding:.08rem .32rem;color:#d9eaff}.eyebrow{text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:700;font-size:.76rem}.lead{color:var(--muted);max-width:980px}.meta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.meta span,.badge{border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.78rem;font-weight:700}.badge.blocker{border-color:#913d48;color:#ff9ea5;background:#3a1720}.badge.important{border-color:#8b6a28;color:#ffda79;background:#352a12}.badge.minor{border-color:#3e6a96;color:#acd5ff;background:#142a40}.badge.fixed{border-color:#28745a;color:#7de5b8;background:#113329}.badge.partial{border-color:#6a5994;color:#d0beff;background:#251e3c}section{background:rgba(16,27,46,.94);border:1px solid var(--line);border-radius:14px;padding:23px;margin:18px 0;box-shadow:0 14px 38px rgba(0,0,0,.18)}.verdict{border-left:5px solid var(--red)}.verdict strong{color:#ff9ea5}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:16px 0}.card{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:15px}.card b{display:block;font-size:1.52rem}.card small{color:var(--muted)}table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:10px 9px}th{color:#bfd5ef;background:#0c1829;position:sticky;top:0}.scroll{overflow:auto;border:1px solid var(--line);border-radius:9px}article.finding{background:#0d192a;border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:17px;margin:12px 0}article.finding.block{border-left-color:var(--red)}article.finding.minor{border-left-color:var(--blue)}dl{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;margin:0}dt{color:var(--muted);font-weight:700}dd{margin:0}ul,ol{padding-left:1.35rem}li{margin:.35rem 0}.ok{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}.muted{color:var(--muted)}.callout{border:1px solid #7b4853;background:#2b151d;border-radius:10px;padding:14px;margin:13px 0}.good{border-color:#2e7058;background:#102c23}.mono{font-family:Cascadia Code,Consolas,monospace;font-size:.81rem;white-space:pre-wrap;background:#081322;border:1px solid #263d5d;border-radius:8px;padding:12px;overflow:auto}footer{color:var(--muted);font-size:.83rem;margin-top:25px}@media(max-width:700px){main{padding:20px 12px}section{padding:16px}dl{grid-template-columns:1fr}th,td{min-width:145px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">COBROUP · Reauditoría técnica en modo solo lectura</div>
+  <h1>Auditoría Git Backend C#, sesión JWT y almacenamiento PVC — v6</h1>
+  <p class="lead">Corte: 22 de octubre de 2026, 14:23 COT. Evaluación de los últimos commits y del trabajo local sin commit, contrastada con <code>FRAMEWORK_DESARROLLO_CSHARP.md 2.0</code>, la decisión JWT exclusiva, la auditoría v5 y el prompt de remediación de B-09, B-17 y B-13.</p>
+  <div class="meta"><span>JWT exclusivo</span><span>OIDC/OpenIddict/PKCE fuera de alcance</span><span>Sin commit del auditor</span><span>Solo informe HTML creado</span></div>
+
+  <section class="verdict">
+    <h2>Dictamen ejecutivo: <strong>NO APROBADO</strong></h2>
+    <p>La remediación reduce el riesgo de forma material: B-17 queda cerrado en su objetivo principal y la causa original de PyYAML queda corregida. No obstante, aún no debe integrarse ni desplegarse: B-09 carece de controles y evidencia obligatoria para cerrar almacenamiento durable, y B-13 permite que una clave privada PEM sintácticamente delimitada pero criptográficamente corrupta pase el gate y sea transferida.</p>
+    <div class="cards">
+      <div class="card"><b class="bad">2</b><small>bloqueantes abiertos/parciales</small></div>
+      <div class="card"><b class="warn">17</b><small>hallazgos importantes</small></div>
+      <div class="card"><b>4</b><small>menores / limitaciones</small></div>
+      <div class="card"><b class="ok">321/321</b><small>pruebas de aplicación</small></div>
+      <div class="card"><b class="ok">7/7</b><small>pruebas del renderer</small></div>
+      <div class="card"><b class="ok">4/4</b><small>builds aprobados</small></div>
+    </div>
+    <div class="callout"><b>Independencia:</b> se ejecutó una revisión técnica en rol auditor y no se corrigió código. Conforme al §10 del framework, no se declara “auditoría independiente” porque no existe evidencia de que un agente distinto haya realizado la implementación. La autoverificación y los hallazgos siguen siendo válidos como auditoría de seguimiento.</div>
+  </section>
+
+  <section>
+    <h2>1. Alcance, norma y estado Git</h2>
+    <ul>
+      <li><b>Norma:</b> <code>FRAMEWORK_DESARROLLO_CSHARP.md</code> §§1.1, 2, 8, 9, 10, 11 y 14.</li>
+      <li><b>Contrato de identidad:</b> access y refresh JWT RS256; BackendAdmin emite/revoca y Backend operativo valida por JWKS. No se exige OIDC.</li>
+      <li><b>Contrato adicional:</b> binarios privados en PVC ahora, con puerto y claves lógicas que permitan un adaptador AWS S3 futuro.</li>
+      <li><b>Comparación:</b> <a href="auditoria-backend-csharp-2026-10-22-v5.html">auditoría v5</a> y <a href="prompt-remediacion-3-bloqueantes-pvc-s3-2026-10-22.md">prompt de remediación</a>.</li>
+      <li><b>Repositorios revisados:</b> Backend, BackendAdmin, dos frontends y <code>cobroup.environments</code>.</li>
+    </ul>
+    <div class="scroll"><table>
+      <thead><tr><th>Repositorio</th><th>Rama / HEAD</th><th>Estado actual</th></tr></thead>
+      <tbody>
+        <tr><td>MS.Cobroup.Backend</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>f692554</code> · validar JwtBearer, singleton JWKS y retirar alias</td><td>6 archivos modificados y 4 nuevos sin commit: adaptador filesystem, opciones, ADR y pruebas.</td></tr>
+        <tr><td>MS.Cobroup.BackendAdmin</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>87291bc</code> · ciclo de sesión, cookie, CSRF y JWT</td><td>12 archivos modificados sin commit: cambio de organización atómico y pruebas.</td></tr>
+        <tr><td>MF.cobroup-frontend</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>75d88f5</code></td><td>Limpio.</td></tr>
+        <tr><td>MF.cobroup-frontend-admin</td><td><code>feature/solucion-hallazgos-iniciales</code><br><code>dad9191</code></td><td>Limpio.</td></tr>
+        <tr><td>cobroup.environments</td><td><code>dev</code>, 3 commits delante de <code>origin/dev</code><br><code>54a856e</code></td><td>7 archivos modificados y archivos nuevos de renderer/PVC sin commit. La rama incumple el requisito <code>feature/*</code>.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>2. Correcciones comprobadas</h2>
+    <div class="callout good"><ul>
+      <li><b>B-17, núcleo cerrado:</b> el cambio de organización exige access JWT, cookie refresh y antiforgery; valida RS256, <code>typ</code>, audiencia, sujeto y organización; bloquea la fila refresh con <code>FOR UPDATE</code>; revoca la familia anterior e inserta la nueva dentro de una transacción. La prueba PostgreSQL concurrente admite exactamente un ganador.</li>
+      <li><b>B-13, causa original cerrada:</b> <code>PyYAML==6.0.2</code> está declarado e instalado por los tres workflows; un único renderer valida todos los YAML y ejecuta <code>kubectl kustomize</code>.</li>
+      <li><b>B-09, avance sustancial:</b> existe <code>FileSystemObjectStorage</code>, streaming, SHA-256, magic bytes, límite, temporal en el mismo volumen, claves relativas, PVC por ambiente, RWO en dev/QA y RWX para dos réplicas en producción.</li>
+      <li><b>I-09 cerrado:</b> el renderer recorre todos los YAML, detecta cualquier marcador <code>${{...}}</code> o <code>CHANGE_ME</code> y valida estructura PVC/mount/configuración antes de SCP.</li>
+      <li><b>I-20 mejorado:</b> las pruebas HTTP registran IDs y realizan cleanup por fixture; ya no carecen totalmente de limpieza.</li>
+      <li><b>Calidad:</b> cuatro builds limpios, 321 pruebas de aplicación y 7 del renderer pasan; no hay paquetes NuGet/npm productivos vulnerables ni cambios EF pendientes.</li>
+    </ul></div>
+  </section>
+
+  <section>
+    <h2>3. Hallazgos bloqueantes</h2>
+    <article class="finding block">
+      <h3>B-09 · <span class="badge blocker">Parcial / no cerrado</span> El almacenamiento PVC existe, pero no satisface los criterios obligatorios de seguridad y sustituibilidad</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>FileSystemObjectStorage.cs:184-218</code> valida texto y prefijo, pero no resuelve/rechaza symlinks o reparse points que escapen del root. El prompt v5 lo exigía expresamente. <code>IFileStorageService.cs:5-21</code> continúa acoplado a “Evidence” y <code>paymentId</code>, por lo que no representa cualquier archivo binario. No existe prueba de sustitución DI por otro adaptador.</dd>
+        <dt>Pruebas faltantes</dt><dd><code>FileSystemObjectStorageTests.cs</code> contiene 8 pruebas, pero no prueba symlink escape, colisión concurrente, fallo de publicación/move ni sustitución del proveedor. <code>AGENTS.md</code> afirma que sí cubre colisiones, aunque no existe ese caso.</dd>
+        <dt>Inconsistencia</dt><dd>El ADR declara claves <code>tenants/{tenantId}/payments/{paymentId}/...</code>, mientras el código y las pruebas generan <code>{tenantId}/{paymentId}/...</code>. La documentación no es una representación fiel del artefacto.</dd>
+        <dt>Límite operativo</dt><dd>Se validó kustomize local, pero no existe evidencia de StorageClass RWX real, arranque de pods, persistencia tras reinicio ni lectura cruzada en cluster. El propio criterio de cierre prohíbe declarar conformidad sin esa prueba.</dd>
+        <dt>Exigencia</dt><dd>Resolver symlinks/reparse points, generalizar el puerto o documentar formalmente su alcance, agregar las pruebas faltantes y ejecutar una prueba de cluster/PVC compartido con StorageClass compatible.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>B-13 · <span class="badge blocker">Parcial / no cerrado</span> El gate acepta un PEM criptográficamente inválido</h3>
+      <dl>
+        <dt>Evidencia</dt><dd><code>render_manifests.py:51-71</code> solo comprueba que existan textos <code>-----BEGIN</code>/<code>-----END</code>; no importa ni valida la clave. El fixture <code>SAMPLE_RSA_PEM</code> de <code>test_render_manifests.py:25-35</code> pasa las 7 pruebas y los tres kustomize, pero su cuerpo devuelve <code>ASN1 corrupted data</code> al intentar importarlo como RSA PKCS#1 mediante .NET.</dd>
+        <dt>Impacto</dt><dd>El workflow puede superar todas las validaciones y ejecutar SCP con una clave que hará fallar <code>RsaKeyService</code> al iniciar BackendAdmin. Incumple el gate obligatorio “PEM inválido detiene el pipeline antes de transferencia”.</dd>
+        <dt>Adicional</dt><dd>Las pruebas del renderer no se ejecutan en los workflows; solo se ejecuta el script sobre el ambiente. Las Actions siguen fijadas por tag, no SHA, sin excepción documentada.</dd>
+        <dt>Exigencia</dt><dd>Validar que el PEM sea una clave RSA privada importable y con fortaleza autorizada, usar un fixture criptográfico real, agregar prueba negativa con cabeceras válidas/ASN.1 corrupto y ejecutar la suite antes de SCP.</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section>
+    <h2>4. Hallazgos importantes</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>ID</th><th>Evidencia</th><th>Incumplimiento / acción</th></tr></thead>
+      <tbody>
+        <tr><td>I-02</td><td>Solo TestServer y kustomize local.</td><td>Falta E2E por ingress en dev/QA/prod: login, me, refresh, cambio, autorización, logout y rewrite <code>/identity</code>.</td></tr>
+        <tr><td>I-04</td><td><code>BackendAdmin Program.cs:97-106</code></td><td>Rate limit fijo por IP, sin sujeto, escalamiento ni auditoría de abuso.</td></tr>
+        <tr><td>I-06</td><td><code>PaymentService.cs:291-301</code>; <code>EfAgendaRepository.cs:254-264</code></td><td>Zona horaria fija <code>America/Bogota</code>; no usa zona IANA por tenant.</td></tr>
+        <tr><td>I-07</td><td><code>EfAgendaRepository.cs:147-188</code></td><td>La analítica por fecha no reconstruye el estado histórico al corte.</td></tr>
+        <tr><td>I-08</td><td>Ambos <code>Program.cs</code>; environments sin override.</td><td>Se confía por defecto en redes privadas completas, no en proxies/CIDR reales del ingress.</td></tr>
+        <tr><td>I-10</td><td>Manifiestos productivos con <code>:latest</code>; dev/QA con tags mutables.</td><td>Falta promoción por digest/SHA inmutable y trazabilidad artefacto→despliegue.</td></tr>
+        <tr><td>I-11</td><td>Sin Job de migración o gate de versión de esquema.</td><td>El rollout puede arrancar con esquema incompatible.</td></tr>
+        <tr><td>I-13</td><td>Decisión remota y auditoría local sin outbox/inbox.</td><td>Falta consistencia transaccional, idempotencia y reconciliación.</td></tr>
+        <tr><td>I-16</td><td><code>JwksValidationService</code></td><td>Readiness acepta indefinidamente last-known-good; faltan edad máxima, métricas y cancelación controlada.</td></tr>
+        <tr><td>I-19</td><td><code>main-layout.component.ts:17-18</code> en ambos frontends.</td><td>El caller sigue ignorando <code>remoteRevoked</code>; la UI no distingue cierre local de revocación remota fallida.</td></tr>
+        <tr><td>I-20</td><td><code>AuthLifecycleHttpTests.cs:38-73</code></td><td>El cleanup existe, pero captura y silencia cualquier excepción. No es “garantizado”: una falla vuelve a dejar fixtures sin hacer fallar la suite.</td></tr>
+        <tr><td>I-21</td><td>8 pruebas HTTP declaradas; cobertura real parcial.</td><td>Faltan cookie expirada/revocada/de otro usuario o tenant, membresía inactiva, rollback entre revocación/inserción, CORS real y replay del descendiente por HTTP.</td></tr>
+        <tr><td>I-22</td><td><code>SecurityAuditRecord</code> solo se usa en bootstrap.</td><td>Login, refresh, logout, replay y cambio de organización no generan registros de seguridad persistentes con actor, tenant, resultado, IP confiable y correlation ID.</td></tr>
+        <tr><td>I-23</td><td>Soporte local de clave anterior sin Secrets ni procedimiento de environments.</td><td>La rotación solapada no es desplegable ni está demostrada con ambas claves.</td></tr>
+        <tr><td>I-24</td><td><code>AGENTS.md</code> y rama environments.</td><td>Bitácoras contienen firmas, nombres, buffers, pruebas y totales que no coinciden con el código. Los frontends no registran sus HEAD actuales; environments documenta y modifica sobre <code>dev</code>, contrario a <code>feature/*</code>.</td></tr>
+        <tr><td>I-25</td><td><code>JwtTokenService.cs:266-286</code>; <code>EfIdentityRepository.cs:215-290</code></td><td>La membresía/organización destino se valida y marca accedida antes de la transacción. Puede desactivarse entre esa lectura y el commit; la operación atómica no la vuelve a comprobar/bloquear.</td></tr>
+        <tr><td>I-26</td><td><code>deploy-*.yml</code>; <code>requirements.txt</code></td><td>Actions por tags y dependencia sin hashes; la suite Python no forma parte del gate CI. Corregir o documentar excepción de supply chain.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>5. Hallazgos menores y limitaciones</h2>
+    <article class="finding minor"><h3>M-05 · <span class="badge minor">Menor</span> CORS mezcla ambientes</h3><p><code>BackendAdmin Program.cs:63-83</code> conserva una allowlist de respaldo con localhost, dev, QA y producción; environments no fija <code>Cors:AllowedOrigins</code> por ambiente.</p></article>
+    <article class="finding minor"><h3>M-06 · <span class="badge minor">Menor</span> <code>git diff --check</code> no está limpio</h3><p>El whitespace anterior en la prueba PostgreSQL fue corregido, pero <code>AGENTS.md</code> de Backend y BackendAdmin ahora tienen una línea en blanco nueva al final del archivo.</p></article>
+    <article class="finding minor"><h3>M-07 · <span class="badge minor">Limitación</span> Runtime de contenedores no verificado</h3><p>Existe cliente Docker 28.0.4, pero el engine no está disponible. No se construyeron/ejecutaron imágenes ni probes, usuario no-root o permisos reales del mount.</p></article>
+    <article class="finding minor"><h3>M-08 · <span class="badge minor">Menor</span> Artefacto Python no ignorado</h3><p><code>scripts/__pycache__/render_manifests.cpython-312.pyc</code> ya estaba presente y no está cubierto por <code>.gitignore</code>; puede terminar accidentalmente en el commit.</p></article>
+  </section>
+
+  <section>
+    <h2>6. Verificaciones ejecutadas</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Verificación</th><th>Resultado</th><th>Conclusión</th></tr></thead>
+      <tbody>
+        <tr><td>Backend <code>dotnet build --no-restore -c Release</code></td><td class="ok">0 warnings / 0 errores</td><td>Aprobada.</td></tr>
+        <tr><td>Backend tests</td><td class="ok">81 Core + 76 Infrastructure = 157/157</td><td>Aprobada.</td></tr>
+        <tr><td>BackendAdmin build</td><td class="ok">0 warnings / 0 errores</td><td>Aprobada.</td></tr>
+        <tr><td>BackendAdmin tests</td><td class="ok">51 Core + 42 Infrastructure = 93/93</td><td>Aprobada; incluye PostgreSQL real y concurrencia.</td></tr>
+        <tr><td>Frontend operativo</td><td class="ok">34/34; build productivo aprobado</td><td>Aprobada.</td></tr>
+        <tr><td>Frontend administrativo</td><td class="ok">37/37; build productivo aprobado</td><td>Aprobada.</td></tr>
+        <tr><td>Renderer</td><td class="ok">7/7; kustomize sintético dev/QA/prod</td><td>La suite pasa, pero contiene el falso positivo PEM bloqueante.</td></tr>
+        <tr><td>Importación RSA del fixture “válido”</td><td class="bad">ASN1 corrupted data</td><td>Prueba que el gate no valida la clave criptográfica.</td></tr>
+        <tr><td>NuGet vulnerable, transitivo incluido</td><td class="ok">0 reportado en ambas soluciones</td><td>Aprobada con las fuentes configuradas.</td></tr>
+        <tr><td><code>npm audit --omit=dev --audit-level=high</code></td><td class="ok">0 en ambos frontends</td><td>Aprobada para runtime.</td></tr>
+        <tr><td>EF <code>has-pending-model-changes</code></td><td class="ok">Ninguno en ambas soluciones</td><td>Aprobada.</td></tr>
+        <tr><td><code>git diff --check</code></td><td class="warn">2 repositorios con blank line EOF</td><td>No limpio.</td></tr>
+        <tr><td>Cluster Kubernetes / GitHub Actions / Docker engine</td><td class="warn">No disponibles</td><td>No ejecutado; no se declara aprobado.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted">La invocación <code>python -m unittest scripts/test_render_manifests.py</code> falla por resolución de módulo; la forma directa <code>python scripts/test_render_manifests.py -v</code> ejecuta y aprueba los 7 casos. La prueba Python generó un bytecode temporal del test; el auditor retiró exclusivamente ese artefacto propio. No se eliminó el bytecode preexistente de <code>render_manifests</code>.</p>
+  </section>
+
+  <section>
+    <h2>7. Trazabilidad frente a v5</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Hallazgo</th><th>Estado v6</th><th>Decisión auditora</th></tr></thead>
+      <tbody>
+        <tr><td>B-09</td><td><span class="badge blocker">Parcial</span></td><td>PVC y adaptador implementados; no cierra por symlinks, cobertura obligatoria, generalidad/DI y prueba real de cluster.</td></tr>
+        <tr><td>B-17</td><td><span class="badge fixed">Cerrado principal</span></td><td>Cookie obligatoria y transición atómica demostradas. Quedan I-22, I-21 e I-25.</td></tr>
+        <tr><td>B-13</td><td><span class="badge blocker">Parcial</span></td><td>PyYAML y renderer reproducible resueltos; PEM corrupto todavía atraviesa el gate.</td></tr>
+        <tr><td>I-09</td><td><span class="badge fixed">Cerrado</span></td><td>Validación integral de placeholders/YAML/kustomize.</td></tr>
+        <tr><td>I-20</td><td><span class="badge partial">Avance</span></td><td>Cleanup añadido, pero las fallas se silencian.</td></tr>
+        <tr><td>I-21</td><td><span class="badge partial">Avance</span></td><td>Más casos HTTP, todavía no completa la matriz exigida.</td></tr>
+        <tr><td>I-24</td><td><span class="badge partial">Abierto</span></td><td>Bitácoras nuevas, pero con afirmaciones no comprobables/inexactas y una rama inválida.</td></tr>
+        <tr><td>Resto v5</td><td><span class="badge partial">Sin cambio material</span></td><td>Permanece abierto según la tabla de hallazgos importantes.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>8. Orden de remediación exigido</h2>
+    <ol>
+      <li>Completar B-13: validar/importar criptográficamente el PEM y ejecutar las pruebas del renderer como gate previo a SCP.</li>
+      <li>Completar B-09: defensa contra symlink/reparse, pruebas de colisión/fallo/DI y evidencia real de PVC RWX entre réplicas.</li>
+      <li>Mover el trabajo de environments a una rama <code>feature/*</code> mediante una decisión explícita del implementador; no confirmar desde <code>dev</code>.</li>
+      <li>Hacer atómica la validación de membresía destino y persistir auditoría de login/refresh/logout/replay/cambio.</li>
+      <li>Hacer fallar la suite si el cleanup de fixtures falla y completar la matriz negativa HTTP.</li>
+      <li>Cerrar los controles heredados: ingress E2E, rotación de claves desplegable, rate limit, proxies/CORS, migraciones, imágenes inmutables, zona horaria, histórico y outbox.</li>
+      <li>Corregir las bitácoras sin reescribir historia: añadir una entrada append-only que rectifique los resultados y limitaciones reales.</li>
+    </ol>
+  </section>
+
+  <section class="callout warn" style="border-left: 5px solid var(--amber);">
+    <h2>9. Adenda de redefinición arquitectónica (2026-10-22): Cambio de alcance de B-13</h2>
+    <p><strong>Decisión aprobada:</strong> Conforme a la decisión formal incorporada en <code>cobroup.md/DECISION_AUTENTICACION_JWT.md</code> y <code>cobroup.md/BACKLOG_SEGURIDAD_PRODUCTIVA.md</code>, en la fase actual <strong>no se suministrará ni utilizará una clave privada RSA en formato PEM administrada externamente</strong>.</p>
+    <p><strong>Efecto en el hallazgo B-13:</strong></p>
+    <ul>
+      <li>La validación y sustitución de PEM externo deja de aplicar al flujo de ejecución actual en desarrollo y pruebas. Se eliminaron de los secretos y workflows los placeholders y variables <code>*_JWT_PRIVATE_KEY_PEM</code> y <code>*_JWT_KEY_ID</code>.</li>
+      <li>Se implementó el puerto desacoplado <code>IJwtSigningKeyProvider</code> con el adaptador <code>EphemeralRsaSigningKeyProvider</code> (RSA 2048-bit en memoria, RS256, JWKS sin parámetros privados, <code>kid</code> único generado por proceso y registro singleton), condicionado a <code>Jwt:AllowEphemeralSigning=true</code> exclusivamente en <code>Development</code>.</li>
+      <li><strong>Estado del sistema:</strong> El sistema queda calificado formalmente como <strong>NO APTO PARA PRODUCCIÓN</strong>, alta disponibilidad ni balanceo de múltiples réplicas emisoras. La custodia de una clave persistente, su rotación, solapamiento de claves y recuperación operativa mediante Kubernetes Secret, PFX, PEM, AWS KMS u otro proveedor aprobado quedan registrados como backlog obligatorio previo a producción (<code>BACKLOG_SEGURIDAD_PRODUCTIVA.md</code>).</li>
+      <li>El script <code>render_manifests.py</code> y los workflows de CI/CD actúan como gate de despliegue bloqueando la transferencia hacia QA y Producción (código de salida 2) mientras no se implemente el proveedor persistente aprobado.</li>
+    </ul>
+  </section>
+
+  <footer>Informe basado en la evidencia local disponible al corte indicado. El auditor no creó commit, push, merge, rebase, tag ni PR y no modificó código, pruebas, configuración ni documentación de los repositorios auditados. Único artefacto persistente creado: este informe HTML con su adenda técnica.</footer>
+</main>
+</body>
+</html>

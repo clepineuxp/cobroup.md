@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditoría backend C# — COBROUP — 2026-10-21</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #59657a;
+      --paper: #f4f7fb;
+      --card: #ffffff;
+      --line: #dce3ee;
+      --brand: #183b66;
+      --brand-2: #2e69a3;
+      --ok: #157347;
+      --ok-bg: #eaf7ef;
+      --warn: #925f00;
+      --warn-bg: #fff6d8;
+      --bad: #b42318;
+      --bad-bg: #fff0ee;
+      --block: #781f1f;
+      --block-bg: #fde8e8;
+      --info: #245b88;
+      --info-bg: #eaf3fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 15px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    header {
+      background: linear-gradient(135deg, #102943 0%, #1e4d78 70%, #2e69a3 100%);
+      color: #fff;
+      padding: 48px 24px 40px;
+    }
+    header .wrap, main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 44px); line-height: 1.12; }
+    header p { margin: 6px 0; color: #d9e8f7; max-width: 900px; }
+    main { padding: 24px; }
+    h2 { margin: 38px 0 14px; font-size: 24px; color: var(--brand); }
+    h3 { margin: 0 0 8px; font-size: 18px; }
+    p { margin: 8px 0 12px; }
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: #eef2f7;
+      color: #263957;
+      font: 0.9em/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 22px 0; }
+    .metric, .panel, .finding { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 3px 14px rgba(23,32,51,.05); }
+    .metric { padding: 18px; }
+    .metric strong { display: block; font-size: 28px; line-height: 1.15; }
+    .metric span { color: var(--muted); }
+    .panel { padding: 20px; margin: 14px 0; }
+    .verdict { border-left: 7px solid var(--block); }
+    .verdict strong { color: var(--block); font-size: 19px; }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 750; letter-spacing: .02em; vertical-align: middle; }
+    .blocker { color: var(--block); background: var(--block-bg); }
+    .important { color: var(--warn); background: var(--warn-bg); }
+    .minor { color: var(--info); background: var(--info-bg); }
+    .pass { color: var(--ok); background: var(--ok-bg); }
+    .fail { color: var(--bad); background: var(--bad-bg); }
+    .finding { padding: 20px; margin: 14px 0; border-left: 6px solid var(--line); }
+    .finding.block { border-left-color: var(--block); }
+    .finding.imp { border-left-color: var(--warn); }
+    .finding.min { border-left-color: var(--info); }
+    .finding dl { display: grid; grid-template-columns: 150px 1fr; gap: 7px 14px; margin: 12px 0 0; }
+    dt { color: var(--muted); font-weight: 700; }
+    dd { margin: 0; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #eaf0f7; color: #20344f; font-size: 13px; }
+    tr:last-child td { border-bottom: 0; }
+    ul { margin: 8px 0 8px 20px; padding: 0; }
+    li { margin: 5px 0; }
+    .table-wrap { overflow-x: auto; border-radius: 10px; }
+    .muted { color: var(--muted); }
+    .small { font-size: 13px; }
+    .callout { padding: 14px 16px; background: var(--info-bg); border: 1px solid #c8dff2; border-radius: 9px; }
+    footer { margin-top: 38px; padding: 22px 0 10px; color: var(--muted); border-top: 1px solid var(--line); }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .finding dl { grid-template-columns: 1fr; gap: 2px; }
+      dt { margin-top: 8px; }
+    }
+    @media print {
+      body { background: #fff; font-size: 11px; }
+      header { padding: 24px; }
+      main { max-width: none; padding: 12px; }
+      .panel, .metric, .finding { box-shadow: none; break-inside: avoid; }
+      h2 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Informe de auditoría backend C#</h1>
+      <p><strong>COBROUP · corte 2026-10-21 · zona horaria America/Bogota</strong></p>
+      <p>Revisión de los ocho commits más recientes y del estado no confirmado actual de <code>MS.Cobroup.Backend</code> y <code>MS.Cobroup.BackendAdmin</code>, contra <code>FRAMEWORK_DESARROLLO_CSHARP.md</code> v2.0 y <code>COBROUP.md</code> v1.5.0.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel verdict">
+      <strong>Resultado: CON HALLAZGOS — no apto para cierre ni integración.</strong>
+      <p>Las soluciones compilan y todas las pruebas actuales pasan, pero existen tres incumplimientos bloqueantes que comprometen reglas financieras o evidencia: una excepción aprobada no limita las condiciones del préstamo ni es de un solo uso; pagos concurrentes pueden dejar registros monetarios inconsistentes; y la “fotografía” de evidencia no se almacena ni se verifica, solo se registra metadato suministrado por el cliente.</p>
+      <p class="small muted">Clasificación del rol: autoverificación técnica en solo lectura sobre los repositorios. Conforme al §10 del framework, no se declara “auditoría independiente” porque no participó un agente distinto del implementador.</p>
+    </section>
+
+    <div class="grid">
+      <div class="metric"><strong>3</strong><span>hallazgos bloqueantes</span></div>
+      <div class="metric"><strong>7</strong><span>hallazgos importantes</span></div>
+      <div class="metric"><strong>2</strong><span>hallazgos menores</span></div>
+      <div class="metric"><strong>166/166</strong><span>pruebas actuales aprobadas</span></div>
+    </div>
+
+    <h2>1. Alcance y evidencia examinada</h2>
+    <section class="panel">
+      <ul>
+        <li><strong>Backend operativo:</strong> commits <code>4b1d196</code> a <code>03b2748</code> (8 commits; 95 archivos; 11.654 inserciones y 29 eliminaciones), más cambios no confirmados de fase 8.</li>
+        <li><strong>Backend administrativo:</strong> commits <code>d8885d7</code> a <code>6d563c9</code> (8 commits; 107 archivos; 11.668 inserciones y 302 eliminaciones), más cambios no confirmados de fase 8.</li>
+        <li><strong>Estado Git:</strong> ambos repositorios en <code>feature/fase-8-mapas-analitica</code>; no se ejecutaron commit, push, merge, rebase, tag ni PR durante la auditoría.</li>
+        <li><strong>Contratos:</strong> framework C# v2.0, documento maestro COBROUP v1.5.0, <code>AGENTS.md</code>, índices de contexto, decisiones, código, migraciones y pruebas relacionadas.</li>
+        <li><strong>Comprobaciones:</strong> build Release, pruebas, dirección de referencias, archivos rastreados/ignorados, búsqueda heurística de secretos y consulta de vulnerabilidades NuGet.</li>
+      </ul>
+    </section>
+
+    <h2>2. Verificaciones ejecutadas</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Verificación</th><th>Resultado observado</th><th>Conclusión</th></tr></thead>
+        <tbody>
+          <tr><td><code>dotnet build ... -c Release --no-restore</code></td><td>Ambas soluciones: 0 advertencias, 0 errores.</td><td><span class="badge pass">Cumple</span></td></tr>
+          <tr><td><code>dotnet test ... -c Release --no-restore</code></td><td>Operativo: Core 81 + Infrastructure 25. Administrativo: Core 51 + Infrastructure 9. Total 166 aprobadas, 0 fallidas, 0 omitidas.</td><td><span class="badge pass">Cumple con salvedades</span></td></tr>
+          <tr><td><code>dotnet list ... package --vulnerable --include-transitive</code></td><td>NuGet no reportó paquetes vulnerables con las fuentes actuales.</td><td><span class="badge pass">Cumple al corte</span></td></tr>
+          <tr><td>Arquitectura física y referencias</td><td><code>.slnx</code> y proyectos en raíz, sin <code>src/</code>; Domain/Core/Shared/Infrastructure/Api y los dos proyectos mínimos de pruebas.</td><td><span class="badge pass">Cumple parcialmente</span></td></tr>
+          <tr><td><code>git diff --check</code></td><td>Sin conflicto funcional; se detectaron líneas en blanco adicionales al EOF en varios archivos históricos y avisos LF/CRLF.</td><td><span class="badge minor">Menor</span></td></tr>
+          <tr><td>Secretos y artefactos</td><td>No se encontraron credenciales incrustadas con la búsqueda realizada; <code>bin/</code>, <code>obj/</code>, secretos, certificados y resultados de pruebas están ignorados.</td><td><span class="badge pass">Cumple</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>3. Hallazgos</h2>
+
+    <article class="finding block">
+      <h3>H-001 · <span class="badge blocker">Bloqueante</span> La excepción aprobada no gobierna las condiciones del préstamo ni se consume</h3>
+      <dl>
+        <dt>Commit / repositorio</dt><dd><code>2537925</code> · <code>MS.Cobroup.Backend</code>.</dd>
+        <dt>Evidencia</dt><dd><code>MS.Cobroup.Backend.Core/Loans/LoanService.cs:86-106</code> solo comprueba tenant, cliente y estado <code>Approved</code>. No compara <code>PrincipalAmount</code>, duración/frecuencia ni <code>InterestRate</code> contra <code>ProposedAmount</code>, <code>ProposedDays</code> y <code>ProposedPercentage</code>. <code>OperationsDbContext.cs:112-143</code> tampoco crea unicidad sobre <code>ExceptionRequestId</code> ni existe estado de consumo.</dd>
+        <dt>Impacto</dt><dd>Una excepción aprobada para un monto/plazo/tasa concretos puede originar un préstamo con valores distintos y reutilizarse para múltiples préstamos. Se elude el control administrativo AC-08/AC-09.</dd>
+        <dt>Regla</dt><dd>Framework §§4.3, 4.6 y 8: las reglas viven en Core/Domain y deben preservar el contrato; COBROUP: excepción individual aprobada exclusivamente por ADMIN.</dd>
+        <dt>Corrección propuesta</dt><dd>Validar igualdad exacta de las condiciones aprobadas, definir semántica de duración, marcar/relacionar el consumo de forma atómica y aplicar restricción única cuando sea de un solo uso.</dd>
+        <dt>Verificación</dt><dd>Pruebas negativas por monto, tasa y plazo distintos; prueba de segundo uso; prueba concurrente de doble originación con la misma excepción.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>H-002 · <span class="badge blocker">Bloqueante</span> Pagos concurrentes con claves diferentes pueden desincronizar saldos y asignaciones</h3>
+      <dl>
+        <dt>Commit / repositorio</dt><dd><code>03b2748</code> · <code>MS.Cobroup.Backend</code>.</dd>
+        <dt>Evidencia</dt><dd><code>PaymentService.cs:36-46</code> hace la consulta previa de idempotencia y <code>PaymentService.cs:94-147</code> modifica cuotas/préstamo y guarda. La unicidad de <code>(TenantId, IdempotencyKey)</code> protege solo la misma clave. En <code>OperationsDbContext.cs:112-154</code>, Loan e Installment no tienen token de concurrencia, bloqueo ni serialización; el único <code>xmin</code> está en Customer (<code>:44</code>).</dd>
+        <dt>Impacto</dt><dd>Dos cobros simultáneos válidos con claves distintas pueden leer el mismo saldo, registrar ambos pagos y sobrescribir el saldo/cuotas con “último escritor”, dejando pagos y cartera inconsistentes o admitiendo cobros superiores al saldo real.</dd>
+        <dt>Regla</dt><dd>COBROUP AC-11/AC-12 y §11: integridad monetaria e idempotencia frente a concurrencia; framework §§5.1 y 9.</dd>
+        <dt>Corrección propuesta</dt><dd>Serializar por préstamo dentro de una transacción (bloqueo de fila/advisory lock o concurrencia optimista con reintento controlado), mantener pago, asignaciones y saldo en una única unidad atómica y resolver la carrera de clave duplicada devolviendo el pago existente.</dd>
+        <dt>Verificación</dt><dd>Prueba PostgreSQL real con dos contextos, claves distintas y montos que compiten por el saldo; comprobar suma de pagos = suma de asignaciones = reducción del saldo.</dd>
+      </dl>
+    </article>
+
+    <article class="finding block">
+      <h3>H-003 · <span class="badge blocker">Bloqueante</span> La evidencia fotográfica declarada no se almacena ni se valida</h3>
+      <dl>
+        <dt>Commit / repositorio</dt><dd><code>03b2748</code> · <code>MS.Cobroup.Backend</code>.</dd>
+        <dt>Evidencia</dt><dd><code>PaymentsController.cs:110-129</code> recibe JSON con <code>fileName</code>, <code>contentType</code>, <code>byteSize</code> y <code>storagePath</code>; no recibe contenido ni referencia emitida por un almacenamiento confiable. <code>PaymentService.cs:236-251</code> valida únicamente el texto MIME y persiste esos metadatos.</dd>
+        <dt>Impacto</dt><dd>Cualquier cliente puede registrar una ruta inexistente, tamaño falso o MIME falso. El sistema afirma que hay soporte fotográfico auditable, pero no conserva prueba recuperable ni verifica su integridad.</dd>
+        <dt>Regla</dt><dd>COBROUP AC-14 y cierre de fase 7; framework §§5.3, 8 y 9: seguridad de entradas, evidencia real y no declarar verificaciones no ejecutadas.</dd>
+        <dt>Corrección propuesta</dt><dd>Definir el contrato de almacenamiento; cargar el archivo o aceptar solo un identificador firmado emitido por el proveedor, validar bytes/tipo/tamaño/hash, persistir estado de carga y realizar retiro auditable del objeto.</dd>
+        <dt>Verificación</dt><dd>Pruebas de archivo real, MIME engañoso, límite de tamaño, objeto inexistente, acceso cross-tenant y retiro administrativo.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-004 · <span class="badge important">Importante</span> El cupo de préstamos activos tiene una carrera de check-then-insert</h3>
+      <dl>
+        <dt>Commit</dt><dd><code>2537925</code>.</dd>
+        <dt>Evidencia</dt><dd><code>LoanService.cs:68-80</code> cuenta préstamos; luego origina y guarda en <code>:192-193</code>. <code>EfLoanRepository.cs:17-19</code> ejecuta un conteo común, sin transacción serializable ni bloqueo por ruta.</dd>
+        <dt>Impacto</dt><dd>Dos solicitudes concurrentes pueden observar cupo disponible y ambas confirmar, superando el límite contractual de la ruta.</dd>
+        <dt>Corrección propuesta</dt><dd>Aplicar el mismo patrón transaccional/advisory lock ya usado correctamente para cupos de clientes, y agregar prueba real concurrente.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-005 · <span class="badge important">Importante</span> <code>maxLoanDays</code> se compara con cantidad de cuotas, no con duración</h3>
+      <dl>
+        <dt>Commit</dt><dd><code>2537925</code>.</dd>
+        <dt>Evidencia</dt><dd><code>LoanService.cs:127-129</code> compara <code>InstallmentCount</code> con <code>MaxLoanDays</code>; <code>:145-152</code> calcula fechas usando <code>PaymentFrequency</code>/<code>FrequencyNDays</code>. Un crédito semanal de 20 cuotas dura aproximadamente 140 días, pero se valida como “20 días”.</dd>
+        <dt>Impacto</dt><dd>Se pueden aprobar plazos reales superiores a la plantilla publicada; también queda indefinida la correspondencia con <code>ProposedDays</code> de una excepción.</dd>
+        <dt>Corrección propuesta</dt><dd>Comparar la fecha final o días calendario derivados del cronograma con <code>MaxLoanDays</code>, después de acordar inclusividad y zona horaria.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-006 · <span class="badge important">Importante</span> Agenda y conciliación usan día UTC, no el día local del tenant</h3>
+      <dl>
+        <dt>Commit / actual</dt><dd><code>03b2748</code> y cambios no confirmados de fase 8.</dd>
+        <dt>Evidencia</dt><dd><code>PaymentsController.cs:91</code>, <code>PaymentService.cs:188-191</code>, <code>AgendaService.cs:28,58,107,138</code> y <code>EfAgendaRepository.cs:59-66</code> crean el día y sus límites con UTC. No se consulta ni aplica la zona horaria IANA configurada en BackendAdmin.</dd>
+        <dt>Impacto</dt><dd>En America/Bogota, pagos entre 19:00 y 23:59 locales caen en el día UTC siguiente. AC-16/AC-17, agenda, “cobrado hoy” y conciliación diaria pueden ser incorrectos.</dd>
+        <dt>Regla</dt><dd>COBROUP líneas contractuales de zona horaria, AC-16 y AC-17; framework §5.1.8.</dd>
+        <dt>Corrección propuesta</dt><dd>Obtener la zona IANA tenant-safe, derivar el día local y convertir el intervalo semiabierto <code>[inicioLocal, siguienteInicioLocal)</code> a UTC; probar cambio de día y DST para zonas que lo usan.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-007 · <span class="badge important">Importante</span> La analítica “histórica” excluye préstamos pagados y no representa el corte solicitado</h3>
+      <dl>
+        <dt>Actual</dt><dd>Cambios no confirmados de fase 8 en <code>MS.Cobroup.Backend</code>.</dd>
+        <dt>Evidencia</dt><dd><code>EfAgendaRepository.cs:144-147</code> selecciona únicamente préstamos con estado actual <code>Active</code>; <code>:169-171</code> calcula colocado y recaudado sobre ese subconjunto. <code>targetDate</code> solo participa en mora (<code>:183-220</code>), no reconstruye estado o pagos al corte.</dd>
+        <dt>Impacto</dt><dd>“Total colocado” y “recaudado histórico” disminuyen cuando un préstamo se paga; consultar una fecha pasada combina estado actual con mora al corte. Los KPI y el ranking ejecutivo no son reproducibles.</dd>
+        <dt>Corrección propuesta</dt><dd>Definir formalmente cada métrica y su ventana. Incluir pagados cuando corresponda, filtrar originaciones/pagos por el corte y decidir si el aging agrupa saldo total en riesgo o solo cuotas vencidas.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-008 · <span class="badge important">Importante</span> Emisión/renovación de tokens no revalida membresía y organización activas</h3>
+      <dl>
+        <dt>Commit</dt><dd><code>d8885d7</code> · <code>MS.Cobroup.BackendAdmin</code>.</dd>
+        <dt>Evidencia</dt><dd><code>OidcController.cs:23-25</code> confía en el claim <code>organization_id</code> de la cookie y emite tokens sin consultar el estado vigente. <code>Program.cs:124-128</code> permite refresh tokens por 30 días. La validación de <code>IsActive</code>/<code>OrganizationStatus.Active</code> solo ocurre al login o cambio de organización en <code>EfIdentityRepository.cs:61-70,87-95</code>.</dd>
+        <dt>Impacto</dt><dd>Una membresía deshabilitada, usuario desactivado u organización suspendida puede seguir obteniendo tokens desde una cookie o refresh token existentes; el control de revocación queda diferido o ausente.</dd>
+        <dt>Corrección propuesta</dt><dd>Revalidar usuario/membresía/organización en autorización y refresh; revocar autorizaciones/tokens/sesiones al desactivar; agregar pruebas de revocación inmediata o documentar explícitamente la ventana máxima aceptada.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-009 · <span class="badge important">Importante</span> Puertos y repositorios se declaran dentro de Core</h3>
+      <dl>
+        <dt>Alcance</dt><dd>Varios commits de ambos repositorios, incluido el actual.</dd>
+        <dt>Evidencia</dt><dd>Ejemplos: <code>Backend.Core/Routes/IAdministrativeRouteDirectory.cs</code>, <code>Backend.Core/Payments/IOperationalPaymentMethodDirectory.cs</code>, <code>BackendAdmin.Core/Identity/IIdentityRepository.cs</code>, <code>BackendAdmin.Core/PaymentMethods/IPaymentMethodRepository.cs</code> y <code>BackendAdmin.Core/Agenda/IOperationalAgendaDirectory.cs</code>.</dd>
+        <dt>Impacto</dt><dd>La dirección de referencias de proyectos es correcta, pero la responsabilidad interna contradice el estándar que ordena declarar puertos/repositorios en <code>Domain/Interfaces</code>. Infrastructure implementa contratos alojados en la capa de aplicación.</dd>
+        <dt>Regla</dt><dd>Framework §§4.3, 4.4, 4.5 y regla no negociable 5.</dd>
+        <dt>Corrección propuesta</dt><dd>Mover los contratos técnicos/de negocio a subcarpetas semánticas de Domain, ajustar namespaces y conservar los DTO de caso de uso en Core.</dd>
+      </dl>
+    </article>
+
+    <article class="finding imp">
+      <h3>H-010 · <span class="badge important">Importante</span> La decisión remota y su auditoría administrativa no tienen entrega confiable</h3>
+      <dl>
+        <dt>Commit</dt><dd><code>b3b8e34</code> · <code>MS.Cobroup.BackendAdmin</code>.</dd>
+        <dt>Evidencia</dt><dd><code>LoanExceptionAdministrationService.cs:46-74</code> confirma primero la decisión en el backend operativo y después guarda la auditoría local. <code>EfLoanExceptionAuditRepository.cs:8-12</code> es una escritura independiente, sin outbox, idempotency key ni restricción de duplicado.</dd>
+        <dt>Impacto</dt><dd>Si falla la segunda escritura, la decisión queda aplicada sin rastro administrativo. Si se reintenta una decisión idempotente, se pueden crear auditorías duplicadas.</dd>
+        <dt>Corrección propuesta</dt><dd>Definir consistencia distribuida: evento/outbox en la autoridad operativa o auditoría idempotente con clave de operación y reconciliación verificable.</dd>
+      </dl>
+    </article>
+
+    <article class="finding min">
+      <h3>H-011 · <span class="badge minor">Menor</span> El catálogo de medios no cumple sus propias reglas publicadas</h3>
+      <dl>
+        <dt>Commit</dt><dd><code>6d563c9</code> · <code>MS.Cobroup.BackendAdmin</code>.</dd>
+        <dt>Evidencia</dt><dd><code>PaymentMethod.cs:32,48</code> solo aplica <code>ToUpperInvariant</code>, por lo que no elimina diacríticos aunque <code>AGENTS.md</code> declara unicidad ignorando acentos. <code>:33,49</code> asigna <code>DisplayOrder</code> sin validar el rango 1–999 declarado. Además <code>PaymentMethodService.cs:19-31</code> conserva un método no usado que devuelve un registro ficticio.</dd>
+        <dt>Impacto</dt><dd>Pueden coexistir nombres que el registro afirma equivalentes y aceptarse órdenes fuera de rango; aumenta deuda y confusión contractual.</dd>
+        <dt>Corrección propuesta</dt><dd>Normalización Unicode explícita, validación de rango en Domain y eliminación o implementación del método muerto.</dd>
+      </dl>
+    </article>
+
+    <article class="finding min">
+      <h3>H-012 · <span class="badge minor">Menor</span> La bitácora y el documento maestro describen contratos distintos al código</h3>
+      <dl>
+        <dt>Actual</dt><dd>Cambios no confirmados de fase 8.</dd>
+        <dt>Evidencia</dt><dd><code>AGENTS.md</code> y <code>COBROUP.md</code> publican <code>/agenda/daily</code>, <code>/optimize-route</code> y <code>/portfolio-analytics</code>; <code>AgendaController.cs</code> expone GET en la raíz, <code>/optimize-sequence</code> y <code>/route-analytics</code>. La bitácora menciona enum <code>CollectedToday</code>, pero <code>AgendaStatus.cs</code> define <code>Collected</code>; también documenta colores distintos a los literales de <code>AgendaService.cs:267-289</code>.</dd>
+        <dt>Impacto</dt><dd>El frontend actual usa las rutas reales, pero documentación, auditoría y consumidores externos pueden implementar un contrato que devuelve 404 o interpretar mal estados.</dd>
+        <dt>Regla</dt><dd>Framework §§11 y 12: bitácora fiel, resultados reales y contexto vigente.</dd>
+        <dt>Corrección propuesta</dt><dd>Elegir un contrato canónico, versionarlo y sincronizar controlador, clientes, pruebas, COBROUP, contexto y AGENTS.</dd>
+      </dl>
+    </article>
+
+    <h2>4. Qué se realizó bien</h2>
+    <section class="panel">
+      <ul>
+        <li><strong>Base del framework:</strong> .NET 10 LTS/C# 14 fijados con <code>global.json</code>, <code>TreatWarningsAsErrors</code>, solución <code>.slnx</code>, capas y pruebas separadas, sin <code>src/</code>.</li>
+        <li><strong>Dependencias entre proyectos:</strong> Domain no referencia Core/Infrastructure; Core referencia Domain/Shared; Infrastructure implementa adaptadores; Api se usa para composición.</li>
+        <li><strong>Controladores:</strong> el refactor <code>4b1d196</code> y los controladores posteriores mantienen la entrada HTTP fuera de <code>Program.cs</code>; el arranque queda concentrado en DI, autenticación y middleware.</li>
+        <li><strong>Aislamiento tenant/ruta:</strong> consultas principales filtran por tenant y validan rutas devueltas por la autoridad administrativa. Admin, supervisor y cobrador reciben rutas según alcance.</li>
+        <li><strong>Clientes:</strong> los commits <code>67277c2</code>/<code>9d949cd</code> incorporan invariantes, auditoría atómica, <code>xmin</code> y advisory lock para cupo concurrente; existe prueba PostgreSQL real de concurrencia.</li>
+        <li><strong>Préstamos:</strong> el cálculo de cronograma conserva suma exacta mediante ajuste residual; persiste snapshot de términos e incluye pruebas de dominio e infraestructura.</li>
+        <li><strong>Pagos:</strong> hay clave de idempotencia única por tenant, snapshot del nombre del medio, asignaciones por cuota y separación del directorio administrativo.</li>
+        <li><strong>Identidad:</strong> hash de contraseña, comparación en tiempo constante para bootstrap, PKCE, rate limiting, certificados externos en no-Development y secretos fuera del repositorio.</li>
+        <li><strong>Resiliencia básica:</strong> clientes HTTP tienen timeout, propagan cancelación y transforman fallos de red en indisponibilidad en lugar de éxito vacío.</li>
+        <li><strong>Fase 8:</strong> Haversine está aislado como cálculo puro y probado; el backend administrativo no lee directamente tablas operativas, sino que usa contratos HTTP.</li>
+        <li><strong>Higiene:</strong> no hay binarios/objetos rastreados, el <code>.gitignore</code> protege artefactos y secretos, y NuGet no reportó vulnerabilidades conocidas al corte.</li>
+      </ul>
+    </section>
+
+    <h2>5. Trazabilidad por commit</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Repositorio</th><th>Commit</th><th>Evaluación auditora resumida</th></tr></thead>
+        <tbody>
+          <tr><td>Operativo</td><td><code>4b1d196</code></td><td><span class="badge pass">Conforme</span> Separación de controladores coherente con el framework.</td></tr>
+          <tr><td>Operativo</td><td><code>b9c7d4d</code></td><td><span class="badge pass">Bien</span> Acceso a rutas por contrato y sin compartir base; puerto ubicado en Core (H-009).</td></tr>
+          <tr><td>Operativo</td><td><code>67277c2</code></td><td><span class="badge pass">Bien</span> Scope tenant/ruta e invariantes de cliente.</td></tr>
+          <tr><td>Operativo</td><td><code>9d949cd</code></td><td><span class="badge pass">Bien</span> Auditoría y concurrencia de cupo de clientes correctamente tratadas.</td></tr>
+          <tr><td>Operativo</td><td><code>d46701a</code></td><td><span class="badge important">Parcial</span> Fachada de plantillas desacoplada; puerto en Core (H-009).</td></tr>
+          <tr><td>Operativo</td><td><code>8cc1e42</code></td><td><span class="badge pass">Bien</span> Decisión restringida a Admin e idempotencia de transición; su uso posterior queda roto por H-001.</td></tr>
+          <tr><td>Operativo</td><td><code>2537925</code></td><td><span class="badge blocker">No cumple</span> H-001, H-004 y H-005.</td></tr>
+          <tr><td>Operativo</td><td><code>03b2748</code></td><td><span class="badge blocker">No cumple</span> H-002, H-003 y parte de H-006.</td></tr>
+          <tr><td>Administrativo</td><td><code>d8885d7</code></td><td><span class="badge important">Parcial</span> Buen modelo de membresías/rutas; falta revocación/revalidación vigente (H-008) y hay puertos en Core (H-009).</td></tr>
+          <tr><td>Administrativo</td><td><code>6eaf176</code></td><td><span class="badge pass">Bien</span> Configuración tenant-safe, roles y auditoría de rutas.</td></tr>
+          <tr><td>Administrativo</td><td><code>5f50a25</code></td><td><span class="badge pass">Bien</span> Fachada sin duplicar ownership; puerto en Core (H-009).</td></tr>
+          <tr><td>Administrativo</td><td><code>db18d94</code></td><td><span class="badge pass">Bien</span> Validador PKCE local sin imprimir secreto/token; la evidencia no sustituye una prueba automatizada E2E repetible.</td></tr>
+          <tr><td>Administrativo</td><td><code>1296196</code></td><td><span class="badge pass">Bien</span> Versionado inmutable y auditoría de plantilla; repositorio en Core (H-009).</td></tr>
+          <tr><td>Administrativo</td><td><code>b3b8e34</code></td><td><span class="badge important">No cumple</span> H-010: auditoría distribuida no confiable.</td></tr>
+          <tr><td>Administrativo</td><td><code>57d45d7</code></td><td><span class="badge pass">Bien</span> Proxy de lectura y restricción Admin; contrato en Core (H-009).</td></tr>
+          <tr><td>Administrativo</td><td><code>6d563c9</code></td><td><span class="badge minor">Parcial</span> Buen tenant-scope/auditoría; H-011.</td></tr>
+          <tr><td>Actual</td><td><code>working tree</code></td><td><span class="badge important">No cumple</span> H-006, H-007, H-009 y H-012.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>6. Lista de control del framework</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Criterio</th><th>Estado</th><th>Evidencia / salvedad</th></tr></thead>
+        <tbody>
+          <tr><td>MS y host real identificados</td><td><span class="badge pass">Sí</span></td><td>Dos microservicios con host Api; no se justificó Worker.</td></tr>
+          <tr><td>Sin frontend/UI dentro de los backend</td><td><span class="badge pass">Sí</span></td><td>No hay proyectos Presentation/WPF/MAUI/estilos.</td></tr>
+          <tr><td>Sin branding corporativo en código actual</td><td><span class="badge pass">Sí</span></td><td>Búsqueda sin coincidencias en los repositorios auditados.</td></tr>
+          <tr><td>Rama <code>feature/*</code></td><td><span class="badge pass">Sí</span></td><td><code>feature/fase-8-mapas-analitica</code> en ambos.</td></tr>
+          <tr><td>Cambios previos preservados</td><td><span class="badge pass">Sí</span></td><td>La auditoría no modificó los repositorios.</td></tr>
+          <tr><td>Solución/capas en raíz, sin <code>src/</code></td><td><span class="badge pass">Sí</span></td><td>Estructura correcta.</td></tr>
+          <tr><td>Proyectos independientes</td><td><span class="badge pass">Sí</span></td><td>Domain/Core/Shared/Infrastructure/Api y tests.</td></tr>
+          <tr><td>Puertos en Domain y dirección interna</td><td><span class="badge fail">No</span></td><td>H-009.</td></tr>
+          <tr><td>Hosts/controladores sin negocio</td><td><span class="badge pass">Sí</span></td><td>Delegación mayoritaria a Core.</td></tr>
+          <tr><td>Organización semántica</td><td><span class="badge important">Parcial</span></td><td>Módulos claros, pero servicios/puertos no siguen las rutas prescritas de Domain/Interfaces y Core/UseCases/Services.</td></tr>
+          <tr><td><code>.gitignore</code> seguro</td><td><span class="badge pass">Sí</span></td><td>Artefactos, secretos y certificados protegidos.</td></tr>
+          <tr><td>Contratos y documentación vigentes</td><td><span class="badge important">Parcial</span></td><td>H-012.</td></tr>
+          <tr><td>Concurrencia, idempotencia y tiempo</td><td><span class="badge fail">No</span></td><td>H-002, H-004 y H-006.</td></tr>
+          <tr><td>Core.Tests + Infrastructure.Tests</td><td><span class="badge pass">Sí</span></td><td>Existen y pasan; faltan escenarios de los hallazgos.</td></tr>
+          <tr><td>Build/pruebas ejecutadas y reportadas</td><td><span class="badge pass">Sí</span></td><td>Release 0/0; 166/166.</td></tr>
+          <tr><td><code>AGENTS.md</code> actualizado y fiel</td><td><span class="badge important">Parcial</span></td><td>Historial presente, pero contiene afirmaciones divergentes (H-011/H-012).</td></tr>
+          <tr><td>Auditor distinto del implementador</td><td><span class="badge minor">No realizado</span></td><td>No se atribuye independencia.</td></tr>
+          <tr><td>Sin operaciones Git restringidas en auditoría</td><td><span class="badge pass">Sí</span></td><td>Solo inspección y verificaciones.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>7. Orden de remediación recomendado</h2>
+    <section class="panel">
+      <ol>
+        <li>Bloquear integración y corregir H-001, H-002 y H-003.</li>
+        <li>Agregar pruebas PostgreSQL concurrentes para pagos, excepción de un solo uso y cupo de préstamos.</li>
+        <li>Corregir H-005/H-006 y acordar formalmente duración, zona horaria y ventanas de día.</li>
+        <li>Definir métricas de cartera y rehacer H-007 con datos al corte reproducibles.</li>
+        <li>Endurecer la revocación de identidad (H-008) y la entrega de auditoría distribuida (H-010).</li>
+        <li>Reubicar contratos (H-009) y sincronizar documentación/bitácoras (H-011/H-012).</li>
+        <li>Repetir build, pruebas unitarias, infraestructura real, E2E autenticado y una auditoría independiente antes de declarar las fases 7/8 cerradas.</li>
+      </ol>
+    </section>
+
+    <h2>8. Limitaciones</h2>
+    <section class="panel">
+      <ul>
+        <li>No se desplegaron servicios ni se ejecutó flujo E2E HTTP durante esta auditoría.</li>
+        <li>No se verificó el estado de migraciones en ambientes distintos del disponible para las pruebas.</li>
+        <li>No se realizaron pruebas de carga, caos, penetración ni concurrencia nuevas; los riesgos concurrentes se determinaron por flujo de código y modelo EF.</li>
+        <li>La revisión de vulnerabilidades depende de los avisos devueltos por NuGet al 2026-10-21.</li>
+        <li>Los números de línea corresponden al working tree observado en este corte.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p><strong>Cierre auditor:</strong> con hallazgos. Los repositorios de aplicación no fueron corregidos ni alterados; únicamente se generó este informe en la carpeta externa <code>cobroup.md/informe</code>.</p>
+    </footer>
+  </main>
+</body>
+</html>

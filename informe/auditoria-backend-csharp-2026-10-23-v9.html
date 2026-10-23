@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COBROUP · Auditoría backend C# v9 · 2026-10-23</title>
+  <style>
+    :root{--bg:#f3f6fb;--paper:#fff;--ink:#172033;--muted:#5f6b7a;--line:#dce3ec;--navy:#183153;--blue:#2764c8;--red:#b42318;--redbg:#fff1f0;--amber:#9a6700;--amberbg:#fff8e6;--green:#137333;--greenbg:#edf9f0;--graybg:#f5f7fa}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{max-width:1180px;margin:0 auto;padding:30px 22px 60px}.hero,section,footer{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:24px;margin:0 0 18px;box-shadow:0 6px 18px rgba(24,49,83,.05)}
+    .hero{border-top:6px solid var(--red)} h1{margin:0 0 8px;font-size:30px;color:var(--navy)} h2{margin:0 0 16px;color:var(--navy);font-size:22px} h3{margin:0 0 9px;font-size:17px}
+    p{margin:8px 0}.muted{color:var(--muted)} code{background:#eef2f7;border-radius:5px;padding:1px 5px;font-size:.92em;overflow-wrap:anywhere}
+    .verdict{display:inline-block;background:var(--red);color:#fff;font-weight:800;border-radius:999px;padding:7px 13px;letter-spacing:.03em}.badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:800}.blocker{background:#fee4e2;color:var(--red)}.important{background:#fff0c2;color:var(--amber)}.ok{background:#dff4e4;color:var(--green)}.partial{background:#e9eef7;color:var(--navy)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px}.metric{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--graybg)}.metric b{display:block;font-size:21px;color:var(--navy)}
+    .finding{border-left:5px solid var(--red);background:var(--redbg);border-radius:9px;padding:17px;margin:13px 0}.finding.imp{border-color:#d39b08;background:var(--amberbg)}.finding.good{border-color:#2e944b;background:var(--greenbg)}
+    dl{display:grid;grid-template-columns:150px 1fr;gap:5px 13px;margin:9px 0}dt{font-weight:800;color:var(--navy)}dd{margin:0}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{background:#edf2f8;color:var(--navy)}ul,ol{margin:8px 0 4px;padding-left:22px}.callout{border:1px solid #b8c8df;background:#f1f6fc;border-radius:10px;padding:14px;margin:13px 0}.danger{border-color:#efb4af;background:#fff5f4}footer{color:var(--muted);font-size:13px}a{color:var(--blue)}
+    @media(max-width:650px){main{padding:14px 10px}section,.hero,footer{padding:17px}dl{grid-template-columns:1fr}dd{margin-bottom:7px}}
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <div class="verdict">NO APROBADO</div>
+    <h1>Auditoría backend C# v9</h1>
+    <p><strong>Fecha de corte:</strong> 2026-10-23 · <strong>Rol:</strong> auditor técnico, sin corrección de código · <strong>Resultado:</strong> 3 bloqueos y 12 hallazgos importantes activos.</p>
+    <p>La migración desde RSA/JWKS hacia JWT <code>HS256</code> está correctamente encaminada: el algoritmo queda restringido, los secretos inválidos producen fail-fast, Backend operativo no emite tokens y las suites pasan. Sin embargo, la rotación definida no puede desplegarse con los manifiestos actuales, el renderer deja secretos reales en YAML persistente y el almacenamiento PVC conserva los defectos críticos de B-09.</p>
+    <div class="grid">
+      <div class="metric"><b>305/305</b>pruebas ejecutadas en verde</div>
+      <div class="metric"><b>0</b>warnings y errores de compilación</div>
+      <div class="metric"><b>3</b>hallazgos bloqueantes</div>
+      <div class="metric"><b>0</b>paquetes NuGet vulnerables reportados</div>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. Alcance, autoridad y estado Git</h2>
+    <p>Marco aplicado: <code>FRAMEWORK_DESARROLLO_CSHARP.md</code> 2.0, <code>DECISION_AUTENTICACION_JWT.md</code>, <code>BACKLOG_SEGURIDAD_FIRMA_SIMETRICA.md</code>, <code>RUNBOOK_ROTACION_JWT_HS256.md</code> y <code>DECISION_ALMACENAMIENTO_ARCHIVOS.md</code>.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Repositorio</th><th>Rama</th><th>HEAD auditado</th><th>Corte sin commit</th></tr></thead>
+      <tbody>
+        <tr><td><code>MS.Cobroup.Backend</code></td><td><code>feature/solucion-hallazgos-iniciales</code></td><td><code>8285713</code> · PVC durable</td><td>Migración local HS256: 10 rastreados modificados/eliminados y 4 no rastreados.</td></tr>
+        <tr><td><code>MS.Cobroup.BackendAdmin</code></td><td><code>feature/solucion-hallazgos-iniciales</code></td><td><code>289b672</code> · sesión atómica/RSA efímero</td><td>Migración local HS256: 17 rastreados modificados/eliminados y 3 no rastreados.</td></tr>
+        <tr><td><code>cobroup.environments</code></td><td><code>feature/diferir-pem-rsa-efimero</code></td><td><code>ed3b443</code> · GitOps RSA anterior</td><td>18 archivos modificados para HS256, workflows y renderer.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted">No se encontró contenido staged. Los hallazgos corresponden al working tree actual, no solo al último commit.</p>
+  </section>
+
+  <section>
+    <h2>2. Controles correctamente implementados</h2>
+    <div class="finding good">
+      <h3><span class="badge ok">Conforme en código/pruebas</span> Núcleo JWT HS256</h3>
+      <ul>
+        <li>BackendAdmin emite access y refresh con <code>SecurityAlgorithms.HmacSha256</code>; JWKS y proveedores RSA fueron retirados del runtime.</li>
+        <li>Ambos servicios rechazan clave ausente, placeholder, Base64 inválido y material menor de 32 bytes.</li>
+        <li><code>ValidAlgorithms</code> contiene únicamente <code>HS256</code>; las pruebas negativas cubren <code>none</code>, RS256, ES256, HS384 y HS512.</li>
+        <li>El <code>kid</code> es obligatorio al validar y Backend operativo conserva frontera de solo validación.</li>
+        <li>Issuer, audience, expiración, <code>nbf</code>, tipo, tenant, rol, <code>jti</code> y claims obligatorios continúan validados.</li>
+        <li>Los manifiestos inyectan el mismo placeholder JWT en ambos backends del ambiente y no lo entregan a frontends.</li>
+      </ul>
+    </div>
+    <div class="finding good">
+      <h3><span class="badge ok">Evidencia ejecutada</span> Calidad reproducible</h3>
+      <ul>
+        <li>Backend: 81 Core + 93 Infrastructure = <strong>174/174</strong>.</li>
+        <li>BackendAdmin: 51 Core + 64 Infrastructure = <strong>115/115</strong>.</li>
+        <li>GitOps: <strong>16/16</strong>, con <code>kubectl kustomize</code> exitoso para Dev, QA y Prod.</li>
+        <li>Build Release de ambas soluciones: 0 warnings, 0 errores.</li>
+        <li>EF Core: sin cambios pendientes en ambos modelos, usando una clave efímera exclusiva de la ejecución auditora.</li>
+        <li><code>dotnet list package --vulnerable --include-transitive</code>: ningún paquete vulnerable reportado por las fuentes configuradas.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Hallazgos bloqueantes</h2>
+
+    <article class="finding">
+      <h3>B-09 · PVC durable continúa parcial y no satisface el contrato de integridad</h3>
+      <dl>
+        <dt>Reglas</dt><dd><code>DECISION_ALMACENAMIENTO_ARCHIVOS.md</code>, framework §§4, 5 y 9.</dd>
+        <dt>Evidencia</dt><dd><code>FileSystemObjectStorage.cs:111-120</code> genera <code>{tenant}/{payment}/{hash}</code>, mientras el ADR exige <code>tenants/{tenant}/payments/{payment}/{hash}</code>. <code>IFileStorageService.cs:5-21</code> sigue acoplado a Evidence/Payment y no a archivos genéricos.</dd>
+        <dt>Integridad</dt><dd><code>File.Move(..., overwrite: true)</code> en línea 118 sobrescribe sin comprobar contenido preexistente ni colisión. Las líneas 132-139 y 171-178 silencian errores de cleanup/delete y pueden reportar éxito con basura o archivo no eliminado.</dd>
+        <dt>Seguridad</dt><dd>La pertenencia al root usa prefijo textual sin límite de segmento y no comprueba symlinks/reparse points en root/componentes. La validación de imagen solo observa magic bytes iniciales; los tests aceptan buffers aleatorios/truncados como JPEG/PNG/WebP.</dd>
+        <dt>Kubernetes</dt><dd>Existe PVC/RWX declarativo, pero no hay StorageClass explícita, readiness de almacenamiento ni evidencia de dos pods reales escribiendo/leyendo después de reinicios.</dd>
+        <dt>Decisión</dt><dd><strong>Bloquea producción.</strong> Las pruebas locales no cierran concurrencia RWX, integridad, contenido completo ni persistencia real.</dd>
+      </dl>
+    </article>
+
+    <article class="finding">
+      <h3>B-21 · La rotación HS256 documentada no puede desplegarse</h3>
+      <dl>
+        <dt>Reglas</dt><dd>SYM-07 y SYM-08; <code>DECISION_AUTENTICACION_JWT.md</code> §3.2.</dd>
+        <dt>Evidencia</dt><dd>Los dos servicios esperan una colección indexada <code>Jwt:PreviousValidationKeys:{índice}:KeyId</code> + <code>SigningKeyBase64</code> (<code>SymmetricKeyService.cs:90-136</code> y <code>SymmetricTokenValidationService.cs:115-161</code>). El runbook ordena configurar <code>Jwt__PreviousValidationKeys__k2</code> como valor directo, formato que el código ignora.</dd>
+        <dt>GitOps</dt><dd>Secrets, ConfigMaps y workflows solo transportan una clave activa; no existe variable para claves previas. Los seis manifiestos fijan <code>Jwt__ActiveKeyId: "k1"</code>. No puede ejecutarse el solapamiento k1→k2 descrito.</dd>
+        <dt>Fail-fast</dt><dd>Entradas previas incompletas se omiten silenciosamente con <code>continue</code>; <code>ActiveKeyId</code> ausente cae a <code>k1</code>. Una mala rotación puede arrancar “verde” y rechazar tokens entre pods.</dd>
+        <dt>Pruebas</dt><dd>Las pruebas unitarias construyen el formato indexado correcto, pero no existe prueba que atraviese renderer → Secret/ConfigMap → BackendAdmin emisor → Backend validador durante un rollout.</dd>
+        <dt>Decisión</dt><dd><strong>Bloquea producción y rotación.</strong> El soporte en memoria no constituye una rotación operacional.</dd>
+      </dl>
+    </article>
+
+    <article class="finding">
+      <h3>B-22 · El pipeline materializa y conserva secretos reales en archivos YAML</h3>
+      <dl>
+        <dt>Regla</dt><dd>SYM-02 y SYM-10: el secreto no puede quedar en artefactos o manifiestos renderizados persistentes.</dd>
+        <dt>Evidencia</dt><dd><code>render_manifests.py:184-208</code> reemplaza los placeholders y reescribe en sitio <code>*/secret.yaml</code>. Después, los workflows copian todo <code>dev/*</code>, <code>qa/*</code> o <code>prod/*</code> por SCP a <code>/opt/cobroup/deploys/&lt;env&gt;</code>.</dd>
+        <dt>Impacto</dt><dd>La clave JWT, cadenas de conexión y credenciales GHCR quedan en texto claro en el workspace del runner y en YAML persistente de la VPS. Redactar stdout no protege los archivos ni limita su lectura, backup o copia.</dd>
+        <dt>Pruebas</dt><dd>Las 16 pruebas confirman precisamente la escritura del valor en copias temporales; no verifican borrado seguro, permisos mínimos ni aplicación sin persistencia.</dd>
+        <dt>Decisión</dt><dd><strong>Bloquea producción.</strong> La custodia declarada como GitHub/Kubernetes Secret se rompe en el paso intermedio.</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section>
+    <h2>4. Hallazgos importantes</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>ID</th><th>Evidencia actual</th><th>Riesgo / criterio de cierre</th></tr></thead>
+      <tbody>
+        <tr><td>I-02</td><td>No se ejecutó flujo real por ingress entre las imágenes desplegadas.</td><td>Probar login, access, me, refresh, cambio de organización y logout por Dev/QA/Prod.</td></tr>
+        <tr><td>I-04</td><td>Rate limit fijo por IP en memoria.</td><td>Agregar sujeto, bloqueo progresivo, coordinación multirréplica y auditoría.</td></tr>
+        <tr><td>I-08</td><td>La configuración de proxies conserva CIDR privados amplios por defecto.</td><td>Restringir a IP/CIDR reales del ingress por ambiente.</td></tr>
+        <tr><td>I-10</td><td>Producción usa imágenes <code>:latest</code>.</td><td>Promover por digest/SHA inmutable y mantener trazabilidad commit→imagen→manifiesto.</td></tr>
+        <tr><td>I-11</td><td>Sin Job de migración previo al rollout ni readiness de versión de esquema.</td><td>Aplicar migraciones idempotentes antes de iniciar réplicas.</td></tr>
+        <tr><td>I-24</td><td>Las secciones “Decisión vigente” de ambos <code>AGENTS.md</code> aún exigen RSA/JWKS/HMAC prohibido, aunque el último registro cronológico describe HS256.</td><td>Rectificación append-only inequívoca y actualización de la cabecera activa.</td></tr>
+        <tr><td>I-25</td><td>El cambio de tenant mantiene la membresía destino leída antes de la transacción atómica.</td><td>Revalidar/bloquear usuario, organización y membresía dentro de la misma transición.</td></tr>
+        <tr><td>I-26</td><td>GitHub Actions y Appleboy están fijados por tags, no SHA; PyYAML no usa hashes.</td><td>Fijar supply chain o documentar excepción de riesgo.</td></tr>
+        <tr><td>I-28</td><td><code>appsettings.json</code> de BackendAdmin conserva callbacks <code>Identity:Clients</code> del flujo retirado.</td><td>Eliminar configuración activa huérfana y actualizar comentarios RS256 restantes.</td></tr>
+        <tr><td>I-29</td><td>Los workflows llaman al renderer pero no ejecutan <code>test_render_manifests.py</code>.</td><td>Ejecutar la suite negativa antes de SSH/SCP y bloquear ante fallo.</td></tr>
+        <tr><td>I-30</td><td>Existe <code>D:\Proyectos\cobroup\cobroup.md\key.pem</code>, 424 bytes, con encabezado de clave privada y ACL de lectura para <code>BUILTIN\Users</code>. No está referenciada por el runtime.</td><td>Determinar procedencia/uso, rotar si alguna vez fue válida y eliminar mediante procedimiento seguro; no copiarla al informe ni a Git.</td></tr>
+        <tr><td>I-31</td><td>El control de reutilización compara solo variables presentes; cada workflow expone únicamente la clave de su ambiente.</td><td>La CI real no puede detectar que Dev/QA/Prod tengan el mismo valor. Implementar verificación segura central o evidencia operacional sin imprimir secretos.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>5. Matriz de cumplimiento HS256</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Control</th><th>Estado</th><th>Conclusión auditora</th></tr></thead>
+      <tbody>
+        <tr><td>SYM-01 · generación/separación</td><td><span class="badge partial">Parcial</span></td><td>Longitud/Base64 validados; separación real entre ambientes no demostrada y gate inefectivo en workflows aislados.</td></tr>
+        <tr><td>SYM-02 · custodia</td><td><span class="badge blocker">No cumple</span></td><td>El renderer persiste secretos en YAML y los copia a la VPS.</td></tr>
+        <tr><td>SYM-03 · distribución mínima</td><td><span class="badge partial">Parcial</span></td><td>Manifiestos limitan inyección a ambos backends; RBAC/ACL reales no verificados.</td></tr>
+        <tr><td>SYM-04 · fail-fast</td><td><span class="badge ok">Cumple</span></td><td>Claves activas ausentes/inválidas/débiles se rechazan en runtime y renderer.</td></tr>
+        <tr><td>SYM-05 · algoritmo estricto</td><td><span class="badge ok">Cumple</span></td><td>Allowlist HS256 y pruebas negativas reproducidas.</td></tr>
+        <tr><td>SYM-06 · emisor único</td><td><span class="badge ok">Cumple</span></td><td>Solo BackendAdmin expone emisión; Backend conserva servicio validador.</td></tr>
+        <tr><td>SYM-07 · rotación</td><td><span class="badge blocker">No cumple</span></td><td>Código, runbook y GitOps usan formas incompatibles; no hay transporte de claves previas.</td></tr>
+        <tr><td>SYM-08 · multirréplica</td><td><span class="badge partial">Parcial</span></td><td>Prueba en memoria positiva; no hay rollout/cross-service real.</td></tr>
+        <tr><td>SYM-09 · observabilidad</td><td><span class="badge important">Pendiente</span></td><td>No se aportó evidencia de alertas, acceso/cambio de Secret ni rotación fallida.</td></tr>
+        <tr><td>SYM-10 · gate CI/CD</td><td><span class="badge blocker">No cumple</span></td><td>Valida clave activa, pero no rotación, separación efectiva, persistencia del secreto ni su propia suite.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>6. Evolución frente a v8</h2>
+    <ul>
+      <li><strong>B-18 y B-20:</strong> cerrados por cambio normativo; RSA/acknowledge ya no son criterio vigente.</li>
+      <li><strong>B-19:</strong> obsoleto; HS256 compartido elimina la incompatibilidad por RSA efímero entre réplicas.</li>
+      <li><strong>B-09:</strong> continúa abierto, sin remediación posterior al corte v8.</li>
+      <li><strong>Nuevo B-21:</strong> la rotación HS256 existe en memoria, pero no en el contrato desplegable.</li>
+      <li><strong>Nuevo B-22:</strong> el renderer persiste secretos reales antes del despliegue.</li>
+      <li><strong>Mejora material:</strong> implementación JWT, suites y GitOps migraron a HS256 y pasan las verificaciones locales.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Orden de remediación exigido</h2>
+    <ol>
+      <li>Eliminar la persistencia de secretos renderizados; aplicar Kubernetes Secrets sin dejarlos en YAML remoto y asegurar permisos/limpieza.</li>
+      <li>Definir un único esquema versionado de rotación, implementarlo en código, Secret/ConfigMap/workflows y corregir el runbook.</li>
+      <li>Hacer fail-fast por <code>ActiveKeyId</code> ausente, entrada previa incompleta, <code>kid</code> duplicado/igual al activo y conjuntos inconsistentes entre servicios.</li>
+      <li>Ejecutar un rollout de rotación cross-service/multirréplica con tokens k1/k2 y registrar evidencia.</li>
+      <li>Remediar B-09: clave lógica normativa, puerto genérico, symlinks, contenido completo, colisiones, errores no silenciados y prueba RWX Kubernetes real.</li>
+      <li>Incorporar las pruebas GitOps como gate y cerrar los hallazgos importantes heredados.</li>
+    </ol>
+    <div class="callout danger"><strong>Criterio de próxima aprobación:</strong> no basta con 305 pruebas verdes. Deben quedar en verde SYM-01 a SYM-10, ejecutarse rotación real entre ambos servicios y cerrarse B-09 con evidencia de clúster.</div>
+  </section>
+
+  <section>
+    <h2>8. Limitaciones de esta auditoría</h2>
+    <ul>
+      <li>No se accedió a GitHub Environment Secrets; no se observaron sus valores ni se verificó que sean diferentes.</li>
+      <li>No se desplegó en clúster Kubernetes ni se validaron StorageClass, RBAC, ACL, pods, ingress o PVC reales.</li>
+      <li>No se ejecutó escaneo dinámico DAST ni prueba de penetración.</li>
+      <li>Las referencias históricas a OpenIddict dentro de migraciones EF se conservaron correctamente como historia de esquema y no se consideran runtime activo.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Auditoría independiente del implementador: inspección y ejecución realizadas por Codex; la implementación auditada fue registrada como generada por otro agente. El auditor no modificó código, pruebas, configuración, manifiestos, decisiones ni bitácoras, y no ejecutó commit, push, merge, rebase, tag o PR. Único artefacto creado: este informe HTML.
+  </footer>
+</main>
+</body>
+</html>

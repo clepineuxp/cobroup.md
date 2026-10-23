@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditoría técnica C# COBROUP · 2026-10-22</title>
+  <style>
+    :root{--ink:#172033;--muted:#5d687b;--line:#d9dfeb;--paper:#fff;--bg:#eef2f8;--navy:#16243f;--blue:#2463eb;--red:#b42318;--red-soft:#fff0ee;--amber:#9a6700;--amber-soft:#fff8df;--green:#087a52;--green-soft:#eaf9f3;--soft:#f5f7fa}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{width:min(1180px,calc(100% - 32px));margin:28px auto 56px}header{color:#fff;background:linear-gradient(125deg,#101a31 0%,#183b73 64%,#2463eb 100%);border-radius:18px;padding:38px 42px;box-shadow:0 18px 45px rgba(22,36,63,.18)}
+    header h1{margin:8px 0 10px;font-size:clamp(28px,4vw,44px);line-height:1.1}header p{margin:0;max-width:950px;color:#dbe7ff}.eyebrow{font-size:12px;letter-spacing:.13em;text-transform:uppercase;font-weight:800}.verdict{display:inline-flex;margin-top:20px;padding:9px 13px;border:1px solid rgba(255,255,255,.38);background:rgba(111,10,10,.42);border-radius:999px;font-weight:800}
+    nav,section,article.finding{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px rgba(38,50,75,.06)}nav{margin-top:18px;padding:14px 18px;display:flex;gap:18px;flex-wrap:wrap}nav a{color:var(--blue);font-weight:700;text-decoration:none}section{margin-top:18px;padding:26px 30px}
+    h2{margin:0 0 16px;font-size:24px;color:var(--navy)}h3{margin:0 0 11px;font-size:18px;line-height:1.35}h4{margin:20px 0 8px;color:var(--navy)}p{margin:9px 0}code{font-family:"Cascadia Code",Consolas,monospace;font-size:.92em;background:#f1f4f8;padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}a{color:#154fc0}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric{padding:17px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}.metric strong{display:block;font-size:29px;line-height:1;margin-bottom:7px}.metric span{color:var(--muted);font-weight:650}.bad strong{color:var(--red)}.warn strong{color:var(--amber)}.good strong{color:var(--green)}
+    .badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:800;vertical-align:middle}.blocker{color:var(--red);background:var(--red-soft)}.important{color:var(--amber);background:var(--amber-soft)}.minor{color:#4d5870;background:#edf0f5}.pass{color:var(--green);background:var(--green-soft)}.partial{color:#795800;background:#fff4c7}
+    .finding{margin-top:12px;padding:21px 23px;border-left-width:6px!important}.finding.block{border-left-color:var(--red)}.finding.imp{border-left-color:#d99b00}.finding.min{border-left-color:#7b879d}dl{display:grid;grid-template-columns:145px 1fr;gap:7px 15px;margin:0}dt{font-weight:800;color:var(--navy)}dd{margin:0}
+    table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:10px 11px;border:1px solid var(--line);text-align:left;vertical-align:top}th{background:#edf2fb;color:var(--navy);font-size:13px}tbody tr:nth-child(even) td{background:#fafbfd}ul,ol{margin:8px 0 0 21px;padding:0}li+li{margin-top:6px}.callout{padding:14px 16px;border-radius:10px;background:#eaf1ff;border-left:4px solid var(--blue)}.danger{background:var(--red-soft);border-left-color:var(--red)}.goodbox{background:var(--green-soft);border-left-color:var(--green)}.muted{color:var(--muted)}.small{font-size:13px}details{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}summary{cursor:pointer;color:var(--navy);font-weight:800}footer{color:var(--muted);text-align:center;margin-top:24px;font-size:13px}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}dl{grid-template-columns:1fr;gap:2px}dd{margin-bottom:8px}header,section{padding:24px}}@media print{body{background:#fff;font-size:11px}main{width:100%;margin:0}nav{display:none}header,section,article.finding{box-shadow:none;break-inside:avoid}header{border-radius:0}a{color:inherit;text-decoration:none}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">COBROUP · Auditoría técnica C# · Corte 2026-10-22 06:53 COT</div>
+    <h1>Reauditoría de backend operativo y administrativo</h1>
+    <p>Evaluación exclusiva en rol auditor de los commits recientes y de los cambios locales sin commit, contrastados con <code>FRAMEWORK_DESARROLLO_CSHARP.md</code> v2.0. No se corrigió código, configuración, documentación funcional ni estado Git.</p>
+    <div class="verdict">DICTAMEN: NO APROBADO PARA CIERRE NI PRODUCCIÓN</div>
+  </header>
+
+  <nav aria-label="Contenido">
+    <a href="#resumen">Resumen</a><a href="#alcance">Alcance</a><a href="#seguimiento">Seguimiento</a><a href="#bien">Cumplimientos</a><a href="#bloqueantes">Bloqueantes</a><a href="#importantes">Importantes</a><a href="#menores">Menores</a><a href="#evidencia">Evidencia</a><a href="#cierre">Cierre</a>
+  </nav>
+
+  <section id="resumen">
+    <h2>1. Resumen ejecutivo</h2>
+    <div class="grid">
+      <div class="metric bad"><strong>5</strong><span>bloqueantes</span></div>
+      <div class="metric warn"><strong>13</strong><span>importantes</span></div>
+      <div class="metric"><strong>2</strong><span>menores</span></div>
+      <div class="metric good"><strong>166/166</strong><span>pruebas pasan</span></div>
+    </div>
+    <div class="callout danger" style="margin-top:16px"><strong>Conclusión auditora.</strong> La solución compila en Release con cero advertencias, las 166 pruebas automatizadas pasan, no se detectaron paquetes vulnerables conocidos y los overlays de Kubernetes se renderizan. Sin embargo, permanecen riesgos críticos que impiden aprobar: el proveedor OIDC no tiene certificados en QA/producción; todavía se puede registrar evidencia sin cargar un archivo real; la descarga de evidencia omite autorización por ruta; el almacenamiento local no es durable ni compartido entre réplicas; y una excepción de crédito permite un plazo distinto del aprobado.</div>
+    <p><strong>Decisión:</strong> bloquear cierre y promoción productiva. Los resultados verdes de compilación/pruebas no compensan los incumplimientos de contrato, seguridad y operación.</p>
+  </section>
+
+  <section id="alcance">
+    <h2>2. Alcance, corte y naturaleza de la revisión</h2>
+    <table>
+      <thead><tr><th>Elemento</th><th>Corte auditado</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td><code>MS.Cobroup.Backend</code></td><td>HEAD <code>6cb247a</code> y siete commits recientes hasta <code>9d949cd</code>, más diff local completo.</td><td>Rama <code>feature/solucion-hallazgos-iniciales</code>; 21 archivos seguidos modificados/eliminados y archivos esenciales sin seguimiento.</td></tr>
+        <tr><td><code>MS.Cobroup.BackendAdmin</code></td><td>HEAD <code>3ab6774</code> y siete commits recientes hasta <code>1296196</code>, más diff local completo.</td><td>Misma rama; 17 archivos seguidos modificados/eliminados y archivos esenciales sin seguimiento.</td></tr>
+        <tr><td><code>cobroup.environments</code></td><td>HEAD <code>b47d0bb</code>, historial reciente, workflows y overlays <code>dev</code>, <code>qa</code>, <code>prod</code>.</td><td>Rama <code>dev</code>, limpia frente a <code>origin/dev</code>.</td></tr>
+        <tr><td>Contrato auditor</td><td><code>FRAMEWORK_DESARROLLO_CSHARP.md</code> v2.0.</td><td>Arquitectura, persistencia, concurrencia, seguridad, observabilidad, pruebas, despliegue y evidencia.</td></tr>
+      </tbody>
+    </table>
+    <p class="small muted"><strong>Independencia:</strong> autoverificación en rol auditor; no se acredita un segundo agente independiente conforme al §10 del framework. Por ello no se emite cierre independiente. El auditor no alteró los repositorios de aplicación, administración o ambientes; el único artefacto creado es este informe externo.</p>
+    <p class="small muted"><strong>Estado Git:</strong> los arreglos revisados están sin commit. Sí existen commits anteriores de fase 9/hardening y CI/CD; por tanto, “no se ha hecho commit” aplica al paquete de correcciones actual, no a todo el historial auditado.</p>
+  </section>
+
+  <section id="seguimiento">
+    <h2>3. Seguimiento de los 20 hallazgos previos</h2>
+    <p>La reauditoría distingue implementación observada de cierre formal. Cinco puntos muestran una corrección técnica sustancial, cinco son parciales y diez siguen abiertos. La ausencia de pruebas específicas o despliegue real impide convertir automáticamente una implementación en aceptación formal.</p>
+    <table>
+      <thead><tr><th>ID previo</th><th>Estado actual</th><th>Evaluación</th></tr></thead>
+      <tbody>
+        <tr><td>B-01 · Certificados OIDC</td><td><span class="badge blocker">Abierto</span></td><td>El código admite Base64 o archivo, pero QA/prod no entregan ninguno.</td></tr>
+        <tr><td>B-02 · CI aplica manifiestos</td><td><span class="badge partial">Parcial</span></td><td>Ahora aplica exportaciones de <code>cobroup.environments</code>; carece de fail-fast y acoplamiento verificable a una revisión GitOps.</td></tr>
+        <tr><td>I-01 · Pull secret GHCR</td><td><span class="badge important">Abierto</span></td><td>Puede persistir un <code>GITHUB_TOKEN</code> efímero y de alcance insuficiente.</td></tr>
+        <tr><td>I-02 · Ingress</td><td><span class="badge important">Abierto</span></td><td>Manifiestos NGINX frente a documentación Traefik, sin evidencia de controlador instalado.</td></tr>
+        <tr><td>I-03 · Forwarded headers</td><td><span class="badge partial">Parcial</span></td><td>Funciona detrás de proxy, pero se confía en cualquier origen al vaciar redes/proxies conocidos.</td></tr>
+        <tr><td>I-04 · Correlación</td><td><span class="badge partial">Parcial</span></td><td>Logs y llamadas Admin→Operativo propagan el ID; faltan clientes Operativo→Admin.</td></tr>
+        <tr><td>I-05 · Readiness/esquema</td><td><span class="badge important">Abierto</span></td><td><code>CanConnectAsync</code> no valida versión del esquema y no hay migración en el despliegue.</td></tr>
+        <tr><td>I-06 · Declaración 100%</td><td><span class="badge important">Abierto</span></td><td>La documentación conserva afirmaciones de cierre que la evidencia no soporta.</td></tr>
+        <tr><td>B-03 · Excepción exacta/consumo</td><td><span class="badge partial">Parcial</span></td><td>Consumo único, monto y tasa están protegidos; el plazo no exige igualdad.</td></tr>
+        <tr><td>B-04 · Pago concurrente</td><td><span class="badge pass">Implementado</span></td><td>Transacción, advisory lock, <code>xmin</code> e idempotencia evitan la pérdida de actualización. Falta prueba concurrente PostgreSQL.</td></tr>
+        <tr><td>B-05 · Evidencia real</td><td><span class="badge blocker">Abierto</span></td><td>Hay carga multipart con firma/hash, pero se mantiene el endpoint legado que acepta metadatos declarados.</td></tr>
+        <tr><td>I-07 · Cupo de préstamos</td><td><span class="badge pass">Implementado</span></td><td><code>TryAddAsync</code> serializa por ruta y comprueba el cupo dentro de transacción.</td></tr>
+        <tr><td>I-08 · <code>MaxLoanDays</code></td><td><span class="badge pass">Implementado</span></td><td>Se compara duración calendario del cronograma, no número de cuotas.</td></tr>
+        <tr><td>I-09 · Zona horaria</td><td><span class="badge important">Abierto</span></td><td>Permanece <code>America/Bogota</code> fija y existen valores por defecto UTC.</td></tr>
+        <tr><td>I-10 · Analítica histórica</td><td><span class="badge important">Abierto</span></td><td>La consulta parte del estado actual y no reconstruye cartera a fecha de corte.</td></tr>
+        <tr><td>I-11 · Revalidación OIDC</td><td><span class="badge pass">Implementado</span></td><td>Autorización y refresh revalidan usuario, organización, membresía y rol. Sin prueba de integración OIDC.</td></tr>
+        <tr><td>I-12 · Puertos en Core</td><td><span class="badge pass">Implementado</span></td><td>Interfaces reubicadas a Domain y solución compilando; los archivos nuevos siguen sin seguimiento.</td></tr>
+        <tr><td>I-13 · Auditoría distribuida</td><td><span class="badge important">Abierto</span></td><td>Decisión remota y registro local continúan sin outbox/idempotencia transaccional.</td></tr>
+        <tr><td>M-01 · Métodos de pago</td><td><span class="badge partial">Parcial</span></td><td>Orden y normalización mejoraron; quedan validación no traducida y prechequeo inconsistente.</td></tr>
+        <tr><td>M-02 · Documentación API</td><td><span class="badge minor">Abierto</span></td><td>Rutas y enum documentados no coinciden completamente con controladores/dominio.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="bien">
+    <h2>4. Qué se realizó bien</h2>
+    <div class="callout goodbox"><strong>La corrección actual sí mejora la base técnica.</strong> Los siguientes puntos son verificables en el árbol local, aunque no eliminan los bloqueantes restantes.</div>
+    <ul>
+      <li><strong>Concurrencia de pagos:</strong> transacción, bloqueo asesor por préstamo, tokens <code>xmin</code> en préstamo/cuota y restricción de idempotencia.</li>
+      <li><strong>Originación:</strong> control atómico del cupo por ruta y consumo único de la excepción mediante índices únicos.</li>
+      <li><strong>Reglas de plazo:</strong> la plantilla compara días calendario reales del cronograma contra <code>MaxLoanDays</code>.</li>
+      <li><strong>OIDC:</strong> el refresh token vuelve a consultar membresía activa y actualiza el rol; ya no confía indefinidamente en claims antiguos.</li>
+      <li><strong>Arquitectura:</strong> los puertos fueron desplazados desde Core a <code>Domain/Interfaces</code> y no aparecen dependencias de infraestructura en Core.</li>
+      <li><strong>Evidencia multipart:</strong> detecta firma JPEG/PNG/WebP y calcula SHA-256 del contenido real.</li>
+      <li><strong>Calidad base:</strong> ambas soluciones compilan sin warnings, pasan 106 + 60 pruebas y no reportan paquetes vulnerables con las fuentes configuradas.</li>
+      <li><strong>GitOps:</strong> los tres overlays se renderizan correctamente con <code>kubectl kustomize</code> y el repositorio de ambientes está limpio.</li>
+    </ul>
+  </section>
+
+  <section id="bloqueantes">
+    <h2>5. Hallazgos bloqueantes</h2>
+    <article class="finding block"><h3>B-01 · <span class="badge blocker">Bloqueante</span> OIDC no puede iniciar en QA/producción por ausencia de certificados</h3><dl>
+      <dt>Regla</dt><dd>Framework §§8–10: configuración reproducible, secretos externos y despliegue demostrable.</dd>
+      <dt>Evidencia</dt><dd><code>BackendAdmin.Api/Program.cs:277-299</code> exige <code>Signing</code> y <code>Encryption</code> por Base64 o archivo fuera de Development. Los secretos de <code>qa/prod/admin-backend</code> no contienen esas claves y los deployments no montan archivos.</dd>
+      <dt>Impacto</dt><dd>El proveedor de identidad falla al arrancar; autenticación y emisión/renovación de tokens quedan indisponibles.</dd>
+      <dt>Corrección propuesta</dt><dd>Entregar ambos PKCS#12 mediante Secret/gestor de secretos, montarlos con permisos del UID efectivo o inyectarlos en Base64, y probar arranque/rotación en QA.</dd>
+      <dt>Verificación</dt><dd>Pod Ready, endpoints OIDC discovery/authorize/token operativos y prueba de rotación sin almacenar material sensible en Git.</dd>
+    </dl></article>
+
+    <article class="finding block"><h3>B-02 · <span class="badge blocker">Bloqueante</span> Sigue siendo posible registrar evidencia sin cargar un archivo</h3><dl>
+      <dt>Regla</dt><dd>Contrato de pagos y Framework §§4, 6 y 7: invariantes en servidor, evidencia íntegra y validación negativa.</dd>
+      <dt>Evidencia</dt><dd><code>PaymentsController.cs:168-190</code> conserva el POST JSON legado; <code>PaymentService.cs:283-320</code> acepta nombre, MIME, tamaño y ruta del cliente. <code>PaymentEvidence.cs:82-91</code> asigna el SHA-256 del contenido vacío aunque no existió archivo.</dd>
+      <dt>Impacto</dt><dd>Se crean registros auditables falsos apuntando a rutas arbitrarias, invalidando integridad y trazabilidad.</dd>
+      <dt>Corrección propuesta</dt><dd>Retirar/inutilizar el endpoint legado y permitir creación solo mediante upload real o un identificador firmado emitido por un servicio de almacenamiento confiable.</dd>
+      <dt>Verificación</dt><dd>Pruebas negativas que demuestren que no se persiste evidencia con metadatos suministrados por el cliente.</dd>
+    </dl></article>
+
+    <article class="finding block"><h3>B-03 · <span class="badge blocker">Bloqueante</span> Descarga de evidencia sin autorización por ruta</h3><dl>
+      <dt>Regla</dt><dd>Framework §7 y contrato de aislamiento: autenticación no sustituye autorización por recurso.</dd>
+      <dt>Evidencia</dt><dd><code>PaymentsController.cs:142-165</code> busca por tenant, paymentId y evidenceId y entrega el archivo; no consulta <code>routeDirectory</code> ni verifica que el usuario tenga acceso a <code>payment.RouteId</code>. El upload sí realiza esa comprobación en <code>PaymentService.cs:244-247</code>.</dd>
+      <dt>Impacto</dt><dd>Un usuario autenticado del mismo tenant que conozca o descubra IDs puede descargar evidencia de una ruta no asignada.</dd>
+      <dt>Corrección propuesta</dt><dd>Mover descarga a un servicio de aplicación que cargue pago, valide ruta accesible y solo entonces abra el objeto.</dd>
+      <dt>Verificación</dt><dd>Prueba de integración: usuario de ruta A recibe 403/404 al solicitar evidencia de ruta B.</dd>
+    </dl></article>
+
+    <article class="finding block"><h3>B-04 · <span class="badge blocker">Bloqueante</span> Evidencias en disco efímero y no compartido</h3><dl>
+      <dt>Regla</dt><dd>Framework §§8–9: almacenamiento durable, despliegue reproducible y operación consistente entre réplicas.</dd>
+      <dt>Evidencia</dt><dd><code>LocalFileStorageService.cs:15-16,60-68</code> escribe bajo el directorio de la aplicación. Los manifiestos no declaran PVC/volumeMount ni almacenamiento de objetos; producción usa más de una réplica.</dd>
+      <dt>Impacto</dt><dd>Un reinicio elimina archivos y una lectura puede llegar a una réplica distinta de la que recibió la carga.</dd>
+      <dt>Corrección propuesta</dt><dd>Usar almacenamiento de objetos privado con cifrado/retención o un volumen RWX durable; conservar solo claves opacas en DB.</dd>
+      <dt>Verificación</dt><dd>Cargar, reiniciar/rotar pods y descargar desde réplicas distintas conservando hash e integridad.</dd>
+    </dl></article>
+
+    <article class="finding block"><h3>B-05 · <span class="badge blocker">Bloqueante</span> El plazo de una excepción no exige coincidencia exacta</h3><dl>
+      <dt>Regla</dt><dd>Contrato de originación: la excepción aprobada autoriza términos específicos y debe consumirse una sola vez.</dd>
+      <dt>Evidencia</dt><dd><code>LoanService.cs:112-125</code> exige monto y tasa exactos, pero para días solo rechaza <code>scheduleDurationDays &gt; ProposedDays</code>; un cronograma menor y distinto es aceptado.</dd>
+      <dt>Impacto</dt><dd>Se origina un crédito con términos no aprobados por el decisor administrativo.</dd>
+      <dt>Corrección propuesta</dt><dd>Definir el contrato sin ambigüedad y, si la aprobación es exacta, exigir igualdad de duración; almacenar/comparar la misma unidad temporal.</dd>
+      <dt>Verificación</dt><dd>Pruebas para plazo menor, igual y mayor; únicamente el término aprobado debe prosperar.</dd>
+    </dl></article>
+  </section>
+
+  <section id="importantes">
+    <h2>6. Hallazgos importantes</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Hallazgo y evidencia</th><th>Corrección / criterio de verificación</th></tr></thead>
+      <tbody>
+        <tr><td>I-01</td><td><strong>Zona horaria fija.</strong> <code>PaymentService.cs:326-335</code> y <code>EfAgendaRepository.cs:59-68</code> fijan Bogotá; otros defaults usan UTC. No se usa la zona IANA del tenant y el intervalo diario es inclusivo con <code>TimeOnly.MaxValue</code>.</td><td>Resolver zona desde configuración tenant y consultar intervalo semiabierto [inicio, siguiente inicio). Probar DST con una zona que lo tenga.</td></tr>
+        <tr><td>I-02</td><td><strong>Analítica no histórica.</strong> <code>EfAgendaRepository.cs:147-174</code> filtra préstamos actualmente activos y suma saldos actuales aunque recibe <code>targetDate</code>.</td><td>Reconstruir estado a corte con eventos/snapshots; prueba que consulte una fecha anterior después de pagos/cierre.</td></tr>
+        <tr><td>I-03</td><td><strong>Confianza ilimitada en forwarded headers.</strong> ambos <code>Program.cs</code> limpian <code>KnownIPNetworks</code>/<code>KnownProxies</code>.</td><td>Declarar CIDR/IP del ingress. Verificar que tráfico directo no pueda falsificar IP/esquema.</td></tr>
+        <tr><td>I-04</td><td><strong>Workflow puede anunciar éxito tras fallas.</strong> <code>docker-ghcr.yml:114-150</code> no activa <code>set -euo pipefail</code>; una carpeta ausente solo emite advertencia y el script continúa.</td><td>Fail-fast, validar archivos/namespace/revisión y terminar con código distinto de cero ante apply/rollout fallido.</td></tr>
+        <tr><td>I-05</td><td><strong>Imágenes y credencial GHCR no inmutables.</strong> overlays usan <code>dev</code>, <code>qa</code> o <code>latest</code>; el pull secret puede construirse con <code>GITHUB_TOKEN</code> efímero.</td><td>Promover digest/SHA único y credencial de lectura administrada con rotación; demostrar pull después de expirar el job.</td></tr>
+        <tr><td>I-06</td><td><strong>Readiness no garantiza esquema.</strong> comprobar conexión no prueba migraciones; workflows no ejecutan un job de migración.</td><td>Job idempotente y versionado antes del rollout; readiness o startup check contra versión esperada.</td></tr>
+        <tr><td>I-07</td><td><strong>Correlación incompleta.</strong> Admin propaga el encabezado a Operativo, pero los clientes del Backend hacia Admin no tienen handler equivalente.</td><td>Propagar extremo a extremo y probar que un mismo ID aparece en ambos servicios.</td></tr>
+        <tr><td>I-08</td><td><strong>Upload con presión de memoria y falta de atomicidad.</strong> <code>LocalFileStorageService.cs:29-40</code> copia todo antes de limitar; <code>PaymentService.cs:253-277</code> escribe antes de persistir DB y no compensa el archivo si falla.</td><td>Límite temprano/streaming, cuarentena temporal y confirmación/rollback; pruebas de archivo sobredimensionado y fallo DB.</td></tr>
+        <tr><td>I-09</td><td><strong>Migración deja hash histórico inválido.</strong> <code>20261022050048_FixAuditFindingsOperations.cs:14-21</code> usa cadena vacía para filas existentes.</td><td>Backfill verificable, estado “legacy no verificado” explícito o nulabilidad controlada; nunca representar vacío como hash válido.</td></tr>
+        <tr><td>I-10</td><td><strong>Auditoría distribuida no atómica.</strong> la decisión de excepción remota puede completarse y fallar el registro local.</td><td>Outbox/inbox idempotente, clave de operación y reconciliación; probar reintentos y fallas intermedias.</td></tr>
+        <tr><td>I-11</td><td><strong>Ingress no demostrado.</strong> ambientes declaran clase/anotaciones NGINX mientras documentación operacional afirma Traefik; no hay aprovisionamiento ni evidencia viva.</td><td>Elegir el controlador real, alinear contrato/manifiestos y comprobar ruta/TLS en cluster limpio.</td></tr>
+        <tr><td>I-12</td><td><strong>Arreglos esenciales sin seguimiento y sin pruebas de riesgo.</strong> interfaces, storage, migración y handlers están untracked. No existen pruebas concurrentes PostgreSQL, autorización cross-route, persistencia tras restart ni integración OIDC refresh.</td><td>Antes de revisión formal, incluir todos los archivos en un commit coherente y añadir pruebas dirigidas a cada riesgo.</td></tr>
+        <tr><td>I-13</td><td><strong>Validación de métodos de pago inconsistente.</strong> el prechequeo de duplicado usa mayúsculas mientras dominio normaliza diacríticos; una excepción de orden puede escapar como 500.</td><td>Una sola normalización compartida y traducción de toda validación de dominio a 4xx; pruebas con tildes y orden fuera de rango.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="menores">
+    <h2>7. Hallazgos menores</h2>
+    <article class="finding min"><h3>M-01 · <span class="badge minor">Menor</span> Documentación desalineada con rutas y enums</h3><p><code>AGENTS.md</code>/<code>COBROUP.md</code> aún mencionan combinaciones como <code>/agenda/daily</code>, <code>/optimize-route</code>, <code>/portfolio-analytics</code> o <code>CollectedToday</code> que no coinciden íntegramente con el código actual. Corregir la especificación y generar/verificar OpenAPI.</p></article>
+    <article class="finding min"><h3>M-02 · <span class="badge minor">Menor</span> Higiene de diff</h3><p><code>git diff --check</code> informa espacio final en <code>OidcController.cs:27</code> y línea en blanco al final de <code>AgendaProxyResult.cs:2</code>, además de avisos de conversión LF/CRLF. No afecta ejecución, pero debe limpiarse antes de revisión.</p></article>
+  </section>
+
+  <section id="evidencia">
+    <h2>8. Verificaciones ejecutadas</h2>
+    <table>
+      <thead><tr><th>Comando/actividad</th><th>Resultado</th><th>Cobertura / límite</th></tr></thead>
+      <tbody>
+        <tr><td><code>dotnet build ... -c Release --no-restore</code></td><td><span class="badge pass">Pasa</span> en ambas soluciones; 0 warnings, 0 errores.</td><td>Compilación local, no imagen.</td></tr>
+        <tr><td><code>dotnet test ... -c Release --no-build</code></td><td><span class="badge pass">106 + 60 = 166/166</span>; 0 fallidas, 0 omitidas.</td><td>No cubre los escenarios críticos enumerados.</td></tr>
+        <tr><td><code>dotnet list ... package --vulnerable --include-transitive</code></td><td><span class="badge pass">Sin paquetes vulnerables reportados</span>.</td><td>Limitado a fuentes y avisos disponibles al momento del corte.</td></tr>
+        <tr><td><code>dotnet ef migrations has-pending-model-changes ... --no-build</code></td><td><span class="badge pass">Sin cambios de modelo pendientes</span>.</td><td>No aplica la migración a base real ni valida backfill.</td></tr>
+        <tr><td><code>kubectl kustomize</code> dev/qa/prod</td><td><span class="badge pass">Los tres renderizan</span>.</td><td>No valida controlador, secretos reales, pull ni rollout.</td></tr>
+        <tr><td><code>git diff --check</code></td><td>Backend sin errores; Admin con dos observaciones menores.</td><td>Incluye avisos de finales de línea.</td></tr>
+        <tr><td><code>docker version</code></td><td><span class="badge blocker">No ejecutable</span>: cliente 28.0.4 disponible, motor Docker Desktop no está iniciado.</td><td>No se construyeron/ejecutaron imágenes.</td></tr>
+        <tr><td>Inspección de Git/diff/historial</td><td>Ramas, commits y cambios locales documentados.</td><td>No se alteró índice, rama, commit ni archivos de aplicación.</td></tr>
+      </tbody>
+    </table>
+    <h4>Límites explícitos</h4>
+    <ul>
+      <li>No se ejecutó un cluster K3s, GitHub Actions, registry privado, PostgreSQL real concurrente ni flujo OIDC de navegador.</li>
+      <li>No se usaron secretos reales ni se intentó desplegar a QA/producción.</li>
+      <li>La ausencia de pruebas fallidas significa que las pruebas existentes pasan; no demuestra ausencia de defectos fuera de su cobertura.</li>
+      <li>Los cambios locales pueden variar hasta que exista un commit/revisión inmutable; este informe corresponde exactamente al árbol observado en el corte indicado.</li>
+    </ul>
+  </section>
+
+  <section id="cierre">
+    <h2>9. Criterio de cierre recomendado</h2>
+    <ol>
+      <li>Resolver B-01 a B-05 con pruebas negativas y de autorización.</li>
+      <li>Hacer durable el almacenamiento, limitar/atomicizar uploads y corregir el hash legacy.</li>
+      <li>Endurecer pipelines: fail-fast, migraciones, revisión GitOps inmutable, digest de imagen y credencial GHCR estable.</li>
+      <li>Configurar proxies/ingress reales, zona horaria por tenant y analítica histórica.</li>
+      <li>Agregar pruebas de concurrencia PostgreSQL, OIDC refresh, aislamiento cross-route y restart/múltiples réplicas.</li>
+      <li>Consolidar el árbol sin archivos esenciales untracked y ejecutar auditoría independiente sobre un commit fijo.</li>
+    </ol>
+    <div class="callout danger" style="margin-top:16px"><strong>Estado final:</strong> no conforme. No se autoriza cierre de los hallazgos, merge ni despliegue productivo con la evidencia actual.</div>
+  </section>
+
+  <footer>Informe emitido el 22 de octubre de 2026 · Zona America/Bogota · Rol: auditor técnico C# · Sin modificación de los repositorios auditados.</footer>
+</main>
+</body>
+</html>
